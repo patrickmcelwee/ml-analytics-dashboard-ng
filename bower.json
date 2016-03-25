@@ -1,0 +1,39 @@
+{
+  "name": "ml-analytics-dashboard-ng",
+  "version": "0.0.1",
+  "authors": [
+    "Jianmin Liu <Jianmin.Liu@marklogic.com>",
+    "Patrick McElwee <patrick.mcelwee@marklogic.com>"
+  ],
+  "description": "AngularJS analytics dashboard for use with MarkLogic database",
+  "main": [
+    "dist/ml-analytics-dashboard-ng.css",
+    "dist/ml-analytics-dashboard-ng.min.js"
+  ],
+  "dependencies": {
+    "angular": "^1.2.14",
+    "angular-bootstrap": "~0.13",
+    "bootstrap": "~3.2",
+  },
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "MarkLogic",
+    "BI",
+    "AngularJS",
+    "Analytics",
+    "Dashboard",
+    "Business",
+    "Intelligence"
+  ],
+  "license": "Apache License 2.0",
+  "homepage": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
