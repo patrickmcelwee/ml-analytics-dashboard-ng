@@ -1,0 +1,35 @@
+{
+  "name": "ml-analytics-dashboard-ng",
+  "version": "0.0.1",
+  "description": "AngularJS analytics dashboard for use with MarkLogic database",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-concat": "^2.5.2",
+    "gulp-jshint": "^1.11.0",
+    "gulp-less": "^3.0.3",
+    "gulp-minify-html": "^1.0.3",
+    "gulp-rename": "^1.2.0",
+    "gulp-uglify": "^1.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng.git"
+  },
+  "keywords": [
+    "MarkLogic",
+    "BI",
+    "AngularJS",
+    "Analytics",
+    "Dashboard",
+    "Business Intelligence"
+  ],
+  "author": "Patrick McElwee <patrick.mcelwee@marklogic.com>",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng/issues"
+  },
+  "homepage": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng"
+}
