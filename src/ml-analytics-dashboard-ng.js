@@ -1,8 +1,10 @@
 (function () {
   'use strict';
 
-  angular.module('app.mlAnalyticsDashboard', [])
+  angular.module('ml.analyticsDashboard', ['ui.router'])
     .config(routeConfig);
+
+  routeConfig.$inject = ['$stateProvider'];
 
   function routeConfig($stateProvider) {
     $stateProvider

@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  angular.module('app.mlAnalyticsDashboard')
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDashboard', mlAnalyticsDashboard);
 
   function mlAnalyticsDashboard() {

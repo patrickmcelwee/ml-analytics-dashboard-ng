@@ -24,7 +24,7 @@ app](https://github.com/marklogic/slush-marklogic-node), add this to
 ```javascript
 angular.module('app', [
    # ...
-  'app.mlAnalyticsDashboard',
+  'ml.analyticsDashboard',
   # ...
 ]);
 ```
