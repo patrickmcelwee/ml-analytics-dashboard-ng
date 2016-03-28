@@ -12,8 +12,9 @@
   ],
   "dependencies": {
     "angular": "^1.2.14",
-    "angular-bootstrap": "~0.14",
-    "bootstrap": "~3.3"
+    "angular-bootstrap": "^0.14",
+    "angular-ui-router": "^0.2.15",
+    "bootstrap": "^3.3"
   },
   "moduleType": [
     "node"

@@ -16,4 +16,21 @@ generator](https://github.com/marklogic/slush-marklogic-node) in mind.
 
 ## Example Implementation
 
-TODO
+Add the mlAnalyticsDashboard module as a dependency to your app.module. For
+example, in a [slush-generated
+app](https://github.com/marklogic/slush-marklogic-node), add this to
+`ui/app/app.js`:
+
+```javascript
+angular.module('app', [
+   # ...
+  'app.mlAnalyticsDashboard',
+  # ...
+]);
+```
+
+Create a link to the Dashboard. For example, in
+a [slush-generated](https://github.com/marklogic/slush-marklogic-node) app, you
+can add the following line to the `navbar` of `ui/app/root/root.html`.
+
+    <li><a href="/analytics-dashboard/home">Analytics Dashboard</a></li>
