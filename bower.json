@@ -8,7 +8,8 @@
   "description": "AngularJS analytics dashboard for use with MarkLogic database",
   "main": [
     "dist/ml-analytics-dashboard-ng.css",
-    "dist/ml-analytics-dashboard-ng.min.js"
+    "dist/ml-analytics-dashboard-ng.js",
+    "dist/ml-analytics-dashboard-ng-templates.js"
   ],
   "dependencies": {
     "angular": "^1.2.14",

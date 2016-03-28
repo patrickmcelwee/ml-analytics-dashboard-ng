@@ -4,6 +4,8 @@
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
     less = require('gulp-less'),
+    minifyHtml = require('gulp-minify-html'),
+    html2Js = require('gulp-ng-html2js'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify'),
     jshint = require('gulp-jshint');
@@ -37,6 +39,25 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('dist'))
     .pipe(rename('ml-uploader.css'))
     .pipe(less())
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('templates', function() {
+  return gulp.src([ './src/**/*.html' ])
+    .pipe(minifyHtml({
+      empty: true,
+      spare: true,
+      quotes: true
+    }))
+    // TODO: ? prefix: '/ml-search'
+    .pipe(html2Js({
+      moduleName: 'ml.analyticsDashboard.templates',
+      prefix: '/'
+    }))
+    .pipe(concat('ml-analytics-dashboard-ng-templates.js'))
+    .pipe(gulp.dest('dist'))
+    .pipe(rename('ml-analytics-dashboard-ng-templates.min.js'))
+    .pipe(uglify())
     .pipe(gulp.dest('dist'));
 });
 

@@ -8,6 +8,7 @@
     "gulp-jshint": "^1.11.0",
     "gulp-less": "^3.0.3",
     "gulp-minify-html": "^1.0.3",
+    "gulp-ng-html2js": "^0.2.0",
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.2.0"
   },
@@ -27,7 +28,7 @@
     "Business Intelligence"
   ],
   "author": "Patrick McElwee <patrick.mcelwee@marklogic.com>",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng/issues"
   },
