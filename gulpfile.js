@@ -51,7 +51,7 @@ gulp.task('templates', function() {
     }))
     // TODO: ? prefix: '/ml-search'
     .pipe(html2Js({
-      moduleName: 'ml.analyticsDashboard.templates',
+      moduleName: 'ml.analyticsDashboard',
       prefix: '/'
     }))
     .pipe(concat('ml-analytics-dashboard-ng-templates.js'))
@@ -61,4 +61,4 @@ gulp.task('templates', function() {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('default', ['jshint', 'scripts', 'styles']);
+gulp.task('default', ['jshint', 'scripts', 'templates', 'styles']);

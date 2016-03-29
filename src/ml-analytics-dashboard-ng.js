@@ -18,17 +18,17 @@
       })
       .state('analytics-dashboard.new-report', {
         url: '/new-report',
-        templateUrl: 'templates/new-report.html',
+        templateUrl: '/templates/new-report.html',
         controller: 'NewReportCtrl'
       })
       .state('analytics-dashboard.home', {
         url: '/home',
-        templateUrl: 'templates/home.html',
+        templateUrl: '/templates/home.html',
         controller: 'HomeCtrl'
       })
       .state('analytics-dashboard.designer', {
         url: '/designer{uri:path}',
-        templateUrl: 'templates/designer.html',
+        templateUrl: '/templates/designer.html',
         controller: 'ReportDesignerCtrl',
         resolve: {
           ReportData: function($stateParams, ReportService) {
@@ -43,12 +43,12 @@
       })
       .state('analytics-dashboard.remover', {
         url: '/remover{uri:path}',
-        templateUrl: 'templates/remover.html',
+        templateUrl: '/templates/remover.html',
         controller: 'ReportRemoverCtrl'
       })
       .state('analytics-dashboard.editor', {
         url: '/editor{uri:path}',
-        templateUrl: 'templates/editor.html',
+        templateUrl: '/templates/editor.html',
         controller: 'ReportEditorCtrl',
         resolve: {
           ReportData: function($stateParams, ReportService) {
