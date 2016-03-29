@@ -22,8 +22,8 @@
     ]);
 
   function getDirectiveTemplate(mode, name) {
-    var dmt = 'app/widgets/template/' + name + '/design-mode.html';
-    var vmt = 'app/widgets/template/' + name + '/view-mode.html';
+    var dmt = '/templates/widgets/ml-smart-grid/design-mode.html';
+    var vmt = '/templates/widgets/ml-smart-grid/view-mode.html';
     var template = '';
 
     if (mode) {

@@ -122,7 +122,7 @@
           width: '100%'
         },
         settingsModalOptions: {
-          templateUrl: 'app/widgets/template/qb-settings.html',
+          templateUrl: '/templates/widgets/qb-settings.html',
           //controller: 'QueryBuilderWidgetSettingsCtrl',
           backdrop: false
         },
@@ -149,7 +149,7 @@
           format: 'standard'
         },
         settingsModalOptions: {
-          templateUrl: 'app/widgets/template/time-settings.html',
+          templateUrl: '/templates/widgets/time-settings.html',
           //controller: 'TimerWidgetSettingsCtrl',
           backdrop: false
         },
@@ -170,7 +170,7 @@
         style: {
           width: '100%'
         },
-        templateUrl: 'app/template/percentage.html'
+        templateUrl: '/templates/percentage.html'
       },
       {
         name: 'Canvas Chart' ,

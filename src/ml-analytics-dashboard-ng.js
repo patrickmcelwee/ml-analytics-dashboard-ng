@@ -3,6 +3,7 @@
 
   angular.module('ml.analyticsDashboard', [
     'ml.analyticsDashboard.report',
+    'ngTable',
     'ui.dashboard',
     'ui.router'
   ])
