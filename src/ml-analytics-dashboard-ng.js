@@ -12,21 +12,21 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('analytics-dashboard', {
+      .state('root.analytics-dashboard', {
         url: '/analytics-dashboard',
         template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
       })
-      .state('analytics-dashboard.new-report', {
+      .state('root.analytics-dashboard.new-report', {
         url: '/new-report',
         templateUrl: '/templates/new-report.html',
         controller: 'NewReportCtrl'
       })
-      .state('analytics-dashboard.home', {
+      .state('root.analytics-dashboard.home', {
         url: '/home',
         templateUrl: '/templates/home.html',
         controller: 'HomeCtrl'
       })
-      .state('analytics-dashboard.designer', {
+      .state('root.analytics-dashboard.designer', {
         url: '/designer{uri:path}',
         templateUrl: '/templates/designer.html',
         controller: 'ReportDesignerCtrl',
@@ -41,12 +41,12 @@
           }
         }
       })
-      .state('analytics-dashboard.remover', {
+      .state('root.analytics-dashboard.remover', {
         url: '/remover{uri:path}',
         templateUrl: '/templates/remover.html',
         controller: 'ReportRemoverCtrl'
       })
-      .state('analytics-dashboard.editor', {
+      .state('root.analytics-dashboard.editor', {
         url: '/editor{uri:path}',
         templateUrl: '/templates/editor.html',
         controller: 'ReportEditorCtrl',

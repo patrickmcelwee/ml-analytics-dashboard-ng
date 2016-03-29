@@ -34,10 +34,10 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('styles', function() {
-  return gulp.src('./src/styles/*.less')
-    .pipe(concat('ml-uploader.less'))
+  return gulp.src(['./src/styles/*.less', './src/styles/*.css'])
+    .pipe(concat('ml-analytics-dashboard-ng.less'))
     .pipe(gulp.dest('dist'))
-    .pipe(rename('ml-uploader.css'))
+    .pipe(rename('ml-analytics-dashboard-ng.css'))
     .pipe(less())
     .pipe(gulp.dest('dist'));
 });
