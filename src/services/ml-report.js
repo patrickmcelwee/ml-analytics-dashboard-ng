@@ -13,39 +13,6 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard.report')
-    .factory('mlReportService', [
-      function() {
-        return {
-          getDirectiveTemplate: getDirectiveTemplate
-        };
-      }
-    ]);
-
-  function getDirectiveTemplate(mode, name) {
-    var dmt = '/templates/widgets/ml-smart-grid/design-mode.html';
-    var vmt = '/templates/widgets/ml-smart-grid/view-mode.html';
-    var template = '';
-
-    if (mode) {
-      mode = mode.toLowerCase();
-      if (mode === 'design') {
-        template = dmt;
-      } else if (mode === 'view') {
-        template = vmt;
-      }
-    } else {
-      template = vmt;
-    }
-
-    return template;
-  }
-
-})(window.angular);
-
-(function(angular) {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
     .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
       function(WidgetDataModel, $http) {
         function SmartGridDataModel() {
@@ -109,13 +76,13 @@
     }
   });
 
-angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'mlReportService', 'NgTableParams',
-  function($compile, mlRest, mlReportService, NgTableParams) {
+angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'NgTableParams',
+  function($compile, mlRest, NgTableParams) {
 
   return {
     restrict: 'A',
     replace: false,
-    template: '<div ng-include="contentUrl"></div>',
+    templateUrl: '/templates/widgets/query-builder.html',
     controller: function($scope, $http, $q, $filter) {
       // Set the initial mode for this widget to View.
       $scope.showModeButton = true;
@@ -962,14 +929,11 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
 
     link: function($scope, element, attrs) {
       $scope.element = element;
-      $scope.contentUrl = mlReportService.getDirectiveTemplate($scope.widget.mode, 'ml-smart-grid');
 
       $scope.$watch('widget.mode', function(mode) {
         //console.log($scope);
 
         $scope.clearResults();
-
-        $scope.contentUrl = mlReportService.getDirectiveTemplate(mode, 'ml-smart-grid');
 
         $scope.data.needsUpdate = true;
         $scope.data.needsRefresh = true;
