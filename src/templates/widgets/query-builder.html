@@ -1,6 +1,9 @@
 <div>
   <div ng-if="widget.mode === 'Design'" class="design-mode">
-    <p>The Query Builder allows you to configure query rules without writing any custom code.</p>
+    <p>
+      The Query Builder, in this design mode, allows you to configure query rules without writing any custom code.
+      <button class="btn btn-info btn-sm" ng-click="widget.mode = 'View'">Switch to view mode</button>
+    </p>
 
     <form name="designForm" class="form-inline" novalidate>
       <div class="form-group">
@@ -131,7 +134,10 @@
   </div>
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
-    <p>The view mode displays the query results of the Query Builder.</p>
+    <p>
+      This view mode displays the query results of the Query Builder.
+      <button class="btn btn-info btn-sm" ng-click="widget.mode = 'Design'">Switch to design mode</button>
+    </p>
 
     <form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px">
       <div class="form-group">
