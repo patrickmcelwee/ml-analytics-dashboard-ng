@@ -10,7 +10,7 @@ through the process.
  
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to use ml-analytics-dashboard-ng, check our documentation on the [Wiki][wiki]. Alternatively, check [Stack Overflow][mlstack] to see if it has been answered there, and post your question there if not. Please tag it with MarkLogic, and AngularJS.
+If you have questions about how to use ml-analytics-dashboard-ng, check our documentation on the [README][README]. Alternatively, check [Stack Overflow][mlstack] to see if it has been answered there, and post your question there if not. Please tag it with MarkLogic, and AngularJS.
 
 ## <a name="issue"></a> Found an Issue?
 
@@ -170,7 +170,7 @@ from the main (upstream) repository:
     git pull --ff upstream master
     ```
 
-[wiki]: https://github.com/patrickmcelwee/ml-analytics-dashboard-ng/wiki
+[README]: https://github.com/patrickmcelwee/ml-analytics-dashboard-ng
 [mlstack]: http://stackoverflow.com/questions/tagged/marklogic
 [issue tracker]: https://github.com/patrickmcelwee/ml-analytics-dashboard-ng/issues
 [.editorconfig]: http://editorconfig.org/
