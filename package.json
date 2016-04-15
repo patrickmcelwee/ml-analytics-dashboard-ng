@@ -32,5 +32,6 @@
   "bugs": {
     "url": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng/issues"
   },
-  "homepage": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng"
+  "homepage": "https://github.com/patrickmcelwee/ml-analytics-dashboard-ng",
+  "private": true
 }
