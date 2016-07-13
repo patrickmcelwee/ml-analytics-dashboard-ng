@@ -210,8 +210,7 @@ td.centered {
   padding: 0;
   border-top: 1px solid #bbb;
   overflow: auto;
-  width: 100%
-
+  width: 100%;
   position: relative;
 }
 .workspace-container-outer {

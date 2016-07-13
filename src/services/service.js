@@ -30,8 +30,6 @@
     };
 
     this.getReports = function() {
-      //return this.get('/api/reports');
-
       var search = {
         'search': {
           'options': {
@@ -39,8 +37,8 @@
           },
           'query': {
             'queries': [{
-              'directory-query': {
-                uri: ['/report/']
+              'collection-query': {
+                'uri': ['ml-analytics-dashboard-reports']
               }
             }]
           }
@@ -66,10 +64,11 @@
 
     this.createReport = function(report) {
       return mlRest.createDocument(report, {
-               directory: '/report/',
-               format: 'json',
-               extension: '.json'
-             });
+         directory: '/ml-analytics-dashboard-report/',
+         collection: ['ml-analytics-dashboard-reports'],
+         format: 'json',
+         extension: '.json'
+       });
     };
 
     this.deleteReport = function(uri) {
@@ -77,7 +76,6 @@
     };
 
     this.updateReport = function(data) {
-      //return this.put('/api/report', data);
       return mlRest.updateDocument(data, {uri: data.uri});
     };
 
