@@ -3609,7 +3609,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
 
     this.createReport = function(report) {
       return mlRest.createDocument(report, {
-         directory: '/ml-analytics-dashboard-report/',
+         directory: '/ml-analytics-dashboard-reports/',
          collection: ['ml-analytics-dashboard-reports'],
          format: 'json',
          extension: '.json'
