@@ -201,7 +201,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
           columns: [],
           computes: [],
           options: ['headers=true'],
-          query: {}
+          query: {query: {}}
         };
 
         $scope.data.docs = [];
@@ -508,7 +508,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
           queryConfig.computes.push({fn: 'frequency'});
         }
 
-        queryConfig.query = query;
+        queryConfig.query.query = query;
 
         var dimensions = $scope.widget.dataModelOptions.dimensions;
         dimensions.forEach(function(dimension) {
