@@ -20,11 +20,20 @@ And install the [mlpm module](https://github.com/patrickmcelwee/mlpm-analytics-d
 
     npm install -g mlpm
     mlpm install analytics-dashboard --save
+
+For now, you need to overwrite a module from the `group-by` mlpm library (which
+is a dependency of the above `analytics-dashboard` library) to allow
+constraining queries to work. To overwrite, run:
+
+    cp group-by-json.xqy mlpm_modules/group-by/
+
+Now you can deploy the mlpm_modules to MarkLogic:
+    
     mlpm deploy -H localhost -P 8040 -u admin -p admin
 
-For now, you need to edit `node-server/proxy.js` in order to allow searches
-with a 'multipart/mixed' Accept header. I hope to find a different way to do
-this soon. For now, the `proxy` function should look like this (with the
+For now, you also need to edit `node-server/proxy.js` in order to allow
+searches with a 'multipart/mixed' Accept header. I hope to find a different way
+to do this soon. For now, the `proxy` function should look like this (with the
 addition of lines between the `// Analytics Dashboard` comments:
 
 ```javascript

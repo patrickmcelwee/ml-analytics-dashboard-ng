@@ -201,7 +201,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
           columns: [],
           computes: [],
           options: ['headers=true'],
-          filters: {}
+          query: {}
         };
 
         $scope.data.docs = [];
@@ -487,21 +487,14 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
 
         setQueryParameters(queries);
 
-        var search = {
-          'search': {
-            'options': {
-              'search-option': ['unfiltered']
-            },
-            'query': {
-              'queries': queries
-            }
-          }
+        var query = {
+          'queries': queries
         };
 
         if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-          search.search.qtext = $scope.executor.simple;
+          query.qtext = $scope.executor.simple;
         } else {
-          search.search.qtext = '';
+          query.qtext = '';
         }
 
         var params = {};
@@ -515,7 +508,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
           queryConfig.computes.push({fn: 'frequency'});
         }
 
-        queryConfig.filters = search;
+        queryConfig.query = query;
 
         var dimensions = $scope.widget.dataModelOptions.dimensions;
         dimensions.forEach(function(dimension) {
@@ -681,19 +674,12 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
 
         setQueryParameters(queries);
 
-        var search = {
-          'search': {
-            'options': {
-              'search-option': ['unfiltered']
-            },
-            'query': {
-              'queries': queries
-            }
-          }
+        var query = {
+          'queries': queries
         };
 
         if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-          search.search.qtext = $scope.executor.simple;
+          query.qtext = $scope.executor.simple;
         }
 
         var params = {
