@@ -7,13 +7,6 @@
 (function(angular) {
   'use strict';
 
-  angular.module('ml-dimension-builder', []);
-
-})(window.angular);
-
-(function(angular) {
-  'use strict';
-
   var app = angular.module('ml-dimension-builder');
 
   app.directive('dimensionBuilder', ['dimensionBuilderService',

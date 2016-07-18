@@ -22,6 +22,7 @@ gulp.task('jshint', function() {
 gulp.task('scripts', function() {
   return gulp.src([
       './src/ml-analytics-dashboard-ng.js',
+      './src/**/*.module.js',
       './src/**/*.service.js',
       './src/**/*.directive.js',
       './src/**/*.js'

@@ -67,6 +67,13 @@
 
 }());
 
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder', []);
+
+}());
+
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
@@ -97,13 +104,6 @@
  *
  * Angular Module for building MarkLogic search dimensions
  */
-
-(function(angular) {
-  'use strict';
-
-  angular.module('ml-dimension-builder', []);
-
-})(window.angular);
 
 (function(angular) {
   'use strict';
