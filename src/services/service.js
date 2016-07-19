@@ -134,15 +134,6 @@
         onSettingsDismiss: function(reason, scope) {
           // Do nothing here, since the user pressed cancel
         }
-      },
-      {
-        name: 'Scope Monitor',
-        title: 'Scope Monitor',
-        icon: 'fa fa-list',
-        style: {
-          width: '100%'
-        },
-        templateUrl: '/templates/percentage.html'
       }
     ];
   }]);

@@ -1768,11 +1768,6 @@ function setupWizard() {
 
     ReportService.setDashboardOptions($scope.reportDashboardOptions);
 
-    $scope.percentage = 5;
-    $interval(function () {
-      $scope.percentage = ($scope.percentage + 10) % 100;
-    }, 1000);
-
     // external controls
     $scope.addWidget = function(directive) {
       $scope.dashboardOptions.addWidget({
@@ -3559,15 +3554,6 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
         onSettingsDismiss: function(reason, scope) {
           // Do nothing here, since the user pressed cancel
         }
-      },
-      {
-        name: 'Scope Monitor',
-        title: 'Scope Monitor',
-        icon: 'fa fa-list',
-        style: {
-          width: '100%'
-        },
-        templateUrl: '/templates/percentage.html'
       }
     ];
   }]);

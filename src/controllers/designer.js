@@ -53,11 +53,6 @@
 
     ReportService.setDashboardOptions($scope.reportDashboardOptions);
 
-    $scope.percentage = 5;
-    $interval(function () {
-      $scope.percentage = ($scope.percentage + 10) % 100;
-    }, 1000);
-
     // external controls
     $scope.addWidget = function(directive) {
       $scope.dashboardOptions.addWidget({
