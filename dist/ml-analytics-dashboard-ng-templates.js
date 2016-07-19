@@ -54,7 +54,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/home.html',
-    '<div class="row"><div class="col-md-12"><span class="view-title">Welcome to Analytics Dashboard</span><p>Analytics Dashboard is an online reporting and business intelligence service that helps you easily analyze your business data, and create insightful reports for informed decision-making. It allows you to easily create and share powerful reports in minutes from MarkLogic database.</p><p><b>Sample Monthly Budget 2015 vs. 2014</b></p><p><canvas id="budget-canvas" style="height:300px;max-width:100%;width:auto;"></canvas></p><p>MarkLogic\'s full-text search engine makes it an ideal platform to power advanced search applications. MarkLogic’s full-text search includes faceting, real-time alerting, type-ahead suggestions, snippeting, language support, and much more.</p></div></div>');
+    '<div class="row"><div class="col-md-12"><h2 class="view-title">Welcome to Analytics Dashboard</h2><p>Analytics Dashboard is an online reporting and business intelligence service that helps you easily analyze your business data, and create insightful reports for informed decision-making. It allows you to easily create and share powerful reports in minutes from MarkLogic database.</p><p>MarkLogic\'s full-text search engine makes it an ideal platform to power advanced search applications. MarkLogic’s full-text search includes faceting, real-time alerting, type-ahead suggestions, snippeting, language support, and much more.</p></div></div>');
 }]);
 })();
 
