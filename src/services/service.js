@@ -136,32 +136,6 @@
         }
       },
       {
-        name: 'Timer',
-        directive: 'ml-time',
-        title: 'Timer',
-        icon: 'fa fa-th',
-        style: {
-          width: '100%'
-        },
-        dataModelOptions: {
-          format: 'standard'
-        },
-        settingsModalOptions: {
-          templateUrl: '/templates/widgets/time-settings.html',
-          //controller: 'TimerWidgetSettingsCtrl',
-          backdrop: false
-        },
-        onSettingsClose: function(result, widget) {
-          console.log('Widget-specific settings resolved!');
-          console.log(result);
-          jQuery.extend(true, widget, result);
-        },
-        onSettingsDismiss: function(reason, scope) {
-          //console.log('Settings have been dismissed: ', reason);
-          //console.log('Dashboard scope: ', scope);
-        }
-      },
-      {
         name: 'Scope Monitor',
         title: 'Scope Monitor',
         icon: 'fa fa-list',
@@ -169,15 +143,6 @@
           width: '100%'
         },
         templateUrl: '/templates/percentage.html'
-      },
-      {
-        name: 'Canvas Chart' ,
-        directive: 'ml-canvas-chart',
-        title: 'Canvas Chart',
-        icon: 'fa fa-th',
-        style: {
-          width: '100%'
-        }
       }
     ];
   }]);

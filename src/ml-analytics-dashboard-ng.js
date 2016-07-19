@@ -2,7 +2,6 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard', [
-    'marklogic.widgets',
     'ml.analyticsDashboard.report',
     'ngTable',
     'ui.dashboard',
