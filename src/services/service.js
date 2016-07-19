@@ -100,9 +100,9 @@
     function(SmartGridDataModel) {
     return [
       {
-        name: 'Query Builder',
+        name: 'Chart Builder',
         directive: 'ml-smart-grid',
-        title: 'Query Builder',
+        title: 'Chart Builder',
         icon: 'fa fa-th',
         dataAttrName: 'grid',
         dataModelType: SmartGridDataModel,

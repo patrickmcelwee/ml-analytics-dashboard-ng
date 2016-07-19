@@ -2568,7 +2568,7 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
   return {
     restrict: 'A',
     replace: false,
-    templateUrl: '/templates/widgets/query-builder.html',
+    templateUrl: '/templates/widgets/chart-builder.html',
     controller: function($scope, $http, $q, $filter) {
       // Set the initial mode for this widget to View.
       $scope.showModeButton = true;
@@ -3520,9 +3520,9 @@ angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compi
     function(SmartGridDataModel) {
     return [
       {
-        name: 'Query Builder',
+        name: 'Chart Builder',
         directive: 'ml-smart-grid',
-        title: 'Query Builder',
+        title: 'Chart Builder',
         icon: 'fa fa-th',
         dataAttrName: 'grid',
         dataModelType: SmartGridDataModel,
