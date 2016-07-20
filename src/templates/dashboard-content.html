@@ -17,8 +17,8 @@
     <div class="btn-group" ng-if="options.widgetButtons">
       <button ng-repeat="widget in widgetDefs"
               ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary">
-        <span ng-if="widget.name === 'Query Builder'">New Chart</span>
-        <span ng-if="widget.name !== 'Query Builder'">{{widget.name}}</span>
+        <span ng-if="widget.name === 'Chart Builder'">New Chart</span>
+        <span ng-if="widget.name !== 'Chart Builder'">{{widget.name}}</span>
       </button>
     </div>
 

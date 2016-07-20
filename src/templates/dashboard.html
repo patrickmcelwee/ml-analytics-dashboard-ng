@@ -1,6 +1,6 @@
 <div id="analytics-dashboard">
   <div class="col-md-2">
-    <span class="menu-title">Manage Reports</span>
+    <h4 class="menu-title">Manage Reports</h4>
     <p ng-if="!currentUser" style="padding-left:8px;">Please log in to view reports.</p>
     <div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div>
     <form ng-if="currentUser" name="filterForm" class="filter-form" novalidate>
@@ -30,7 +30,7 @@
     <div ng-if="currentUser" class="btn-toolbar" style="margin-left:10px;margin-top:10px">
       <div class="btn-group">
         <button class="btn btn-primary" ng-click="createReport()">
-          <span class="fa fa-check"></span> New Report
+          <span class="fa fa-plus"></span> New Report
         </button>
       </div> <!-- end sidebar -->
     </div>

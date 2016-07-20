@@ -2,6 +2,7 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard', [
+    'highcharts-ng',
     'ml.analyticsDashboard.report',
     'ngTable',
     'ui.dashboard',
@@ -184,8 +185,6 @@
         $scope.executor.disableRun = true;
         $scope.executor.disableDownload = true;
 
-        $scope.highchart = null;
-
         $scope.grid = {
           page: 1,
           total: 0
@@ -222,11 +221,6 @@
           $scope.executor.dimensions = [];
           $scope.executor.results = [];
           $scope.executor.disableDownload = true;
-
-          if ($scope.highchart) {
-            $scope.highchart.highcharts().destroy();
-            $scope.highchart = null;
-          }
         };
 
         $scope.getDbConfig = function() {
@@ -336,6 +330,8 @@
             } else {
               $scope.model.configError = 'No documents with range indices in the database';
             }
+
+            $scope.execute();
           }, function(response) {
             $scope.model.loadingConfig = false;
             $scope.model.configError = response.data;
@@ -826,9 +822,27 @@
             }
           });
 
-          $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
-            chart: {
-              type: 'column'
+          $scope.highchartConfig = {
+            options: {
+              chart: {
+                type: 'column'
+              },
+              tooltip: {
+                shared: true,
+                useHTML: true,
+                borderWidth: 1,
+                borderRadius: 10,
+                headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                             '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>'
+              },
+              plotOptions: {
+                column: {
+                  pointPadding: 0.2,
+                  borderWidth: 0
+                }
+              }
             },
             title: {
               text: ''
@@ -841,24 +855,8 @@
                 text: ''
               }
             },
-            tooltip: {
-              shared: true,
-              useHTML: true,
-              borderWidth: 1,
-              borderRadius: 10,
-              headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
-              pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                           '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-              footerFormat: '</table>'
-            },
-            plotOptions: {
-              column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-              }
-            },
             series: series
-          });
+          };
         };
 
         // Create a pie chart
@@ -915,9 +913,36 @@
 
           var title = 'Measures: ' + measures;
 
-          $scope.highchart = $scope.element.find('div.hcontainer').highcharts({
-            chart: {
-              type: 'pie'
+          $scope.highchartConfig = {
+            options: {
+              chart: {
+                type: 'pie'
+              },
+              tooltip: {
+                shared: true,
+                useHTML: true,
+                borderWidth: 1,
+                borderRadius: 10,
+                headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                  '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                footerFormat: '</table>'
+              },
+              plotOptions: {
+                pie: {
+                  showInLegend: true,
+                  shadow: false,
+                  center: ['50%', '50%'],
+                  dataLabels: {
+                    enabled: true,
+                    useHTML: false,
+                    format: '<b>{point.name} {series.name}</b>: {point.percentage:.1f}%',
+                    style: {
+                      color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                  }
+                }
+              }
             },
             credits: {
               enabled: false
@@ -930,33 +955,8 @@
                 text: ''
               }
             },
-            tooltip: {
-              shared: true,
-              useHTML: true,
-              borderWidth: 1,
-              borderRadius: 10,
-              headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
-              pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                           '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-              footerFormat: '</table>'
-            },
-            plotOptions: {
-              pie: {
-                showInLegend: true,
-                shadow: false,
-                center: ['50%', '50%'],
-                dataLabels: {
-                  enabled: true,
-                  useHTML: false,
-                  format: '<b>{point.name} {series.name}</b>: {point.percentage:.1f}%',
-                  style: {
-                    color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                  }
-                }
-              }
-            },
             series: series
-          });
+          };
         };
 
         // Kick off
@@ -974,9 +974,6 @@
           $scope.data.needsUpdate = true;
           $scope.data.needsRefresh = true;
 
-          if (mode === 'View') {
-            //$scope.execute();
-          }
         });
       }
     };

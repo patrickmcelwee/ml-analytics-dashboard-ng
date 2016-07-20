@@ -76,7 +76,7 @@
       </table>
     </div>
 
-    <div class="hcontainer"></div>
+    <highchart class="hcontainer" config="highchartConfig"></highchart>
 
     <div class="table-responsive" ng-if="model.results.results">
       <div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div>
@@ -146,7 +146,7 @@
       </div>
 
       <button class="btn btn-primary" ng-disabled="executor.disableRun" ng-click="execute()">
-        <span class="fa fa-eye"></span> Run Report</button>
+        <span class="fa fa-eye"></span> Filter Results with Search</button>
       <button class="btn btn-default" ng-click="download()" ng-disabled="executor.disableDownload">
         <span class="fa fa-download"></span> Download Report</button>
       <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
@@ -176,7 +176,7 @@
       </table>
     </div>
 
-    <div class="hcontainer"></div>
+    <highchart class="hcontainer" config="highchartConfig"></highchart>
 
     <div class="table-responsive" ng-if="model.results.results">
       <div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div>
