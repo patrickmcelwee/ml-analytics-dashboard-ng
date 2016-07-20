@@ -1,72 +1,5 @@
-@media (max-width: 1300px) {
-  .navbar-header {
-    float: none;
-  }
-  .navbar-left,
-  .navbar-right {
-    float: none !important;
-  }
-  .navbar-toggle {
-    display: block;
-  }
-  .navbar-collapse {
-    border-top: 1px solid transparent;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  }
-  .navbar-fixed-top {
-    top: 0;
-    border-width: 0 0 1px;
-  }
-  .navbar-collapse.collapse {
-    display: none !important;
-  }
-  .navbar-nav {
-    float: none !important;
-    margin-top: 7.5px;
-  }
-  .navbar-nav > li {
-    float: none;
-  }
-  .navbar-nav > li > a {
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-  .collapse.in {
-    display: block !important;
-  }
-}
-.navbar-inverse {
-  background: #003c71;
-  border-top: 2px solid #11506d;
-  border-left: 2px solid #11506d;
-  border-right: 2px solid #11506d;
-}
-/*
-.welcome {
-  margin-top: 16px;
-  margin-right: 15px;
-  margin-bottom: 8px;
-  color: white;
-}
-
-.welcome a {
-  color: #78be20;
-}
-*/
 .modal-dialog {
   margin: 120px auto;
-}
-#loader {
-  z-index: 19999;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: url("/images/loading.gif") no-repeat center center #ffffff;
-  opacity: 0.7;
-  cursor: wait;
-  display: none;
 }
 /* overwrite the dashboard styles */
 .widget-container {
@@ -74,39 +7,8 @@
   display: block;
   width: auto;
 }
-h2 {
-  margin-top: 0;
-}
-p {
-  margin: 0 0 10px;
-}
-.pull-left {
-  float: left !important;
-}
 .text-muted {
-  color: #999;
-}
-#footer-inner {
-  border-top: 1px solid;
-  height: 51px;
-  margin-top: 15px;
-  background-color: #f1f2f2;
-  border-top: 1px solid #d1d3d4;
-  bottom: 0;
-  height: 71px;
-  width: 100%;
-  padding: 10px 0;
-  margin-top: 30px;
-}
-#footer-inner .footer-container {
-  padding: 0 15px;
-}
-#footer-inner .text-muted {
-  font-size: 85%;
-  padding: 20px 0 0;
-}
-.editor-link {
-  cursor: pointer;
+  color: #777;
 }
 .mandatory-field {
   color: #e05314;
@@ -118,162 +20,9 @@ p {
 .ng-table th:last-child {
   text-align: center;
 }
-.ng-table th:nth-last-child(3) {
-  /*text-align: right;*/
-}
-.text-center {
-  text-align: center;
-  width: 60px;
-}
-th.centered,
-td.centered {
-  vertical-align: middle;
-  text-align: center;
-}
-/* the main container for the wizard */
-#main-container {
-  position: relative;
-  border: 4px solid #bbb;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: red;
-}
-#main-container .left-column {
-  border: 1px solid gray;
-  /*#ddd*/
-  position: absolute;
-  left: 0;
-  top: 0;
-  background-color: #EEEEEE;
-  /*#FFF #EEEEEE #20252b*/
-}
-#main-container .splitter {
-  width: 5px;
-  height: 100%;
-  border: 1px solid #b3b3b3;
-  background-color: #d9d9d9;
-  cursor: col-resize;
-  position: absolute;
-  left: 300px;
-  top: 0;
-}
-.splitter-vertical-button {
-  background-color: #0081c2;
-  background-repeat: repeat-x;
-  background-image: linear-gradient(to right, #149bdf, #0480be);
-  position: absolute;
-  width: 3px;
-  height: 45px;
-  position: relative;
-  top: 50%;
-  left: 0;
-  /* give the element a negative top and left margin equal to half of its height and width. */
-  margin-top: -23px;
-  margin-left: 0px;
-  cursor: pointer;
-}
-#main-container .right-column {
-  border: 1px solid gray;
-  background-color: white;
-  /*#F7F7F9*/
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-@media all and (max-width: 640px) {
-  #main-container {
-    -webkit-flex-flow: column;
-    flex-flow: column;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  #main-container .left-column,
-  #main-container .splitter,
-  #main-container .right-column {
-    /* Return them to document order */
-    -webkit-order: 0;
-    order: 0;
-  }
-  #main-container .left-column,
-  #main-container .right-column {
-    /*min-height: 50px;
-    max-height: 50px;*/
-  }
-}
-.sidebar-container-outer {
-  padding: 0;
-  width: 100%;
-}
-#sidebar-container {
-  margin: 0;
-  padding: 0;
-  border-top: 1px solid #bbb;
-  overflow: auto;
-  width: 100%;
-  position: relative;
-}
-.workspace-container-outer {
-  position: relative;
-  z-index: 6;
-  word-wrap: break-word;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-/* This viewer hides the scroll bars by setting overflow to hidden. */
-#workspace-container {
-  margin: 0;
-  padding: 0;
-  border: 0px none;
-  overflow: auto;
-  width: 100%;
-  /* With flex, you can stop worrying. You can align anything
-   * (vertically or horizontally) quite painlessly with the
-   * align-items, align-self, and justify-content properties.
-   */
-  /*display: flex;
-  flex-flow: column;
-  align-items: flex-start;
-  justify-content: flex-start;*/
-  position: relative;
-}
 .workspace-view {
   margin: 0 10px;
   padding: 5px;
-}
-#sidebar h2 {
-  padding: 5px;
-}
-#sidebar .menu-title {
-  display: inline-block;
-  padding-top: 4px;
-  padding-left: 8px;
-  padding-bottom: 6px;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 22px;
-  font-weight: 600;
-  line-height: 1.1;
-}
-#workspace-container .view-title {
-  display: inline-block;
-  padding-bottom: 6px;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.1;
-}
-.facet h3 {
-  font-size: 16px;
-  font-weight: 300;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-.facet a {
-  cursor: pointer;
-}
-.results .pagination {
-  margin-top: 10px;
 }
 .filter-form {
   margin: 0 6px 10px 6px;
@@ -374,13 +123,6 @@ td.centered {
 }
 .report-item:hover .toolbar {
   display: inline-block;
-}
-/* make div width and height auto adjust to content.
- */
-.hcontainer {
-  /* 100% auto also works */
-  /*width: auto;*/
-  height: auto;
 }
 .qb-dashboard .col-xs-12 {
   width: 100%;

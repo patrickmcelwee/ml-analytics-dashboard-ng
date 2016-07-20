@@ -4,8 +4,6 @@
   angular.module('ml.analyticsDashboard').controller('SidebarCtrl', ['$rootScope', '$scope', '$location', '$state', 'userService', 'ReportService', 'WidgetDefinitions',
     function($rootScope, $scope, $location, $state, userService, ReportService, WidgetDefinitions) {
 
-    setupWizard();
-
     $scope.currentUser = null;
     $scope.search = {};
     $scope.showLoading = false;

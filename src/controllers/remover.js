@@ -7,10 +7,7 @@
     $scope.report.uri = decodeURIComponent($stateParams.uri);
 
     $scope.deleteReport = function() {
-      MarkLogic.Util.showLoader();
-
       ReportService.deleteReport($scope.report.uri).then(function(response) {
-        MarkLogic.Util.hideLoader();
         $rootScope.$broadcast('ReportDeleted', $scope.report.uri);
         $state.go('root.analytics-dashboard.home');
       }, function(response) {

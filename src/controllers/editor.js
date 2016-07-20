@@ -17,11 +17,7 @@
     };
 
     $scope.updateReport = function() {
-      MarkLogic.Util.showLoader();
-
       ReportService.updateReport($scope.report).then(function(response) {
-        MarkLogic.Util.hideLoader();
-
         //$scope.updateTableRow();
         $state.go('root.analytics-dashboard.home');
       });

@@ -21,10 +21,7 @@
     };
 
     $scope.createReport = function() {
-      MarkLogic.Util.showLoader();
-
       ReportService.createReport($scope.report).then(function(response) {
-        MarkLogic.Util.hideLoader();
         var uri = response.replace(/(.*\?uri=)/, '');
         $scope.report.uri = uri;
 

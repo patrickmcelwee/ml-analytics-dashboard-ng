@@ -65,9 +65,7 @@
     });
 
     $scope.saveWidgets = function() {
-      MarkLogic.Util.showLoader();
       ReportService.updateReport($scope.report).then(function(response) {
-        MarkLogic.Util.hideLoader();
       });
     };
 

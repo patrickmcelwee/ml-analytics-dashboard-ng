@@ -34,10 +34,8 @@
         controller: 'ReportDesignerCtrl',
         resolve: {
           ReportData: function($stateParams, ReportService) {
-            //MarkLogic.Util.showLoader();
             var uri = $stateParams.uri;
             return ReportService.getReport(uri).then(function(response) {
-              //MarkLogic.Util.hideLoader();
               return response;
             });
           }
@@ -54,10 +52,8 @@
         controller: 'ReportEditorCtrl',
         resolve: {
           ReportData: function($stateParams, ReportService) {
-            //MarkLogic.Util.showLoader();
             var uri = $stateParams.uri;
             return ReportService.getReport(uri).then(function(response) {
-              //MarkLogic.Util.hideLoader();
               return response;
             });
           }
