@@ -1,7 +1,6 @@
 <div>
   <div ng-if="widget.mode === 'Design'" class="design-mode">
     <p>
-      The Chart Builder, in this design mode, allows you to configure query rules without writing any custom code.
       <button class="btn btn-info btn-sm" ng-click="widget.mode = 'View'">Switch to view mode</button>
     </p>
 
@@ -135,7 +134,6 @@
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
     <p>
-      This view mode displays the query results of the Chart Builder.
       <button class="btn btn-info btn-sm" ng-click="widget.mode = 'Design'">Switch to design mode</button>
     </p>
 

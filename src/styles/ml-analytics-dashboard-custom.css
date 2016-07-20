@@ -354,13 +354,15 @@ th.centered, td.centered {
 }
 
 .report-container .report-item {
+  width: 150px;
   display: block;
   background-color: white;
   border: 1px solid #d1d1d1;
   overflow: hidden;
-  margin: 2px;
+  margin: 2px 8px;
   padding: 8px;
   text-decoration: none;
+  float: left;
   color: #cdcdcd;
   /*z-index: 10000;*/
   text-align: left;
