@@ -263,25 +263,6 @@
           }
         };
 
-        $scope.edit = function() {
-          $('#query-editor-dialog').modal({'backdrop': 'static'});
-
-          var value = $scope.showQuery();
-          var container = document.getElementById('query-editor');
-          container.innerHTML = '';
-
-          var cme = CodeMirror(container, {
-            value: value,
-            indentUnit: 2,
-            lineNumbers: true,
-            readOnly: false,
-            matchBrackets: true,
-            autoCloseBrackets: true,
-            mode: 'application/ld+json',
-            lineWrapping: false
-          });
-        };
-
         $scope.save = function() {
           $scope.widget.dataModelOptions.database = $scope.model.config['current-database'];
           $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;

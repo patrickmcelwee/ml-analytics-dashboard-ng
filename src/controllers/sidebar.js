@@ -13,9 +13,6 @@
     // The report selected for update or delete.
     $scope.report = {};
 
-    var editReportDialogId = '#edit-report-dialog';
-    var deleteReportDialogId = '#delete-report-dialog';
-
     // Retrieve reports if the user logs in
     $scope.$watch(userService.currentUser, function(newValue) {
       $scope.currentUser = newValue;

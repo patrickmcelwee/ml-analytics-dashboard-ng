@@ -385,25 +385,6 @@
           }
         };
 
-        $scope.edit = function() {
-          $('#query-editor-dialog').modal({'backdrop': 'static'});
-
-          var value = $scope.showQuery();
-          var container = document.getElementById('query-editor');
-          container.innerHTML = '';
-
-          var cme = CodeMirror(container, {
-            value: value,
-            indentUnit: 2,
-            lineNumbers: true,
-            readOnly: false,
-            matchBrackets: true,
-            autoCloseBrackets: true,
-            mode: 'application/ld+json',
-            lineWrapping: false
-          });
-        };
-
         $scope.save = function() {
           $scope.widget.dataModelOptions.database = $scope.model.config['current-database'];
           $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
@@ -2653,9 +2634,6 @@ var MarkLogic;
 
     // The report selected for update or delete.
     $scope.report = {};
-
-    var editReportDialogId = '#edit-report-dialog';
-    var deleteReportDialogId = '#delete-report-dialog';
 
     // Retrieve reports if the user logs in
     $scope.$watch(userService.currentUser, function(newValue) {

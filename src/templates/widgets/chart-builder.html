@@ -105,31 +105,11 @@
         <pre ng-bind="showDimensions()"></pre>
       </div>
       <div class="col-md-7">
-        <h3>Query Rules <button class="btn btn-default" ng-click="edit()">Edit</button></h3>
+        <h3>Query Rules</h3>
         <pre ng-bind="showQuery()"></pre>
       </div>
     </div>
 
-  </div>
-
-  <div id="query-editor-dialog" class="modal modal-wide" role="dialog">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Edit Query Rules</h4>
-        </div>
-        <div class="modal-body">
-          <div id="query-editor"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-ng-click="save()">
-            <span class="fa fa-check"></span> Save</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">
-            <span class="fa fa-close"></span> Close</button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
