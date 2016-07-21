@@ -506,25 +506,6 @@
           return JSON.stringify(dimensions, null, 2);
         };
 
-        $scope.showQuery = function() {
-          var query = $scope.getStructuredQuery();
-          return JSON.stringify(query, null, 2);
-        };
-
-        $scope.getStructuredQuery = function() {
-          var query = {
-            'query': {
-              "queries": []
-            }
-          };
-          var rootQuery = {};
-          rootQuery[$scope.data.operation] = {'queries': $scope.data.query};
-
-          query.query.queries.push(rootQuery);
-
-          return query;
-        };
-
         $scope.clearResults = function() {
           $scope.model.results = null;
           $scope.executor.dimensions = [];
@@ -706,7 +687,7 @@
           $scope.widget.dataModelOptions.query = {};
           $scope.widget.dataModelOptions.dimensions = [];
 
-          angular.copy($scope.getStructuredQuery(), $scope.widget.dataModelOptions.query);
+          angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
           angular.copy($scope.data.dimensions, $scope.widget.dataModelOptions.dimensions);
 
           $scope.options.saveDashboard();
@@ -1429,6 +1410,24 @@
             });
           };
 
+          scope.showQuery = function() {
+            var query = scope.getStructuredQuery();
+            return JSON.stringify(query, null, 2);
+          };
+
+          scope.getStructuredQuery = function() {
+            var query = {
+              'query': {
+                "queries": []
+              }
+            };
+            var rootQuery = {};
+            rootQuery[scope.data.operation] = {'queries': scope.data.query};
+
+            query.query.queries.push(rootQuery);
+            return query;
+          };
+
           scope.$watch('data.needsUpdate', function(curr) {
             if (! curr) return;
 
@@ -1441,6 +1440,7 @@
 
             data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
           }, true);
+             data.structuredQuery = scope.getStructuredQuery();
         }
       };
     }
