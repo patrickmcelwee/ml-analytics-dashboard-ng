@@ -21,7 +21,7 @@
 
             type = type.charAt(0).toUpperCase() + type.slice(1);
 
-            return 'ml-sq-builder/types/' + type + '.html';
+            return '/ml-sq-builder/types/' + type + '.html';
           };
 
           // This is a weird hack to make sure these are numbers

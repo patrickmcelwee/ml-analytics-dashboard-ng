@@ -1,0 +1,12 @@
+<span class="string-rule">
+  <select data-ng-model="rule.subType" class="form-control">
+    <optgroup label="Text"> 
+      <option value="word-query">Contains</option> 
+      <option value="value-query">Equals</option>  
+    </optgroup> 
+  </select> 
+  <input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text" /> 
+  <select class="form-control" ng-model="rule.value"> 
+    <option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option> 
+  </select> 
+</span>

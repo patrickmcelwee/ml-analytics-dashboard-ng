@@ -1,0 +1,21 @@
+<div class="sq-builder">
+  <div class="form-inline">
+    <p>If <select class="form-control" data-ng-model="data.operation"> 
+      <option value="and-query">All</option> 
+      <option value="or-query">Any</option> 
+    </select> of these conditions are met</p> 
+  </div>
+  <div class="filter-panels"> 
+    <div class="list-group form-inline"> 
+      <div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-sq-parameters="data.parameters" data-on-remove="removeChild($index)" data-depth="0"></div> 
+      <div class="list-group-item actions">
+        <a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"> 
+          <i class="fa fa-plus"> Add Rule</i> 
+        </a> 
+        <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"> 
+          <i class="fa fa-list"> Add Group</i> 
+        </a> 
+      </div> 
+    </div> 
+  </div> 
+</div>

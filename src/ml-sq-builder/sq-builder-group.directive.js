@@ -14,7 +14,7 @@
           onRemove: '&',
         },
 
-        templateUrl: 'ml-sq-builder/GroupDirective.html',
+        templateUrl: '/ml-sq-builder/GroupDirective.html',
 
         compile: function(element) {
           return RH.compile(element, function(scope, el, attrs) {

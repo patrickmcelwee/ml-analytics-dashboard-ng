@@ -10,7 +10,7 @@
           data: '=sqBuilder',
         },
 
-        templateUrl: 'ml-sq-builder/BuilderDirective.html',
+        templateUrl: '/ml-sq-builder/BuilderDirective.html',
 
         link: function(scope) {
           var data = scope.data;

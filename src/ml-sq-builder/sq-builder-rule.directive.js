@@ -11,7 +11,7 @@
           onRemove: '&',
         },
 
-        templateUrl: 'ml-sq-builder/RuleDirective.html',
+        templateUrl: '/ml-sq-builder/RuleDirective.html',
 
         link: function(scope) {
           scope.getType = function() {

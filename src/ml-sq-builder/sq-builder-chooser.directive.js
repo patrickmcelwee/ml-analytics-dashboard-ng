@@ -15,7 +15,7 @@
           onRemove: '&',
         },
 
-        templateUrl: 'ml-sq-builder/ChooserDirective.html',
+        templateUrl: '/ml-sq-builder/ChooserDirective.html',
 
         compile: function (element) {
           return RH.compile(element, function(scope, el, attrs) {
