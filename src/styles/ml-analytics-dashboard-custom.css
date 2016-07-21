@@ -9,6 +9,10 @@
   width: auto;
 }
 
+.widget {
+  overflow: scroll;
+}
+
 .text-muted {
   color: #777;
 }
