@@ -10,7 +10,7 @@
     <form name="designForm" class="form-inline" novalidate>
       <div class="form-group">
         <label class="control-label">Database:</label>
-        <select class="form-control" 
+        <select class="input-sm form-control" 
                 ng-options="database for database in model.config.databases"
                 ng-model="model.config['current-database']"
                 ng-change="getDbConfig()"></select>
@@ -18,7 +18,7 @@
 
       <div class="form-group">
         <label class="control-label">Limited By:</label>
-        <select class="form-control" 
+        <select class="input-sm form-control" 
                 ng-model="model.groupingStrategy"
                 ng-change="getDbConfig()">
           <option>root</option>
@@ -29,7 +29,7 @@
 
       <div class="form-group">
         <label class="control-label">Name:</label>
-        <select class="form-control" 
+        <select class="input-sm form-control" 
                 ng-model="data.directory_model" 
                 ng-options="d.name for d in data.docs" 
                 ng-change="setDocument()" required>

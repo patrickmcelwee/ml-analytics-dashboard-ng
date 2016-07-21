@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder"><div class="filter-panels"><div class="list-group form-inline"><div data-ng-repeat="facet in facets" data-dimension-builder-chooser="facet" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div><div class="list-group-item actions"><a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()"><i class="fa fa-plus">Add Dimension</i></a></div></div></div></div>');
+    '<div class="dimension-builder"><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="facet in facets" data-dimension-builder-chooser="facet" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()"><i class="fa fa-plus">Add Dimension</i></a></div></div></div></div>');
 }]);
 })();
 
@@ -18,7 +18,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/ChooserDirective.html',
-    '<div class="list-group-item dimension-builder-chooser"><div data-dimension-builder-rule="item" data-dimension-fields="dimensionFields" data-on-remove="onRemove()"></div></div>');
+    '<div class="dimension-builder-chooser form-group"><div data-dimension-builder-rule="item" data-dimension-fields="dimensionFields" data-on-remove="onRemove()"></div></div>');
 }]);
 })();
 
@@ -30,7 +30,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/RuleDirective.html',
-    '<div class="dimension-builder-rule"><select class="form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in dimensionFields"></select><span data-dimension-type="getType()" data-rule="rule" data-guide="dimensionFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="dimension-builder-rule"><select class="form-control input-sm" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in dimensionFields"></select><span data-dimension-type="getType()" data-rule="rule" data-guide="dimensionFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -42,7 +42,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/BuilderDirective.html',
-    '<div class="sq-builder"><div class="form-inline"><p>If<select class="form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="list-group form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-sq-parameters="data.parameters" data-on-remove="removeChild($index)" data-depth="0"></div><div class="list-group-item actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a> <a ng-if="structuredQueryIsHidden" data-ng-click="showStructuredQuery()" class="btn btn-xs btn-primary" title="Show Generated Query"><i class="fa fa-eye"></i> Show Generated Query</a> <a ng-if="!structuredQueryIsHidden" ng-click="hideStructuredQuery()" class="btn btn-xs btn-primary" title="Hide Generated Query"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Query</a></div></div></div><div uib-collapse="structuredQueryIsHidden"><pre ng-bind="renderStructuredQuery()"></pre></div></div>');
+    '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-sq-parameters="data.parameters" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a> <a ng-if="structuredQueryIsHidden" data-ng-click="showStructuredQuery()" class="btn btn-xs btn-primary" title="Show Generated Query"><i class="fa fa-eye"></i> Show Generated Query</a> <a ng-if="!structuredQueryIsHidden" ng-click="hideStructuredQuery()" class="btn btn-xs btn-primary" title="Hide Generated Query"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Query</a></div></div></div><div uib-collapse="structuredQueryIsHidden"><pre ng-bind="renderStructuredQuery()"></pre></div></div>');
 }]);
 })();
 
@@ -54,7 +54,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/ChooserDirective.html',
-    '<div class="list-group-item sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div></div>');
+    '<div class="sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div></div>');
 }]);
 })();
 
@@ -66,7 +66,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/GroupDirective.html',
-    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="list-group-item actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="input-sm form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -78,7 +78,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/RuleDirective.html',
-    '<div class="sq-builder-rule"><select class="form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in sqFields"></select><span data-sq-type="getType()" data-rule="rule" data-guide="sqFields[rule.field]" data-parameters="sqParameters"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in sqFields"></select><span data-sq-type="getType()" data-rule="rule" data-guide="sqFields[rule.field]" data-parameters="sqParameters"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -186,7 +186,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/Boolean.html',
-    '<span class="boolean-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select></span>');
+    '<span class="boolean-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select></span>');
 }]);
 })();
 
@@ -198,7 +198,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/Date.html',
-    '<span class="date-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">Standard</option></optgroup></select></span>');
+    '<span class="date-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">Standard</option></optgroup></select></span>');
 }]);
 })();
 
@@ -210,7 +210,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/Decimal.html',
-    '<span class="decimal-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
+    '<span class="decimal-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
 }]);
 })();
 
@@ -222,7 +222,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/Int.html',
-    '<span class="integer-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
 }]);
 })();
 
@@ -234,7 +234,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/Long.html',
-    '<span class="integer-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
 }]);
 })();
 
@@ -246,7 +246,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/types/String.html',
-    '<span class="string-rule"><select data-ng-model="rule.operation" class="form-control"><optgroup label="Text"><option value="count">count</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text"></span>');
+    '<span class="string-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Text"><option value="count">count</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -258,7 +258,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Boolean.html',
-    '<span class="boolean-rule"><select data-ng-model="rule.value" class="form-control" data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder"></select></span>');
+    '<span class="boolean-rule"><select data-ng-model="rule.value" class="input-sm form-control" data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder"></select></span>');
 }]);
 })();
 
@@ -270,7 +270,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Date.html',
-    '<span class="date-rule"><select data-ng-model="rule.subType" class="form-control"><optgroup label="Date"></optgroup></select></span>');
+    '<span class="date-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Date"></optgroup></select></span>');
 }]);
 })();
 
@@ -282,7 +282,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Decimal.html',
-    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text"><select class="form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
 }]);
 })();
 
@@ -294,7 +294,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Int.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text"><select class="form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
 }]);
 })();
 
@@ -306,7 +306,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Long.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text"><select class="form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
 }]);
 })();
 
@@ -318,7 +318,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/String.html',
-    '<span class="string-rule"><select data-ng-model="rule.subType" class="form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text"><select class="form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="string-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
 }]);
 })();
 
@@ -390,7 +390,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/widgets/chart-builder.html',
-    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><form name="designForm" class="form-inline" novalidate=""><div class="form-group"><label class="control-label">Database:</label><select class="form-control" ng-options="database for database in model.config.databases" ng-model="model.config[\'current-database\']" ng-change="getDbConfig()"></select></div><div class="form-group"><label class="control-label">Limited By:</label><select class="form-control" ng-model="model.groupingStrategy" ng-change="getDbConfig()"><option>root</option><option>collection</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name:</label><select class="form-control" ng-model="data.directory_model" ng-options="d.name for d in data.docs" ng-change="setDocument()" required=""><option value="">Choose...</option></select></div><button class="btn btn-default" ng-click="save()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save</button> <button class="btn btn-default" ng-click="execute()" ng-disabled="designForm.$invalid"><span class="fa fa-eye"></span> Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row" ng-show="model.showBuilder"><div class="col-md-5"><h3 class="qb-title">Dimensions & Computations</h3><div dimension-builder="data"></div></div><div class="col-md-7"><h3 class="qb-title">Filters</h3><div sq-builder="data"></div></div></div><div class="table-responsive" ng-if="executor.results.length>0"><pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination><table class="table table-bordered"><thead><tr><th data-ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th></tr></thead><tbody><tr data-ng-repeat="row in executor.results"><td data-ng-repeat="cell in row track by $index">{{cell}}</td></tr></tbody></table></div><highchart config="highchartConfig"></highchart><div class="table-responsive" ng-if="model.results.results"><div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div><p ng-if="model.results" class="metrics"><em>{{ model.results.results.length }} results in {{ model.results.metrics[\'total-time\'] }}</em></p><table class="table table-bordered"><thead><tr><th ng-repeat="header in model.results.headers">{{ header }}</th></tr></thead><tbody><tr ng-repeat="result in model.results.results track by $index"><td ng-repeat="val in result track by $index"><em ng-if="val === \'\'"></em> <span ng-if="val !== \'\'">{{ val }}</span></td></tr></tbody></table></div><div class="row" ng-show="model.showBuilder"><div class="col-md-5"><h3>Dimensions & Computations</h3><pre ng-bind="showDimensions()"></pre></div></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="executor.simple"></div><button class="btn btn-primary" ng-disabled="executor.disableRun" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <button class="btn btn-default" ng-click="download()" ng-disabled="executor.disableDownload"><span class="fa fa-download"></span> Download Report</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div class="table-responsive" ng-if="executor.results.length>0"><pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination><table class="table table-bordered"><thead><tr><th data-ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th></tr></thead><tbody><tr data-ng-repeat="row in executor.results"><td data-ng-repeat="cell in row track by $index">{{cell}}</td></tr></tbody></table></div><highchart config="highchartConfig"></highchart><div class="table-responsive" ng-if="model.results.results"><div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div><p ng-if="model.results" class="metrics"><em>{{ model.results.results.length }} results in {{ model.results.metrics[\'total-time\'] }}</em></p><table ng-table-dynamic="tableParams with cols" class="table table-condensed table-bordered table-striped"><tr ng-repeat="row in $data"><td ng-repeat="col in $columns">{{row[col.field]}}</td></tr></table></div></div></div>');
+    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><form name="designForm" class="form-inline" novalidate=""><div class="form-group"><label class="control-label">Database:</label><select class="input-sm form-control" ng-options="database for database in model.config.databases" ng-model="model.config[\'current-database\']" ng-change="getDbConfig()"></select></div><div class="form-group"><label class="control-label">Limited By:</label><select class="input-sm form-control" ng-model="model.groupingStrategy" ng-change="getDbConfig()"><option>root</option><option>collection</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name:</label><select class="input-sm form-control" ng-model="data.directory_model" ng-options="d.name for d in data.docs" ng-change="setDocument()" required=""><option value="">Choose...</option></select></div><button class="btn btn-default" ng-click="save()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save</button> <button class="btn btn-default" ng-click="execute()" ng-disabled="designForm.$invalid"><span class="fa fa-eye"></span> Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row" ng-show="model.showBuilder"><div class="col-md-5"><h3 class="qb-title">Dimensions & Computations</h3><div dimension-builder="data"></div></div><div class="col-md-7"><h3 class="qb-title">Filters</h3><div sq-builder="data"></div></div></div><div class="table-responsive" ng-if="executor.results.length>0"><pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination><table class="table table-bordered"><thead><tr><th data-ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th></tr></thead><tbody><tr data-ng-repeat="row in executor.results"><td data-ng-repeat="cell in row track by $index">{{cell}}</td></tr></tbody></table></div><highchart config="highchartConfig"></highchart><div class="table-responsive" ng-if="model.results.results"><div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div><p ng-if="model.results" class="metrics"><em>{{ model.results.results.length }} results in {{ model.results.metrics[\'total-time\'] }}</em></p><table class="table table-bordered"><thead><tr><th ng-repeat="header in model.results.headers">{{ header }}</th></tr></thead><tbody><tr ng-repeat="result in model.results.results track by $index"><td ng-repeat="val in result track by $index"><em ng-if="val === \'\'"></em> <span ng-if="val !== \'\'">{{ val }}</span></td></tr></tbody></table></div><div class="row" ng-show="model.showBuilder"><div class="col-md-5"><h3>Dimensions & Computations</h3><pre ng-bind="showDimensions()"></pre></div></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="executor.simple"></div><button class="btn btn-primary" ng-disabled="executor.disableRun" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <button class="btn btn-default" ng-click="download()" ng-disabled="executor.disableDownload"><span class="fa fa-download"></span> Download Report</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div class="table-responsive" ng-if="executor.results.length>0"><pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination><table class="table table-bordered"><thead><tr><th data-ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th></tr></thead><tbody><tr data-ng-repeat="row in executor.results"><td data-ng-repeat="cell in row track by $index">{{cell}}</td></tr></tbody></table></div><highchart config="highchartConfig"></highchart><div class="table-responsive" ng-if="model.results.results"><div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div><p ng-if="model.results" class="metrics"><em>{{ model.results.results.length }} results in {{ model.results.metrics[\'total-time\'] }}</em></p><table ng-table-dynamic="tableParams with cols" class="table table-condensed table-bordered table-striped"><tr ng-repeat="row in $data"><td ng-repeat="col in $columns">{{row[col.field]}}</td></tr></table></div></div></div>');
 }]);
 })();
 
