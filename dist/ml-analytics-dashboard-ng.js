@@ -433,6 +433,142 @@
   }
 }());
 
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder').directive('dimensionBuilderChooser', [
+    function dimensionBuilderChooser() {
+      return {
+        scope: {
+          dimensionFields: '=',
+          item: '=dimensionBuilderChooser',
+          onRemove: '&',
+        },
+
+        templateUrl: 'ml-dimension-builder/ChooserDirective.html'
+      };
+    }
+  ]);
+
+
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder').directive('dimensionBuilderRule', [
+    function dimensionBuilderRule() {
+      return {
+        scope: {
+          dimensionFields: '=',
+          rule: '=dimensionBuilderRule',
+          onRemove: '&',
+        },
+
+        templateUrl: 'ml-dimension-builder/RuleDirective.html',
+
+        link: function(scope) {
+          scope.getType = function() {
+            var fields = scope.dimensionFields,
+                field = scope.rule.field;
+
+            if (! fields || ! field) return;
+
+            return fields[field].type;
+          };
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder').directive('dimensionBuilder', ['dimensionBuilderService',
+    function DB(dimensionBuilderService) {
+      return {
+        scope: {
+          data: '=dimensionBuilder',
+        },
+
+        templateUrl: 'ml-dimension-builder/BuilderDirective.html',
+
+        link: function(scope) {
+          var data = scope.data;
+
+          scope.facets = [];
+
+          /**
+           * Removes a dimension
+           */
+          scope.removeDimension = function(idx) {
+            scope.facets.splice(idx, 1);
+          };
+
+          /**
+           * Adds a dimension
+           */
+          scope.addDimension = function() {
+            scope.facets.push({});
+          };
+
+          scope.$watch('data.needsRefresh', function(curr) {
+            if (! curr) return;
+
+            scope.facets = dimensionBuilderService.toFacets(data.dimensions, scope.data.fields);
+            scope.data.needsRefresh = false;
+          });
+
+          scope.$watch('facets', function(curr) {
+            if (! curr) return;
+
+            data.dimensions = dimensionBuilderService.toDimensions(scope.facets, scope.data.fields);
+          }, true);
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  // Determines which Rule type should be displayed
+  angular.module('ml-dimension-builder').directive('dimensionType', [
+    function dimensionType() {
+      return {
+        scope: {
+          type: '=dimensionType',
+          rule: '=',
+          guide: '=',
+        },
+
+        template: '<ng-include src="getTemplateUrl()" />',
+
+        link: function(scope) {
+          scope.getTemplateUrl = function() {
+            var type = scope.type;
+            if (! type) return;
+
+            type = type.charAt(0).toUpperCase() + type.slice(1);
+
+            return 'ml-dimension-builder/types/' + type + '.html';
+          };
+
+          scope.inputNeeded = function() {
+            // None of these requires an input.
+            var needs = [];
+
+            return ~needs.indexOf(scope.rule.operation);
+          };
+        },
+      };
+    }
+  ]);
+
+})();
+
 (function () {
 
   'use strict';
@@ -1514,134 +1650,6 @@
  * ml-dimension-builder
  *
  * Angular Module for building MarkLogic search dimensions
- */
-
-(function(angular) {
-  'use strict';
-
-  var app = angular.module('ml-dimension-builder');
-
-  app.directive('dimensionBuilder', ['dimensionBuilderService',
-    function DB(dimensionBuilderService) {
-      return {
-        scope: {
-          data: '=dimensionBuilder',
-        },
-
-        templateUrl: 'ml-dimension-builder/BuilderDirective.html',
-
-        link: function(scope) {
-          var data = scope.data;
-
-          scope.facets = [];
-
-          /**
-           * Removes a dimension
-           */
-          scope.removeDimension = function(idx) {
-            scope.facets.splice(idx, 1);
-          };
-
-          /**
-           * Adds a dimension
-           */
-          scope.addDimension = function() {
-            scope.facets.push({});
-          };
-
-          scope.$watch('data.needsRefresh', function(curr) {
-            if (! curr) return;
-
-            scope.facets = dimensionBuilderService.toFacets(data.dimensions, scope.data.fields);
-            scope.data.needsRefresh = false;
-          });
-
-          scope.$watch('facets', function(curr) {
-            if (! curr) return;
-
-            data.dimensions = dimensionBuilderService.toDimensions(scope.facets, scope.data.fields);
-          }, true);
-        }
-      };
-    }
-  ]);
-
-  app.directive('dimensionBuilderChooser', [
-    function dimensionBuilderChooser() {
-      return {
-        scope: {
-          dimensionFields: '=',
-          item: '=dimensionBuilderChooser',
-          onRemove: '&',
-        },
-
-        templateUrl: 'ml-dimension-builder/ChooserDirective.html'
-      };
-    }
-  ]);
-
-  app.directive('dimensionBuilderRule', [
-    function dimensionBuilderRule() {
-      return {
-        scope: {
-          dimensionFields: '=',
-          rule: '=dimensionBuilderRule',
-          onRemove: '&',
-        },
-
-        templateUrl: 'ml-dimension-builder/RuleDirective.html',
-
-        link: function(scope) {
-          scope.getType = function() {
-            var fields = scope.dimensionFields,
-                field = scope.rule.field;
-
-            if (! fields || ! field) return;
-
-            return fields[field].type;
-          };
-        }
-      };
-    }
-  ]);
-
-  // Determines which Rule type should be displayed
-  app.directive('dimensionType', [
-    function dimensionType() {
-      return {
-        scope: {
-          type: '=dimensionType',
-          rule: '=',
-          guide: '=',
-        },
-
-        template: '<ng-include src="getTemplateUrl()" />',
-
-        link: function(scope) {
-          scope.getTemplateUrl = function() {
-            var type = scope.type;
-            if (! type) return;
-
-            type = type.charAt(0).toUpperCase() + type.slice(1);
-
-            return 'ml-dimension-builder/types/' + type + '.html';
-          };
-
-          scope.inputNeeded = function() {
-            // None of these requires an input.
-            var needs = [];
-
-            return ~needs.indexOf(scope.rule.operation);
-          };
-        },
-      };
-    }
-  ]);
-
-})(window.angular);
-
-/**
- * Convert facets into queries, and vice versa
  */
 
 (function(angular) {
