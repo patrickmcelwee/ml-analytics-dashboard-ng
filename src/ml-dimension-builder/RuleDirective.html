@@ -1,0 +1,7 @@
+<div class="dimension-builder-rule">
+  <select class="form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in dimensionFields"></select>
+  <span data-dimension-type="getType()" data-rule="rule" data-guide="dimensionFields[rule.field]"></span>
+  <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()">
+    <i class="fa fa-minus"></i>
+  </a>
+</div>

@@ -8,7 +8,7 @@
           data: '=dimensionBuilder',
         },
 
-        templateUrl: 'ml-dimension-builder/BuilderDirective.html',
+        templateUrl: '/ml-dimension-builder/BuilderDirective.html',
 
         link: function(scope) {
           var data = scope.data;

@@ -1,0 +1,21 @@
+<span class="decimal-rule">
+  <select data-ng-model="rule.operation" class="form-control">
+    <optgroup label="Function">
+      <option value="avg">avg</option>
+      <option value="count">count</option> 
+      <option value="max">max</option> 
+      <option value="median">median</option>  
+      <option value="min">min</option>  
+      <option value="stddev">stddev</option>  
+      <option value="stddev-population">stddev-population</option>  
+      <option value="sum">sum</option>  
+      <option value="variance">variance</option>  
+      <option value="variance-population">variance-population</option> 
+    </optgroup> 
+    <optgroup label="Generic"> 
+      <option value="groupby">group by</option> 
+      <option value="atomic">atomic</option> 
+    </optgroup> 
+  </select> 
+  <input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}" />
+</span>

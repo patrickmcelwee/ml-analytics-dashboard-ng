@@ -10,7 +10,7 @@
           onRemove: '&',
         },
 
-        templateUrl: 'ml-dimension-builder/ChooserDirective.html'
+        templateUrl: '/ml-dimension-builder/ChooserDirective.html'
       };
     }
   ]);

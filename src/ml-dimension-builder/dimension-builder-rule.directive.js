@@ -10,7 +10,7 @@
           onRemove: '&',
         },
 
-        templateUrl: 'ml-dimension-builder/RuleDirective.html',
+        templateUrl: '/ml-dimension-builder/RuleDirective.html',
 
         link: function(scope) {
           scope.getType = function() {

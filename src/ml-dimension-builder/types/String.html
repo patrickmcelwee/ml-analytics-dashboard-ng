@@ -1,0 +1,12 @@
+<span class="string-rule">
+  <select data-ng-model="rule.operation" class="form-control">
+    <optgroup label="Text"> 
+      <option value="count">count</option> 
+    </optgroup> 
+    <optgroup label="Generic"> 
+      <option value="groupby">group by</option>
+      <option value="atomic">atomic</option>
+    </optgroup> 
+  </select> 
+  <input data-ng-if="inputNeeded()" class="form-control" data-ng-model="rule.value" type="text" /> 
+</span>

@@ -20,7 +20,7 @@
 
             type = type.charAt(0).toUpperCase() + type.slice(1);
 
-            return 'ml-dimension-builder/types/' + type + '.html';
+            return '/ml-dimension-builder/types/' + type + '.html';
           };
 
           scope.inputNeeded = function() {
