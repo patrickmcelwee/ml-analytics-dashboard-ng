@@ -11,7 +11,6 @@
       templateUrl: '/templates/widgets/chart-builder.html',
       controller: function($scope, $http, $q, $filter) {
         // Set the initial mode for this widget to View.
-        $scope.showModeButton = true;
         $scope.widget.mode = 'View';
 
   /*

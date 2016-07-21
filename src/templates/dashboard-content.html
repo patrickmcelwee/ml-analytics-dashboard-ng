@@ -17,7 +17,7 @@
     <div class="btn-group" ng-if="options.widgetButtons">
       <button ng-repeat="widget in widgetDefs"
               ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary">
-        <span ng-if="widget.name === 'Chart Builder'">New Chart</span>
+        <span ng-if="widget.name === 'Chart Builder'">Add Chart</span>
         <span ng-if="widget.name !== 'Chart Builder'">{{widget.name}}</span>
       </button>
     </div>
@@ -37,7 +37,7 @@
               </form>
               <span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span>
               <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span>
-              <span ng-click="openWidgetSettings(widget);" class="glyphicon glyphicon-cog" ng-if="!options.hideWidgetSettings"></span>
+              <!-- <span ng-click="openWidgetSettings(widget);" class="glyphicon glyphicon-cog" ng-if="!options.hideWidgetSettings"></span> -->
               <span ng-click="widget.contentStyle.display = widget.contentStyle.display === 'none' ? 'block' : 'none'" class="glyphicon" ng-class="{'glyphicon-plus': widget.contentStyle.display === 'none', 'glyphicon-minus': widget.contentStyle.display !== 'none' }"></span>
             </h3>
           </div>
