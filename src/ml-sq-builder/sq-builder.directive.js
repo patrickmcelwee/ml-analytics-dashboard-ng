@@ -42,10 +42,20 @@
             });
           };
 
-          scope.showQuery = function() {
+          scope.renderStructuredQuery = function() {
             var query = scope.getStructuredQuery();
             return JSON.stringify(query, null, 2);
           };
+
+          scope.showStructuredQuery = function() {
+            scope.structuredQueryIsHidden = false;
+          };
+
+          scope.hideStructuredQuery = function() {
+            scope.structuredQueryIsHidden = true;
+          };
+
+          scope.hideStructuredQuery();
 
           scope.getStructuredQuery = function() {
             var query = {

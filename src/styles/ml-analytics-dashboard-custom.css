@@ -479,3 +479,9 @@ table {
 .panel > .panel-heading {
   text-align: left;
 }
+
+.fa-stack.fa-stack-xs {
+    width: 1em;
+    height: 1.1em;
+    line-height: 1.1em;
+}
