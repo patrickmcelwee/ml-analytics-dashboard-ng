@@ -29,6 +29,23 @@
             scope.facets.push({});
           };
 
+          scope.renderDimensionConfig = function() {
+            var dimensions = {
+              dimensions: data.dimensions
+            };
+            return JSON.stringify(dimensions, null, 2);
+          };
+
+          scope.showDimensionConfig = function() {
+            scope.dimensionConfigIsHidden = false;
+          };
+
+          scope.hideDimensionConfig = function() {
+            scope.dimensionConfigIsHidden = true;
+          };
+
+          scope.hideDimensionConfig();
+
           scope.$watch('data.needsRefresh', function(curr) {
             if (! curr) return;
 

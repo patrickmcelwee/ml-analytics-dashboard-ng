@@ -7,7 +7,21 @@
           <i class="fa fa-plus"></i>
           Add Dimension
         </a>
+        <a ng-if="dimensionConfigIsHidden" data-ng-click="showDimensionConfig()" class="btn btn-xs btn-primary" title="Show Generated Dimensions">
+          <i class="fa fa-eye"></i>
+          Show Generated Dimensions
+        </a>
+        <a ng-if="!dimensionConfigIsHidden" ng-click="hideDimensionConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions">
+          <span class="fa-stack fa-stack-xs">
+            <i class="fa fa-eye fa-stack-1x"></i>
+            <i class="fa fa-ban fa-stack-1x text-danger"></i>
+          </span>
+          Hide Generated Dimensions
+        </a>
      </div>
     </div>
+  </div>
+  <div uib-collapse="dimensionConfigIsHidden">
+    <pre ng-bind="renderDimensionConfig()"></pre>
   </div>
 </div>

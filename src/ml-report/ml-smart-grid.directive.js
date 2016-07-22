@@ -63,13 +63,6 @@
           total: 0
         };
 
-        $scope.showDimensions = function() {
-          var dimensions = {
-            dimensions: $scope.data.dimensions
-          };
-          return JSON.stringify(dimensions, null, 2);
-        };
-
         $scope.clearResults = function() {
           $scope.model.results = null;
           $scope.executor.dimensions = [];
