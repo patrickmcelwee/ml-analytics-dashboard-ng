@@ -1654,17 +1654,19 @@
             });
           };
 
-          Object.defineProperty(scope.data, 'structuredQuery', {
-            get: function() {
-              var rootQuery = {};
-              rootQuery[scope.data.operation] = {'queries': scope.data.query};
-              return {
-                'query': {
-                  "queries": [ rootQuery ]
-                }
-              };
-            }
-          });
+          if ( typeof scope.data.structuredQuery === 'undefined' ) {
+            Object.defineProperty(scope.data, 'structuredQuery', {
+              get: function() {
+                var rootQuery = {};
+                rootQuery[scope.data.operation] = {'queries': scope.data.query};
+                return {
+                  'query': {
+                    "queries": [ rootQuery ]
+                  }
+                };
+              }
+            });
+          }
 
           scope.renderStructuredQuery = function() {
             return JSON.stringify(scope.data.structuredQuery, null, 2);
