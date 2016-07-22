@@ -1487,13 +1487,8 @@
         $scope.element = element;
 
         $scope.$watch('widget.mode', function(mode) {
-          //console.log($scope);
-
-          $scope.clearResults();
-
           $scope.data.needsUpdate = true;
           $scope.data.needsRefresh = true;
-
         });
       }
     };
