@@ -42,9 +42,20 @@
             });
           };
 
+          Object.defineProperty(scope.data, 'structuredQuery', {
+            get: function() {
+              var rootQuery = {};
+              rootQuery[scope.data.operation] = {'queries': scope.data.query};
+              return {
+                'query': {
+                  "queries": [ rootQuery ]
+                }
+              };
+            }
+          });
+
           scope.renderStructuredQuery = function() {
-            var query = scope.getStructuredQuery();
-            return JSON.stringify(query, null, 2);
+            return JSON.stringify(scope.data.structuredQuery, null, 2);
           };
 
           scope.showStructuredQuery = function() {
@@ -57,22 +68,8 @@
 
           scope.hideStructuredQuery();
 
-          scope.getStructuredQuery = function() {
-            var query = {
-              'query': {
-                "queries": []
-              }
-            };
-            var rootQuery = {};
-            rootQuery[scope.data.operation] = {'queries': scope.data.query};
-
-            query.query.queries.push(rootQuery);
-            return query;
-          };
-
           scope.$watch('data.needsUpdate', function(curr) {
-            if (! curr) return;
-
+            if (! curr) return; 
             scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
             scope.data.needsUpdate = false;
           });
@@ -82,7 +79,6 @@
 
             data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
           }, true);
-             data.structuredQuery = scope.getStructuredQuery();
         }
       };
     }
