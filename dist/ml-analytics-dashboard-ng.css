@@ -265,13 +265,17 @@ table {
   font-weight: 700;
   margin-left: 5px;
 }
+/* Dimension Builder */
+.dimension-builder-rule {
+  margin-top: 5px;
+}
 /* Structured Query Builder */
 .actions {
   margin-top: 15px;
   margin-bottom: 5px;
 }
 .sq-builder-chooser {
-  margin-top: 10px;
+  margin-top: 5px;
 }
 .design-mode .list-group-item-info {
   color: #31708f;

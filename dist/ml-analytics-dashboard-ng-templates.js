@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder"><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="facet in facets" data-dimension-builder-chooser="facet" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()"><i class="fa fa-plus">Add Dimension</i></a></div></div></div></div>');
+    '<div class="dimension-builder"><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="facet in facets" data-dimension-builder-chooser="facet" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()"><i class="fa fa-plus"></i> Add Dimension</a></div></div></div></div>');
 }]);
 })();
 
