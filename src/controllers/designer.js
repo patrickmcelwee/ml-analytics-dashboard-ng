@@ -21,8 +21,8 @@
     };
 
     $scope.report = {};
-    $scope.report.uri = decodeURIComponent($stateParams.uri);
     angular.extend($scope.report, ReportData.data);
+    $scope.report.uri = decodeURIComponent($stateParams.uri);
 
     var defaultWidgets = null;
     if ($scope.report.widgets) {
@@ -65,8 +65,7 @@
     });
 
     $scope.saveWidgets = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-      });
+      ReportService.updateReport($scope.report);
     };
 
   }]);
