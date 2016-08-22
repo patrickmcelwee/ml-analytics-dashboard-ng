@@ -14,10 +14,10 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard', {
-        url: '/ml-analytics-dashboard',
-        template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
-      })
+      // .state('root.ml-analytics-dashboard', {
+      //   url: '/ml-analytics-dashboard',
+      //   template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
+      // })
       .state('root.ml-analytics-dashboard.new-report', {
         url: '/new-report',
         templateUrl: '/templates/new-report.html',

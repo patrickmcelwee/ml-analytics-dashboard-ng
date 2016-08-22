@@ -116,8 +116,25 @@ angular.module('app', [
 ]);
 ```
 
-Create a link to the Dashboard. For example, in
+You can embed the ml-analytics-dashboard in your UI using the mlAnalyticsDashboard directive. Simply add this to your HTML markup:
+
+```html
+  <ml-analytics-dashboard></ml-analytics-dashboard>
+```
+
+At the moment, this directive brings up a configuration screen, and it probably makes sense to have on its own page. If you are using `angular-ui-router`, as in a [slush-generated](https://github.com/marklogic/slush-marklogic-node) app, you can add a state definition in `ui/app/route/routes.js` with something like this:
+
+```javascript
+  .state('root.ml-analytics-dashboard', {
+    url: '/ml-analytics-dashboard',
+    template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
+  })
+```
+
+Then, you will probably also want to create a link to this page. For example, in
 a [slush-generated](https://github.com/marklogic/slush-marklogic-node) app, you
 can add the following line to the `navbar` of `ui/app/root/root.html`.
 
-    <li><a href="/ml-analytics-dashboard/home">Analytics Dashboard</a></li>
+```html
+  <li><a href="/ml-analytics-dashboard/home">Analytics Dashboard</a></li>
+```
