@@ -9,14 +9,14 @@
     $scope.deleteReport = function() {
       ReportService.deleteReport($scope.report.uri).then(function(response) {
         $rootScope.$broadcast('ReportDeleted', $scope.report.uri);
-        $state.go('root.analytics-dashboard.home');
+        $state.go('root.ml-analytics-dashboard.home');
       }, function(response) {
         alert(response);
       });
     };
 
     $scope.cancel = function() {
-      $state.go('root.analytics-dashboard.home');
+      $state.go('root.ml-analytics-dashboard.home');
     };
 
   }]);

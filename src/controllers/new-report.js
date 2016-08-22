@@ -26,7 +26,7 @@
         $scope.report.uri = uri;
 
         $rootScope.$broadcast('ReportCreated', $scope.report);
-        $location.path('/analytics-dashboard/designer' + uri);
+        $location.path('/ml-analytics-dashboard/designer' + uri);
       });
     };
 

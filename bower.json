@@ -12,7 +12,7 @@
     "dist/ml-analytics-dashboard-ng-templates.js"
   ],
   "dependencies": {
-    "angular": "^1.2.14",
+    "angular": ">1.4.4",
     "angular-bootstrap": ">0.14",
     "angular-recursion": "^1.0.5",
     "angular-ui-router": "^0.2.15",
@@ -45,5 +45,8 @@
     "README.mdown",
     "test",
     "tests"
-  ]
+  ],
+  "devDependencies": {
+    "angular-mocks": "~1.4.4"
+  }
 }

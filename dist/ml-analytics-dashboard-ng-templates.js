@@ -102,7 +102,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/dashboard.html',
-    '<div id="analytics-dashboard"><div class="col-md-12"><div class="container-fluid workspace-view"><ui-view></ui-view></div></div></div>');
+    '<div id="ml-analytics-dashboard"><div class="col-md-12"><div class="container-fluid workspace-view"><ui-view></ui-view></div></div></div>');
 }]);
 })();
 
@@ -114,7 +114,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/designer.html',
-    '<div class="row"><div class="col-md-12"><a ui-sref="root.analytics-dashboard.home" class="text-muted"><< All Reports</a><h2 class="view-title">{{report.name}}</h2><p>{{report.description}}</p><div dashboard="reportDashboardOptions" template-url="/templates/dashboard-content.html"></div></div></div>');
+    '<div class="row"><div class="col-md-12"><a ui-sref="root.ml-analytics-dashboard.home" class="text-muted"><< All Reports</a><h2 class="view-title">{{report.name}}</h2><p>{{report.description}}</p><div dashboard="reportDashboardOptions" template-url="/templates/dashboard-content.html"></div></div></div>');
 }]);
 })();
 

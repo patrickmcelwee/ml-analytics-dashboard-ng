@@ -14,21 +14,21 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.analytics-dashboard', {
-        url: '/analytics-dashboard',
+      .state('root.ml-analytics-dashboard', {
+        url: '/ml-analytics-dashboard',
         template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
       })
-      .state('root.analytics-dashboard.new-report', {
+      .state('root.ml-analytics-dashboard.new-report', {
         url: '/new-report',
         templateUrl: '/templates/new-report.html',
         controller: 'NewReportCtrl'
       })
-      .state('root.analytics-dashboard.home', {
+      .state('root.ml-analytics-dashboard.home', {
         url: '/home',
         templateUrl: '/templates/home.html',
         controller: 'HomeCtrl'
       })
-      .state('root.analytics-dashboard.designer', {
+      .state('root.ml-analytics-dashboard.designer', {
         url: '/designer{uri:path}',
         templateUrl: '/templates/designer.html',
         controller: 'ReportDesignerCtrl',
@@ -41,12 +41,12 @@
           }
         }
       })
-      .state('root.analytics-dashboard.remover', {
+      .state('root.ml-analytics-dashboard.remover', {
         url: '/remover{uri:path}',
         templateUrl: '/templates/remover.html',
         controller: 'ReportRemoverCtrl'
       })
-      .state('root.analytics-dashboard.editor', {
+      .state('root.ml-analytics-dashboard.editor', {
         url: '/editor{uri:path}',
         templateUrl: '/templates/editor.html',
         controller: 'ReportEditorCtrl',
@@ -2272,7 +2272,7 @@ var MarkLogic;
     $scope.updateReport = function() {
       ReportService.updateReport($scope.report).then(function(response) {
         //$scope.updateTableRow();
-        $state.go('root.analytics-dashboard.home');
+        $state.go('root.ml-analytics-dashboard.home');
       });
     };
 
@@ -2318,7 +2318,7 @@ var MarkLogic;
         $scope.report.uri = uri;
 
         $rootScope.$broadcast('ReportCreated', $scope.report);
-        $location.path('/analytics-dashboard/designer' + uri);
+        $location.path('/ml-analytics-dashboard/designer' + uri);
       });
     };
 
@@ -2336,14 +2336,14 @@ var MarkLogic;
     $scope.deleteReport = function() {
       ReportService.deleteReport($scope.report.uri).then(function(response) {
         $rootScope.$broadcast('ReportDeleted', $scope.report.uri);
-        $state.go('root.analytics-dashboard.home');
+        $state.go('root.ml-analytics-dashboard.home');
       }, function(response) {
         alert(response);
       });
     };
 
     $scope.cancel = function() {
-      $state.go('root.analytics-dashboard.home');
+      $state.go('root.ml-analytics-dashboard.home');
     };
 
   }]);
@@ -2389,21 +2389,21 @@ var MarkLogic;
     };
 
     $scope.gotoDesigner = function(uri) {
-      $location.path('/analytics-dashboard/designer' + uri);
+      $location.path('/ml-analytics-dashboard/designer' + uri);
     };
 
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/analytics-dashboard/editor' + report.uri);
+      $location.path('/ml-analytics-dashboard/editor' + report.uri);
     };
 
     $scope.showReportRemover = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/analytics-dashboard/remover' + report.uri);
+      $location.path('/ml-analytics-dashboard/remover' + report.uri);
     };
 
     $scope.createReport = function() {
-      $location.path('/analytics-dashboard/new-report');
+      $location.path('/ml-analytics-dashboard/new-report');
     };
 
     $scope.setReport = function(report) {
@@ -2437,8 +2437,8 @@ var MarkLogic;
     });
 
     var currentPath = $location.path();
-    if (currentPath === '/analytics-dashboard' || currentPath === '/analytics-dashboard/')
-      $state.go('root.analytics-dashboard.home');
+    if (currentPath === '/ml-analytics-dashboard' || currentPath === '/ml-analytics-dashboard/')
+      $state.go('root.ml-analytics-dashboard.home');
   }]);
 }());
 

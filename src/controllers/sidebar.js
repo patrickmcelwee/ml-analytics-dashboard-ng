@@ -38,21 +38,21 @@
     };
 
     $scope.gotoDesigner = function(uri) {
-      $location.path('/analytics-dashboard/designer' + uri);
+      $location.path('/ml-analytics-dashboard/designer' + uri);
     };
 
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/analytics-dashboard/editor' + report.uri);
+      $location.path('/ml-analytics-dashboard/editor' + report.uri);
     };
 
     $scope.showReportRemover = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/analytics-dashboard/remover' + report.uri);
+      $location.path('/ml-analytics-dashboard/remover' + report.uri);
     };
 
     $scope.createReport = function() {
-      $location.path('/analytics-dashboard/new-report');
+      $location.path('/ml-analytics-dashboard/new-report');
     };
 
     $scope.setReport = function(report) {
@@ -86,7 +86,7 @@
     });
 
     var currentPath = $location.path();
-    if (currentPath === '/analytics-dashboard' || currentPath === '/analytics-dashboard/')
-      $state.go('root.analytics-dashboard.home');
+    if (currentPath === '/ml-analytics-dashboard' || currentPath === '/ml-analytics-dashboard/')
+      $state.go('root.ml-analytics-dashboard.home');
   }]);
 }());

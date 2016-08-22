@@ -19,7 +19,7 @@
     $scope.updateReport = function() {
       ReportService.updateReport($scope.report).then(function(response) {
         //$scope.updateTableRow();
-        $state.go('root.analytics-dashboard.home');
+        $state.go('root.ml-analytics-dashboard.home');
       });
     };
 

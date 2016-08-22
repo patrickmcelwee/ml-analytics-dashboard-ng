@@ -14,21 +14,21 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.analytics-dashboard', {
-        url: '/analytics-dashboard',
+      .state('root.ml-analytics-dashboard', {
+        url: '/ml-analytics-dashboard',
         template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
       })
-      .state('root.analytics-dashboard.new-report', {
+      .state('root.ml-analytics-dashboard.new-report', {
         url: '/new-report',
         templateUrl: '/templates/new-report.html',
         controller: 'NewReportCtrl'
       })
-      .state('root.analytics-dashboard.home', {
+      .state('root.ml-analytics-dashboard.home', {
         url: '/home',
         templateUrl: '/templates/home.html',
         controller: 'HomeCtrl'
       })
-      .state('root.analytics-dashboard.designer', {
+      .state('root.ml-analytics-dashboard.designer', {
         url: '/designer{uri:path}',
         templateUrl: '/templates/designer.html',
         controller: 'ReportDesignerCtrl',
@@ -41,12 +41,12 @@
           }
         }
       })
-      .state('root.analytics-dashboard.remover', {
+      .state('root.ml-analytics-dashboard.remover', {
         url: '/remover{uri:path}',
         templateUrl: '/templates/remover.html',
         controller: 'ReportRemoverCtrl'
       })
-      .state('root.analytics-dashboard.editor', {
+      .state('root.ml-analytics-dashboard.editor', {
         url: '/editor{uri:path}',
         templateUrl: '/templates/editor.html',
         controller: 'ReportEditorCtrl',
