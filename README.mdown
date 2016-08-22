@@ -25,7 +25,7 @@ For now, you need to overwrite a module from the `group-by` mlpm library (which
 is a dependency of the above `analytics-dashboard` library) to allow
 constraining queries to work. To overwrite, run:
 
-    cp group-by-json.xqy mlpm_modules/group-by/
+    cp bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
 
 Now you can deploy the mlpm_modules to MarkLogic:
     
