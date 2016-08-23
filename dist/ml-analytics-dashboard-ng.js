@@ -1771,6 +1771,19 @@
   }
 }());
 
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsNewReport', mlAnalyticsNewReport);
+
+  function mlAnalyticsNewReport() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/new-report.html'
+    };
+  }
+}());
+
 /**
  * ml-index-builder
  *
@@ -3098,8 +3111,10 @@ drag.delegate = function( event ){
   ManageCtrl.$inject = ['$scope', '$location'];
 
   function ManageCtrl($scope, $location) {
+    $scope.managerMode = 'manage';
 
     $scope.createReport = function() {
+      $scope.managerMode = 'new';
       $location.path('/ml-analytics-dashboard/new-report');
     };
 
