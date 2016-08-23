@@ -6,7 +6,8 @@
   function mlAnalyticsNewReport() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/new-report.html'
+      templateUrl: '/templates/new-report.html',
+      controller: 'NewReportCtrl'
     };
   }
 }());

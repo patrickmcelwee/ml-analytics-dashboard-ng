@@ -1774,7 +1774,8 @@
   function mlAnalyticsNewReport() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/new-report.html'
+      templateUrl: '/templates/new-report.html',
+      controller: 'NewReportCtrl'
     };
   }
 }());
@@ -2844,10 +2845,10 @@ drag.delegate = function( event ){
     establishMode();
 
     function establishMode() {
-      if($location.search().mode) {
-        $scope.mode = $location.search().mode;
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
       } else {
-        $location.search('mode', 'home');
+        $location.search('ml-analytics-mode', 'home');
       }
     }
 
@@ -3086,8 +3087,8 @@ drag.delegate = function( event ){
 
   function ManageCtrl($scope, $location) {
 
-    $scope.createReport = function() {
-      $location.search('mode', 'new');
+    $scope.newReportForm = function() {
+      $location.search('ml-analytics-mode', 'new');
     };
 
   }
@@ -3097,16 +3098,11 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'userService', 'ReportService',
-    function($scope, $location, $rootScope, userService, ReportService) {
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
 
-    $scope.currentUser = null;
     $scope.report = {};
     $scope.report.privacy = 'public';
-
-    $scope.$watch(userService.currentUser, function(newValue) {
-      $scope.currentUser = newValue;
-    });
 
     $scope.setOption = function(option) {
       $scope.report.privacy = option;

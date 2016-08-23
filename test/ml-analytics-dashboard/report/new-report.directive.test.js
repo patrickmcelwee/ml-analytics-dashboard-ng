@@ -7,6 +7,7 @@ describe('ml-analytics-new-report directive', function () {
   // controller name
   beforeEach(function () {
     module('ml.analyticsDashboard', function($controllerProvider) {
+      $controllerProvider.register('NewReportCtrl', function() {});
     });
   });
 

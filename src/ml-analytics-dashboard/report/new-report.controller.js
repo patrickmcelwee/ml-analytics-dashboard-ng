@@ -1,16 +1,11 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'userService', 'ReportService',
-    function($scope, $location, $rootScope, userService, ReportService) {
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
 
-    $scope.currentUser = null;
     $scope.report = {};
     $scope.report.privacy = 'public';
-
-    $scope.$watch(userService.currentUser, function(newValue) {
-      $scope.currentUser = newValue;
-    });
 
     $scope.setOption = function(option) {
       $scope.report.privacy = option;
