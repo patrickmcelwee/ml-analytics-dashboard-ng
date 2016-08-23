@@ -13,8 +13,10 @@ describe('ml-analytics-dashboard-home directive', function () {
   }));
 
   it('replaces <ml-analytics-dashboard-home> with the home screen', function() {
-    var element = $compile('<ml-analytics-dashboard-home></ml-analytics-dashboard-home>')($rootScope);
-    $rootScope.$digest();
+    var scope = $rootScope.$new();
+    scope.mode = 'home';
+    var element = $compile('<ml-analytics-dashboard-home></ml-analytics-dashboard-home>')(scope);
+    scope.$digest();
     expect(element.html()).toContain('Welcome');
   });
 });

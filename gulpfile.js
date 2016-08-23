@@ -126,4 +126,4 @@ gulp.task('clean-code', function() {
   return del(files);
 });
 
-gulp.task('default', ['jshint', 'test', 'scripts', 'templates', 'styles']);
+gulp.task('default', ['jshint', 'scripts', 'templates', 'styles', 'test']);

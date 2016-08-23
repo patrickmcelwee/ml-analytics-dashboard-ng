@@ -10,6 +10,7 @@
   function SidebarCtrl($rootScope, $scope, $location, $state, userService,
                        ReportService, WidgetDefinitions) {
 
+    $scope.mode = 'home';
     $scope.currentUser = null;
     $scope.search = {};
     $scope.showLoading = false;

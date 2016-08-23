@@ -12,9 +12,11 @@ describe('manage-ml-analytics-dashboard directive', function () {
     $rootScope = _$rootScope_;
   }));
 
-  it('replaces <manage-ml-analytics-dashboard> with the manager', function() {
-    var element = $compile('<manage-ml-analytics-dashboard></manage-ml-analytics-dashboard>')($rootScope);
-    $rootScope.$digest();
+  it('replaces <manage-ml-analytics-dashboard> with the manager when mode is home', function() {
+    var scope = $rootScope.$new();
+    scope.mode = 'home';
+    var element = $compile('<manage-ml-analytics-dashboard></manage-ml-analytics-dashboard>')(scope);
+    scope.$digest();
     expect(element.html()).toContain('Manage Reports');
   });
 });

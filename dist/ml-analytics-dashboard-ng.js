@@ -2392,6 +2392,7 @@ var MarkLogic;
   function SidebarCtrl($rootScope, $scope, $location, $state, userService,
                        ReportService, WidgetDefinitions) {
 
+    $scope.mode = 'home';
     $scope.currentUser = null;
     $scope.search = {};
     $scope.showLoading = false;
@@ -3111,10 +3112,9 @@ drag.delegate = function( event ){
   ManageCtrl.$inject = ['$scope', '$location'];
 
   function ManageCtrl($scope, $location) {
-    $scope.managerMode = 'manage';
 
     $scope.createReport = function() {
-      $scope.managerMode = 'new';
+      $scope.mode = 'new';
       $location.path('/ml-analytics-dashboard/new-report');
     };
 

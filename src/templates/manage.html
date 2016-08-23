@@ -1,6 +1,6 @@
 <div>
 
-  <div class="col-md-12" ng-if="managerMode === 'manage'">
+  <div class="col-md-12" ng-if="mode === 'home'">
     <h4 class="menu-title">Manage Reports</h4>
     <p ng-if="!currentUser" style="padding-left:8px;">Please log in to view reports.</p>
     <div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div>
@@ -37,5 +37,5 @@
     </div>
   </div>
 
-  <ml-analytics-new-report ng-if="managerMode === 'new'"></ml-analytics-new-report>
+  <ml-analytics-new-report ng-if="mode === 'new'"></ml-analytics-new-report>
 </div>
