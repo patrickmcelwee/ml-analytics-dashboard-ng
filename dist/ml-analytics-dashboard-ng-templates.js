@@ -102,7 +102,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/dashboard.html',
-    '<div id="ml-analytics-dashboard"><div class="col-md-12"><div class="container-fluid workspace-view"><ui-view></ui-view></div></div></div>');
+    '<div id="ml-analytics-dashboard"><div class="col-md-12"><div class="container-fluid workspace-view"><ml-analytics-dashboard-home></ml-analytics-dashboard-home></div></div></div>');
 }]);
 })();
 
@@ -150,7 +150,19 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/home.html',
-    '<div class="row"><div class="col-md-12"><h2 class="view-title">Welcome to the Analytics Dashboard</h2><p>Analytics Dashboard is an online reporting and business intelligence service that helps you easily analyze your business data, and create insightful reports for informed decision-making. It allows you to easily create and share powerful reports in minutes from MarkLogic database.</p><p>MarkLogic\'s full-text search engine makes it an ideal platform to power advanced search applications. MarkLogic’s full-text search includes faceting, real-time alerting, type-ahead suggestions, snippeting, language support, and much more.</p></div><div class="col-md-12"><h4 class="menu-title">Manage Reports</h4><p ng-if="!currentUser" style="padding-left:8px;">Please log in to view reports.</p><div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div><form ng-if="currentUser" name="filterForm" class="filter-form" novalidate=""><input type="text" class="form-control" ng-model="search.name" placeholder="Filter reports"></form><div class="report-palette"><div class="report-container"><div class="report-container-inner"><div class="report-item" ng-repeat="report in reports | filter : search" ng-click="gotoDesigner(report.uri)"><i class="fa fa-th"></i><span>{{report.name}}</span><div class="toolbar"><a class="btn btn-link" data-ng-click="showReportEditor(report); $event.stopPropagation()"><i class="fa fa-edit"></i></a> <a class="btn btn-link" data-ng-click="showReportRemover(report); $event.stopPropagation(); console.log(\'hi\')"><i class="fa fa-trash-o"></i></a></div></div></div></div></div><div ng-if="currentUser" class="btn-toolbar" style="margin-left:10px;margin-top:10px"><div class="btn-group"><button class="btn btn-primary" ng-click="createReport()"><span class="fa fa-plus"></span> New Report</button></div></div></div></div>');
+    '<div class="row"><div class="col-md-12"><h2 class="view-title">Welcome to the Analytics Dashboard</h2><p>Analytics Dashboard is an online reporting and business intelligence service that helps you easily analyze your business data, and create insightful reports for informed decision-making. It allows you to easily create and share powerful reports in minutes from MarkLogic database.</p><p>MarkLogic\'s full-text search engine makes it an ideal platform to power advanced search applications. MarkLogic’s full-text search includes faceting, real-time alerting, type-ahead suggestions, snippeting, language support, and much more.</p></div><manage-ml-analytics-dashboard></manage-ml-analytics-dashboard></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/templates/manage.html',
+    '<div class="col-md-12"><h4 class="menu-title">Manage Reports</h4><p ng-if="!currentUser" style="padding-left:8px;">Please log in to view reports.</p><div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div><form ng-if="currentUser" name="filterForm" class="filter-form" novalidate=""><input type="text" class="form-control" ng-model="search.name" placeholder="Filter reports"></form><div class="report-palette"><div class="report-container"><div class="report-container-inner"><div class="report-item" ng-repeat="report in reports | filter : search" ng-click="gotoDesigner(report.uri)"><i class="fa fa-th"></i><span>{{report.name}}</span><div class="toolbar"><a class="btn btn-link" data-ng-click="showReportEditor(report); $event.stopPropagation()"><i class="fa fa-edit"></i></a> <a class="btn btn-link" data-ng-click="showReportRemover(report); $event.stopPropagation(); console.log(\'hi\')"><i class="fa fa-trash-o"></i></a></div></div></div></div></div><div ng-if="currentUser" class="btn-toolbar" style="margin-left:10px;margin-top:10px"><div class="btn-group"><button class="btn btn-primary" ng-click="createReport()"><span class="fa fa-plus"></span> New Report</button></div></div></div>');
 }]);
 })();
 
