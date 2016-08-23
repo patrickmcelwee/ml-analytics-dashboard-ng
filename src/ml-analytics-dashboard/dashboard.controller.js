@@ -10,7 +10,16 @@
   function DashboardCtrl($rootScope, $scope, $location, $state, userService,
                        ReportService, WidgetDefinitions) {
 
-    $scope.mode = 'home';
+    establishMode();
+
+    function establishMode() {
+      if($location.search().mode) {
+        $scope.mode = $location.search().mode;
+      } else {
+        $location.search('mode', 'home');
+      }
+    }
+
     $scope.currentUser = null;
     $scope.search = {};
     $scope.showLoading = false;
@@ -72,6 +81,10 @@
         }
       }
     };
+
+    $scope.$on('$locationChangeSuccess', function(latest, old) {
+      establishMode();
+    });
 
     $scope.$on('ReportCreated', function(event, report) { 
       $scope.reports.push(report);

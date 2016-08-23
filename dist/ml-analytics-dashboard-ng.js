@@ -518,7 +518,7 @@
     return {
       restrict: 'E',
       templateUrl: '/templates/dashboard.html',
-      controller: 'SidebarCtrl'
+      controller: 'DashboardCtrl'
     };
   }
 }());
@@ -2340,99 +2340,6 @@ var MarkLogic;
   }]);
 }());
 
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('SidebarCtrl', SidebarCtrl);
-
-  SidebarCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
-                          'userService', 'ReportService', 'WidgetDefinitions'];
-
-  function SidebarCtrl($rootScope, $scope, $location, $state, userService,
-                       ReportService, WidgetDefinitions) {
-
-    $scope.mode = 'home';
-    $scope.currentUser = null;
-    $scope.search = {};
-    $scope.showLoading = false;
-    $scope.widgetDefs = WidgetDefinitions;
-    $scope.reports = [];
-
-    // The report selected for update or delete.
-    $scope.report = {};
-
-    // Retrieve reports if the user logs in
-    $scope.$watch(userService.currentUser, function(newValue) {
-      $scope.currentUser = newValue;
-      $scope.getReports();
-    });
-
-    $scope.getReports = function() {
-      $scope.showLoading = true;
-      ReportService.getReports().then(function(response) {
-        var contentType = response.headers('content-type');
-        var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
-        $scope.reports = page.results;
-        $scope.showLoading = false;
-      }, function() {
-        $scope.showLoading = false;
-      });
-    };
-
-    $scope.addWidget = function(widgetDef) {
-      ReportService.getDashboardOptions($scope.reportDashboardOptions).addWidget({
-        name: widgetDef.name
-      });
-    };
-
-    $scope.gotoDesigner = function(uri) {
-      $location.path('/ml-analytics-dashboard/designer' + uri);
-    };
-
-    $scope.showReportEditor = function(report) {
-      $scope.report.uri = report.uri;
-      $location.path('/ml-analytics-dashboard/editor' + report.uri);
-    };
-
-    $scope.showReportRemover = function(report) {
-      $scope.report.uri = report.uri;
-      $location.path('/ml-analytics-dashboard/remover' + report.uri);
-    };
-
-    $scope.setReport = function(report) {
-      angular.extend($scope.report, report);
-    };
-
-    $scope.updateTableRow = function() {
-      for (var i = 0; i < $scope.reports.length; i++) {
-        var report = $scope.reports[i];
-        if (report.uri === $scope.report.uri) {
-          report.name = $scope.report.name;
-          report.description = $scope.report.description;
-          break;
-        }
-      }
-    };
-
-    $scope.$on('ReportCreated', function(event, report) { 
-      $scope.reports.push(report);
-    });
-
-    $scope.$on('ReportDeleted', function(event, reportUri) {
-      for (var i = 0; i < $scope.reports.length; i++) {
-        if (reportUri === $scope.reports[i].uri) {
-          // The first parameter is the index, the second 
-          // parameter is the number of elements to remove.
-          $scope.reports.splice(i, 1);
-          break;
-        }
-      }
-    });
-
-  }
-}());
-
 /*! 
  * jquery.event.drag - v 2.2
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
@@ -2925,6 +2832,112 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
+                          'userService', 'ReportService', 'WidgetDefinitions'];
+
+  function DashboardCtrl($rootScope, $scope, $location, $state, userService,
+                       ReportService, WidgetDefinitions) {
+
+    establishMode();
+
+    function establishMode() {
+      if($location.search().mode) {
+        $scope.mode = $location.search().mode;
+      } else {
+        $location.search('mode', 'home');
+      }
+    }
+
+    $scope.currentUser = null;
+    $scope.search = {};
+    $scope.showLoading = false;
+    $scope.widgetDefs = WidgetDefinitions;
+    $scope.reports = [];
+
+    // The report selected for update or delete.
+    $scope.report = {};
+
+    // Retrieve reports if the user logs in
+    $scope.$watch(userService.currentUser, function(newValue) {
+      $scope.currentUser = newValue;
+      $scope.getReports();
+    });
+
+    $scope.getReports = function() {
+      $scope.showLoading = true;
+      ReportService.getReports().then(function(response) {
+        var contentType = response.headers('content-type');
+        var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
+        $scope.reports = page.results;
+        $scope.showLoading = false;
+      }, function() {
+        $scope.showLoading = false;
+      });
+    };
+
+    $scope.addWidget = function(widgetDef) {
+      ReportService.getDashboardOptions($scope.reportDashboardOptions).addWidget({
+        name: widgetDef.name
+      });
+    };
+
+    $scope.gotoDesigner = function(uri) {
+      $location.path('/ml-analytics-dashboard/designer' + uri);
+    };
+
+    $scope.showReportEditor = function(report) {
+      $scope.report.uri = report.uri;
+      $location.path('/ml-analytics-dashboard/editor' + report.uri);
+    };
+
+    $scope.showReportRemover = function(report) {
+      $scope.report.uri = report.uri;
+      $location.path('/ml-analytics-dashboard/remover' + report.uri);
+    };
+
+    $scope.setReport = function(report) {
+      angular.extend($scope.report, report);
+    };
+
+    $scope.updateTableRow = function() {
+      for (var i = 0; i < $scope.reports.length; i++) {
+        var report = $scope.reports[i];
+        if (report.uri === $scope.report.uri) {
+          report.name = $scope.report.name;
+          report.description = $scope.report.description;
+          break;
+        }
+      }
+    };
+
+    $scope.$on('$locationChangeSuccess', function(latest, old) {
+      establishMode();
+    });
+
+    $scope.$on('ReportCreated', function(event, report) { 
+      $scope.reports.push(report);
+    });
+
+    $scope.$on('ReportDeleted', function(event, reportUri) {
+      for (var i = 0; i < $scope.reports.length; i++) {
+        if (reportUri === $scope.reports[i].uri) {
+          // The first parameter is the index, the second 
+          // parameter is the number of elements to remove.
+          $scope.reports.splice(i, 1);
+          break;
+        }
+      }
+    });
+
+  }
+}());
+
+(function() {
+  'use strict';
+
   // Report Service
   angular.module('ml.analyticsDashboard').service('ReportService', ['$http', '$q', 'MLRest', function($http, $q, mlRest) {
     var dashboardOptions = null;
@@ -3074,8 +3087,7 @@ drag.delegate = function( event ){
   function ManageCtrl($scope, $location) {
 
     $scope.createReport = function() {
-      $scope.mode = 'new';
-      $location.path('/ml-analytics-dashboard/new-report');
+      $location.search('mode', 'new');
     };
 
   }

@@ -9,8 +9,7 @@
   function ManageCtrl($scope, $location) {
 
     $scope.createReport = function() {
-      $scope.mode = 'new';
-      $location.path('/ml-analytics-dashboard/new-report');
+      $location.search('mode', 'new');
     };
 
   }
