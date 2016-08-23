@@ -7,7 +7,7 @@
     return {
       restrict: 'E',
       templateUrl: '/templates/dashboard.html',
-      controller: 'SidebarCtrl'
+      controller: 'DashboardCtrl'
     };
   }
 }());

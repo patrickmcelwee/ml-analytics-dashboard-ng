@@ -2,12 +2,12 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard')
-    .controller('SidebarCtrl', SidebarCtrl);
+    .controller('DashboardCtrl', DashboardCtrl);
 
-  SidebarCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
+  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
                           'userService', 'ReportService', 'WidgetDefinitions'];
 
-  function SidebarCtrl($rootScope, $scope, $location, $state, userService,
+  function DashboardCtrl($rootScope, $scope, $location, $state, userService,
                        ReportService, WidgetDefinitions) {
 
     $scope.mode = 'home';
