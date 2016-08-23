@@ -14,11 +14,6 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard.new-report', {
-        url: '/new-report',
-        templateUrl: '/templates/new-report.html',
-        controller: 'NewReportCtrl'
-      })
       .state('root.ml-analytics-dashboard.designer', {
         url: '/designer{uri:path}',
         templateUrl: '/templates/designer.html',
@@ -2324,41 +2319,6 @@ var MarkLogic;
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'userService', 'ReportService',
-    function($scope, $location, $rootScope, userService, ReportService) {
-
-    $scope.currentUser = null;
-    $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.$watch(userService.currentUser, function(newValue) {
-      $scope.currentUser = newValue;
-    });
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.createReport = function() {
-      ReportService.createReport($scope.report).then(function(response) {
-        var uri = response.replace(/(.*\?uri=)/, '');
-        $scope.report.uri = uri;
-
-        $rootScope.$broadcast('ReportCreated', $scope.report);
-        $location.path('/ml-analytics-dashboard/designer' + uri);
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard').controller('ReportRemoverCtrl', ['$rootScope', '$scope', '$stateParams', '$state', 'ReportService',
     function($rootScope, $scope, $stateParams, $state, ReportService) {
 
@@ -3120,4 +3080,39 @@ drag.delegate = function( event ){
 
   }
 
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'userService', 'ReportService',
+    function($scope, $location, $rootScope, userService, ReportService) {
+
+    $scope.currentUser = null;
+    $scope.report = {};
+    $scope.report.privacy = 'public';
+
+    $scope.$watch(userService.currentUser, function(newValue) {
+      $scope.currentUser = newValue;
+    });
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.createReport = function() {
+      ReportService.createReport($scope.report).then(function(response) {
+        var uri = response.replace(/(.*\?uri=)/, '');
+        $scope.report.uri = uri;
+
+        $rootScope.$broadcast('ReportCreated', $scope.report);
+        $location.path('/ml-analytics-dashboard/designer' + uri);
+      });
+    };
+
+  }]);
 }());

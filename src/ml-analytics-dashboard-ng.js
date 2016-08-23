@@ -14,11 +14,6 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard.new-report', {
-        url: '/new-report',
-        templateUrl: '/templates/new-report.html',
-        controller: 'NewReportCtrl'
-      })
       .state('root.ml-analytics-dashboard.designer', {
         url: '/designer{uri:path}',
         templateUrl: '/templates/designer.html',
