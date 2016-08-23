@@ -13,10 +13,10 @@
     establishMode();
 
     function establishMode() {
-      if($location.search().mode) {
-        $scope.mode = $location.search().mode;
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
       } else {
-        $location.search('mode', 'home');
+        $location.search('ml-analytics-mode', 'home');
       }
     }
 

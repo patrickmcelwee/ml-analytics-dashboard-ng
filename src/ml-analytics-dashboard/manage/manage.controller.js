@@ -8,8 +8,8 @@
 
   function ManageCtrl($scope, $location) {
 
-    $scope.createReport = function() {
-      $location.search('mode', 'new');
+    $scope.newReportForm = function() {
+      $location.search('ml-analytics-mode', 'new');
     };
 
   }
