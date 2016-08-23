@@ -1,8 +1,14 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('SidebarCtrl', ['$rootScope', '$scope', '$location', '$state', 'userService', 'ReportService', 'WidgetDefinitions',
-    function($rootScope, $scope, $location, $state, userService, ReportService, WidgetDefinitions) {
+  angular.module('ml.analyticsDashboard')
+    .controller('SidebarCtrl', SidebarCtrl);
+
+  SidebarCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
+                          'userService', 'ReportService', 'WidgetDefinitions'];
+
+  function SidebarCtrl($rootScope, $scope, $location, $state, userService,
+                       ReportService, WidgetDefinitions) {
 
     $scope.currentUser = null;
     $scope.search = {};
@@ -51,10 +57,6 @@
       $location.path('/ml-analytics-dashboard/remover' + report.uri);
     };
 
-    $scope.createReport = function() {
-      $location.path('/ml-analytics-dashboard/new-report');
-    };
-
     $scope.setReport = function(report) {
       angular.extend($scope.report, report);
     };
@@ -85,8 +87,5 @@
       }
     });
 
-    var currentPath = $location.path();
-    if (currentPath === '/ml-analytics-dashboard' || currentPath === '/ml-analytics-dashboard/')
-      $state.go('root.ml-analytics-dashboard.home');
-  }]);
+  }
 }());

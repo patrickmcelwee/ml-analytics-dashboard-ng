@@ -14,19 +14,10 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      // .state('root.ml-analytics-dashboard', {
-      //   url: '/ml-analytics-dashboard',
-      //   template: '<ml-analytics-dashboard></ml-analytics-dashboard>'
-      // })
       .state('root.ml-analytics-dashboard.new-report', {
         url: '/new-report',
         templateUrl: '/templates/new-report.html',
         controller: 'NewReportCtrl'
-      })
-      .state('root.ml-analytics-dashboard.home', {
-        url: '/home',
-        templateUrl: '/templates/home.html',
-        controller: 'HomeCtrl'
       })
       .state('root.ml-analytics-dashboard.designer', {
         url: '/designer{uri:path}',
@@ -522,32 +513,6 @@
   }
 
 })();
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
 
 (function () {
   'use strict';
@@ -1779,6 +1744,33 @@
   ]);
 })();
 
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
+    };
+  }
+}());
+
 /**
  * ml-index-builder
  *
@@ -2378,8 +2370,14 @@ var MarkLogic;
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('SidebarCtrl', ['$rootScope', '$scope', '$location', '$state', 'userService', 'ReportService', 'WidgetDefinitions',
-    function($rootScope, $scope, $location, $state, userService, ReportService, WidgetDefinitions) {
+  angular.module('ml.analyticsDashboard')
+    .controller('SidebarCtrl', SidebarCtrl);
+
+  SidebarCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
+                          'userService', 'ReportService', 'WidgetDefinitions'];
+
+  function SidebarCtrl($rootScope, $scope, $location, $state, userService,
+                       ReportService, WidgetDefinitions) {
 
     $scope.currentUser = null;
     $scope.search = {};
@@ -2428,10 +2426,6 @@ var MarkLogic;
       $location.path('/ml-analytics-dashboard/remover' + report.uri);
     };
 
-    $scope.createReport = function() {
-      $location.path('/ml-analytics-dashboard/new-report');
-    };
-
     $scope.setReport = function(report) {
       angular.extend($scope.report, report);
     };
@@ -2462,10 +2456,7 @@ var MarkLogic;
       }
     });
 
-    var currentPath = $location.path();
-    if (currentPath === '/ml-analytics-dashboard' || currentPath === '/ml-analytics-dashboard/')
-      $state.go('root.ml-analytics-dashboard.home');
-  }]);
+  }
 }());
 
 /*! 
@@ -3096,4 +3087,22 @@ drag.delegate = function( event ){
       }
     ];
   }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ManageCtrl', ManageCtrl);
+
+  ManageCtrl.$inject = ['$scope', '$location'];
+
+  function ManageCtrl($scope, $location) {
+
+    $scope.createReport = function() {
+      $location.path('/ml-analytics-dashboard/new-report');
+    };
+
+  }
+
 }());

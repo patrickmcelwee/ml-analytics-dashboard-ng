@@ -6,7 +6,8 @@
   function manageMlAnalyticsDashboard() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/manage.html'
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
