@@ -1,6 +1,5 @@
 describe('manage-ml-analytics-dashboard directive', function () {
-  var $compile,
-      $rootScope;
+  var $compile, $rootScope, scope;
 
   beforeEach(function () {
     module('ml.analyticsDashboard', function($controllerProvider) {
@@ -9,11 +8,10 @@ describe('manage-ml-analytics-dashboard directive', function () {
 
   beforeEach(inject(function(_$compile_, _$rootScope_){
     $compile = _$compile_;
-    $rootScope = _$rootScope_;
+    scope = _$rootScope_.$new();
   }));
 
   it('replaces <manage-ml-analytics-dashboard> with the manager when mode is home', function() {
-    var scope = $rootScope.$new();
     scope.mode = 'home';
     var element = $compile('<manage-ml-analytics-dashboard></manage-ml-analytics-dashboard>')(scope);
     scope.$digest();

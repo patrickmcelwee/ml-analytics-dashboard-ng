@@ -1,6 +1,5 @@
 describe('ml-analytics-dashboard-home directive', function () {
-  var $compile,
-      $rootScope;
+  var $compile, $rootScope, scope;
 
   beforeEach(function () {
     module('ml.analyticsDashboard', function($controllerProvider) {
@@ -9,14 +8,20 @@ describe('ml-analytics-dashboard-home directive', function () {
 
   beforeEach(inject(function(_$compile_, _$rootScope_){
     $compile = _$compile_;
-    $rootScope = _$rootScope_;
+    scope = _$rootScope_.$new();
   }));
 
   it('replaces <ml-analytics-dashboard-home> with the home screen', function() {
-    var scope = $rootScope.$new();
-    scope.mode = 'home';
+    scope.mode = 'home'; // should I test here that controller sets this by default?
     var element = $compile('<ml-analytics-dashboard-home></ml-analytics-dashboard-home>')(scope);
     scope.$digest();
     expect(element.html()).toContain('Welcome');
+  });
+
+  it('removes <ml-analytics-dashboard-home> when mode != home', function() {
+    scope.mode = 'not-home'; // should I test here that controller sets this by default?
+    var element = $compile('<ml-analytics-dashboard-home></ml-analytics-dashboard-home>')(scope);
+    scope.$digest();
+    expect(element.html()).not.toContain('Welcome');
   });
 });
