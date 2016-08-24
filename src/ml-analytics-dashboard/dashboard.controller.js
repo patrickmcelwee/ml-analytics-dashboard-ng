@@ -53,10 +53,6 @@
       });
     };
 
-    $scope.gotoDesigner = function(uri) {
-      $location.path('/ml-analytics-dashboard/designer' + uri);
-    };
-
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
       $location.path('/ml-analytics-dashboard/editor' + report.uri);

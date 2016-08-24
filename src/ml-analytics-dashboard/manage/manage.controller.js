@@ -12,6 +12,11 @@
       $location.search('ml-analytics-mode', 'new');
     };
 
+    $scope.gotoDesigner = function(uri) {
+      $location.search('ml-analytics-mode', 'design');
+      $location.search('ml-analytics-uri', uri);
+    };
+
   }
 
 }());

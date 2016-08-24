@@ -2955,10 +2955,6 @@ drag.delegate = function( event ){
       });
     };
 
-    $scope.gotoDesigner = function(uri) {
-      $location.path('/ml-analytics-dashboard/designer' + uri);
-    };
-
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
       $location.path('/ml-analytics-dashboard/editor' + report.uri);
@@ -3095,6 +3091,11 @@ drag.delegate = function( event ){
 
     $scope.newReportForm = function() {
       $location.search('ml-analytics-mode', 'new');
+    };
+
+    $scope.gotoDesigner = function(uri) {
+      $location.search('ml-analytics-mode', 'design');
+      $location.search('ml-analytics-uri', uri);
     };
 
   }
