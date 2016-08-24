@@ -68,6 +68,11 @@
       }
     }
 
+    $scope.returnHome = function() {
+      $location.search('ml-analytics-mode', 'home');
+      $location.search('ml-analytics-uri', null);
+    };
+
     $scope.$on('widgetAdded', function(event, widget) {
       event.stopPropagation();
     });

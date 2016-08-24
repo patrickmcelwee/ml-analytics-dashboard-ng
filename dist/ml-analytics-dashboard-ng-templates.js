@@ -114,7 +114,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/designer.html',
-    '<div class="row" id="ml-analytics-designer"><div class="col-md-12"><a ui-sref="root.ml-analytics-dashboard.home" class="text-muted"><< All Reports</a><h2 class="view-title">{{report.name}}</h2><p>{{report.description}}</p><div dashboard="reportDashboardOptions" template-url="/templates/dashboard-content.html"></div></div></div>');
+    '<div class="row" id="ml-analytics-designer"><div class="col-md-12"><a ng-click="returnHome()" class="text-muted"><< All Reports</a><h2 class="view-title">{{report.name}}</h2><p>{{report.description}}</p><div dashboard="reportDashboardOptions" template-url="/templates/dashboard-content.html"></div></div></div>');
 }]);
 })();
 
