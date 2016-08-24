@@ -22,6 +22,10 @@ describe('ml-analytics-design directive', function () {
     var mockPromise = $q.defer();
     mockPromise.resolve({data: ''});
     spyOn(reportService, 'getReport').and.returnValue(mockPromise.promise);
+    // breaking in test because malhar-dashboard not fully initialized
+    // before mock http call 'getReport' returns - malhar adds the loadWidgets
+    // function to the options object
+    spyOn(reportService, 'loadWidgets');
     var element = $compile('<ml-analytics-design></ml-analytics-design>')($rootScope);
     $rootScope.$digest();
     expect(element.html()).toContain('id="ml-analytics-designer"');

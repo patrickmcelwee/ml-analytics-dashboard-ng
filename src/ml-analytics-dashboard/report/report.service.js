@@ -29,6 +29,10 @@
       return dashboardOptions;
     };
 
+    this.loadWidgets = function(widgets) {
+      dashboardOptions.loadWidgets(widgets);
+    };
+
     this.getReports = function() {
       var search = {
         'search': {
