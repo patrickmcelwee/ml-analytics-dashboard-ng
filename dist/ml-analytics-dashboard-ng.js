@@ -15,11 +15,6 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard.remover', {
-        url: '/remover{uri:path}',
-        templateUrl: '/templates/remover.html',
-        controller: 'ReportRemoverCtrl'
-      })
       .state('root.ml-analytics-dashboard.editor', {
         url: '/editor{uri:path}',
         templateUrl: '/templates/editor.html',
@@ -1916,6 +1911,20 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
+
+  function mlAnalyticsReportEditor() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/editor.html',
+      controller: 'ReportEditorCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsNewReport', mlAnalyticsNewReport);
 
   function mlAnalyticsNewReport() {
@@ -2351,34 +2360,6 @@ var MarkLogic;
 })(MarkLogic || (MarkLogic = {}));
 
 /* end of util.js */
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard').controller('ReportEditorCtrl', ['$scope', '$stateParams', '$state', 'ReportData', 'ReportService',
-    function($scope, $stateParams, $state, ReportData, ReportService) {
-
-    $scope.report = {};
-    $scope.report.uri = decodeURIComponent($stateParams.uri);
-    angular.extend($scope.report, ReportData.data);
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        //$scope.updateTableRow();
-        $state.go('root.ml-analytics-dashboard.home');
-      });
-    };
-
-  }]);
-}());
 
 (function() {
   'use strict';
@@ -2961,7 +2942,8 @@ drag.delegate = function( event ){
 
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/ml-analytics-dashboard/editor' + report.uri);
+      $location.search('ml-analytics-mode', 'edit');
+      $location.search('ml-analytics-uri', $scope.report.uri);
     };
 
     $scope.showReportRemover = function(report) {
@@ -3140,6 +3122,37 @@ drag.delegate = function( event ){
         $rootScope.$broadcast('ReportCreated', $scope.report);
         $location.search('ml-analytics-mode', 'design');
         $location.search('ml-analytics-uri', uri);
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ReportEditorCtrl', ['$scope', '$stateParams', '$state',
+        '$location', 'ReportService',
+    function($scope, $stateParams, $state, $location, ReportService) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    ReportService.getReport($scope.report.uri).then(function(response) {
+      angular.extend($scope.report, response.data);
+    });
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.updateReport = function() {
+      ReportService.updateReport($scope.report).then(function(response) {
+        $location.search('ml-analytics-mode', 'home');
       });
     };
 

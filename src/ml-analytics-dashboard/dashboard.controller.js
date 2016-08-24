@@ -55,7 +55,8 @@
 
     $scope.showReportEditor = function(report) {
       $scope.report.uri = report.uri;
-      $location.path('/ml-analytics-dashboard/editor' + report.uri);
+      $location.search('ml-analytics-mode', 'edit');
+      $location.search('ml-analytics-uri', $scope.report.uri);
     };
 
     $scope.showReportRemover = function(report) {

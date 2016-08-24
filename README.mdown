@@ -104,6 +104,7 @@ function proxy(req, res) {
     - `manageMlAnalyticsDashboard`
       - `mlAnalyticsNewReport`
       - `mlAnalyticsDesign`
+      - `mlAnalyticsReportEditor` <- TODO, roll this into mlAnalyticsDesign
 
 ## Example Implementation
 

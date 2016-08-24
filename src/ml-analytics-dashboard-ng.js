@@ -15,11 +15,6 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard.remover', {
-        url: '/remover{uri:path}',
-        templateUrl: '/templates/remover.html',
-        controller: 'ReportRemoverCtrl'
-      })
       .state('root.ml-analytics-dashboard.editor', {
         url: '/editor{uri:path}',
         templateUrl: '/templates/editor.html',
