@@ -103,6 +103,7 @@ function proxy(req, res) {
   -  `mlAnalyticsDashboardHome`
     - `manageMlAnalyticsDashboard`
       - `mlAnalyticsNewReport`
+      - `mlAnalyticsDesign`
 
 ## Example Implementation
 

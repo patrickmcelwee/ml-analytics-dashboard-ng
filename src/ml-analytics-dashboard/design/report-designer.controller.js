@@ -1,8 +1,16 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$stateParams', '$interval', 'ReportData', 'ReportService', 'WidgetDefinitions',
-    function($scope, $stateParams, $interval, ReportData, ReportService, WidgetDefinitions) {
+  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$stateParams', '$interval', '$location', 'ReportService', 'WidgetDefinitions',
+    function($scope, $stateParams, $interval, $location, ReportService, WidgetDefinitions) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    var reportData = ReportService.getReport($scope.report.uri)
+      .then(function(resp) {
+        return resp.data;
+    });
+    angular.extend($scope.report, reportData);
 
     var store = {};
     var storage = {
@@ -19,10 +27,6 @@
         delete store[key];
       }
     };
-
-    $scope.report = {};
-    angular.extend($scope.report, ReportData.data);
-    $scope.report.uri = decodeURIComponent($stateParams.uri);
 
     var defaultWidgets = null;
     if ($scope.report.widgets) {
