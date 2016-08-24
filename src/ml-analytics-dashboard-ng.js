@@ -15,19 +15,6 @@
 
   function routeConfig($stateProvider) {
     $stateProvider
-      .state('root.ml-analytics-dashboard.designer', {
-        url: '/designer{uri:path}',
-        templateUrl: '/templates/designer.html',
-        controller: 'ReportDesignerCtrl',
-        resolve: {
-          ReportData: function($stateParams, ReportService) {
-            var uri = $stateParams.uri;
-            return ReportService.getReport(uri).then(function(response) {
-              return response;
-            });
-          }
-        }
-      })
       .state('root.ml-analytics-dashboard.remover', {
         url: '/remover{uri:path}',
         templateUrl: '/templates/remover.html',
