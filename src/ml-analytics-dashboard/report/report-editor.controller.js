@@ -2,9 +2,8 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$stateParams', '$state',
-        '$location', 'ReportService',
-    function($scope, $stateParams, $state, $location, ReportService) {
+    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
+    function($scope, $location, ReportService) {
 
     $scope.report = {};
     $scope.report.uri = $location.search()['ml-analytics-uri'];

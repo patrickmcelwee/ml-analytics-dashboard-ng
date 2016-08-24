@@ -4,10 +4,10 @@
   angular.module('ml.analyticsDashboard')
     .controller('DashboardCtrl', DashboardCtrl);
 
-  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$state',
+  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$window',
                           'userService', 'ReportService', 'WidgetDefinitions'];
 
-  function DashboardCtrl($rootScope, $scope, $location, $state, userService,
+  function DashboardCtrl($rootScope, $scope, $location, $window, userService,
                        ReportService, WidgetDefinitions) {
 
     establishMode();
@@ -59,23 +59,22 @@
       $location.search('ml-analytics-uri', $scope.report.uri);
     };
 
-    $scope.showReportRemover = function(report) {
-      $scope.report.uri = report.uri;
-      $location.path('/ml-analytics-dashboard/remover' + report.uri);
-    };
-
-    $scope.setReport = function(report) {
-      angular.extend($scope.report, report);
-    };
-
-    $scope.updateTableRow = function() {
-      for (var i = 0; i < $scope.reports.length; i++) {
-        var report = $scope.reports[i];
-        if (report.uri === $scope.report.uri) {
-          report.name = $scope.report.name;
-          report.description = $scope.report.description;
-          break;
-        }
+    $scope.deleteReport = function(report) {
+      if ($window.confirm(
+        'This action will delete this report permanently. ' +
+        'Are you sure you want to delete it?')) {
+        ReportService.deleteReport(report.uri).then(function(response) {
+          for (var i = 0; i < $scope.reports.length; i++) {
+            if (report.uri === $scope.reports[i].uri) {
+              // The first parameter is the index, the second 
+              // parameter is the number of elements to remove.
+              $scope.reports.splice(i, 1);
+              break;
+            }
+          }
+        }, function(response) {
+          $window.alert(response);
+        });
       }
     };
 
@@ -85,17 +84,6 @@
 
     $scope.$on('ReportCreated', function(event, report) { 
       $scope.reports.push(report);
-    });
-
-    $scope.$on('ReportDeleted', function(event, reportUri) {
-      for (var i = 0; i < $scope.reports.length; i++) {
-        if (reportUri === $scope.reports[i].uri) {
-          // The first parameter is the index, the second 
-          // parameter is the number of elements to remove.
-          $scope.reports.splice(i, 1);
-          break;
-        }
-      }
     });
 
   }

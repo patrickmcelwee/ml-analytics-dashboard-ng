@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$stateParams', '$interval', '$location', 'ReportService', 'WidgetDefinitions',
-    function($scope, $stateParams, $interval, $location, ReportService, WidgetDefinitions) {
+  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$location', 'ReportService', 'WidgetDefinitions',
+    function($scope, $location, ReportService, WidgetDefinitions) {
      
     $scope.report = {};
     $scope.report.uri = $location.search()['ml-analytics-uri'];
