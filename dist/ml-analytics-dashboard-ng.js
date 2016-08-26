@@ -2431,21 +2431,6 @@ var MarkLogic;
       }
     };
 
-    $scope.setReport = function(report) {
-      angular.extend($scope.report, report);
-    };
-
-    $scope.updateTableRow = function() {
-      for (var i = 0; i < $scope.reports.length; i++) {
-        var report = $scope.reports[i];
-        if (report.uri === $scope.report.uri) {
-          report.name = $scope.report.name;
-          report.description = $scope.report.description;
-          break;
-        }
-      }
-    };
-
     $scope.$on('$locationChangeSuccess', function(latest, old) {
       establishMode();
     });
