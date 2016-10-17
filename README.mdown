@@ -141,5 +141,5 @@ a [slush-generated](https://github.com/marklogic/slush-marklogic-node) app, you
 can add the following line to the `navbar` of `ui/app/root/root.html`.
 
 ```html
-  <li><a href="/ml-analytics-dashboard/home">Analytics Dashboard</a></li>
+  <li><a href="/ml-analytics-dashboard">Analytics Dashboard</a></li>
 ```
