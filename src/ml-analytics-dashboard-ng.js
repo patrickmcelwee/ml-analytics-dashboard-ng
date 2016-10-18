@@ -5,7 +5,6 @@
     'highcharts-ng',
     'ml.analyticsDashboard.report',
     'ml.common',
-    'ngTable',
     'ui.dashboard'
   ]);
 

@@ -5,7 +5,6 @@
     'highcharts-ng',
     'ml.analyticsDashboard.report',
     'ml.common',
-    'ngTable',
     'ui.dashboard'
   ]);
 
@@ -787,8 +786,8 @@
 
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'NgTableParams',
-    function($compile, mlRest, NgTableParams) {
+  angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest',
+    function($compile, mlRest) {
 
     return {
       restrict: 'A',
@@ -1252,23 +1251,6 @@
           initialParams.sorting[headers[0]] = 'desc';
 
           var total = $scope.grid.total;
-
-          $scope.tableParams = new NgTableParams(initialParams, {
-            total: total,
-            getData: function($defer, params) {
-              //console.log(params);
-              var orderedData = params.sorting() ? 
-                  $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
-
-              orderedData = params.filter() ? 
-                  $filter('filter')(orderedData, params.filter()) : orderedData;
-
-              // Set total for recalc pagination
-              //params.total(orderedData.length);
-
-              $defer.resolve(orderedData);
-            }
-          });
         };
 
         $scope.createComplexTable = function(headers, results) {
@@ -1302,22 +1284,6 @@
             sorting: {}
           };
           initialParams.sorting[headers[0]] = 'desc';
-
-          $scope.tableParams = new NgTableParams(initialParams, {
-            total: records.length, // Defines the total number of items for the table
-            getData: function($defer, params) {
-              var orderedData = params.sorting() ? 
-                  $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
-
-              orderedData = params.filter() ? 
-                  $filter('filter')(orderedData, params.filter()) : orderedData;
-
-              // Set total for recalc pagination
-              params.total(orderedData.length);
-
-              $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-          });
         };
 
         $scope.fetchPage = function() {
@@ -2351,97 +2317,6 @@ var MarkLogic;
   }
 }());
 
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('DashboardCtrl', DashboardCtrl);
-
-  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$window',
-                          'userService', 'ReportService', 'WidgetDefinitions'];
-
-  function DashboardCtrl($rootScope, $scope, $location, $window, userService,
-                       ReportService, WidgetDefinitions) {
-
-    establishMode();
-
-    function establishMode() {
-      if($location.search()['ml-analytics-mode']) {
-        $scope.mode = $location.search()['ml-analytics-mode'];
-      } else {
-        $location.search('ml-analytics-mode', 'home');
-      }
-    }
-
-    $scope.currentUser = null;
-    $scope.search = {};
-    $scope.showLoading = false;
-    $scope.widgetDefs = WidgetDefinitions;
-    $scope.reports = [];
-
-    // The report selected for update or delete.
-    $scope.report = {};
-
-    // Retrieve reports if the user logs in
-    $scope.$watch(userService.currentUser, function(newValue) {
-      $scope.currentUser = newValue;
-      $scope.getReports();
-    });
-
-    $scope.getReports = function() {
-      $scope.showLoading = true;
-      ReportService.getReports().then(function(response) {
-        var contentType = response.headers('content-type');
-        var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
-        $scope.reports = page.results;
-        $scope.showLoading = false;
-      }, function() {
-        $scope.showLoading = false;
-      });
-    };
-
-    $scope.addWidget = function(widgetDef) {
-      ReportService.getDashboardOptions($scope.reportDashboardOptions).addWidget({
-        name: widgetDef.name
-      });
-    };
-
-    $scope.showReportEditor = function(report) {
-      $scope.report.uri = report.uri;
-      $location.search('ml-analytics-mode', 'edit');
-      $location.search('ml-analytics-uri', $scope.report.uri);
-    };
-
-    $scope.deleteReport = function(report) {
-      if ($window.confirm(
-        'This action will delete this report permanently. ' +
-        'Are you sure you want to delete it?')) {
-        ReportService.deleteReport(report.uri).then(function(response) {
-          for (var i = 0; i < $scope.reports.length; i++) {
-            if (report.uri === $scope.reports[i].uri) {
-              // The first parameter is the index, the second 
-              // parameter is the number of elements to remove.
-              $scope.reports.splice(i, 1);
-              break;
-            }
-          }
-        }, function(response) {
-          $window.alert(response);
-        });
-      }
-    };
-
-    $scope.$on('$locationChangeSuccess', function(latest, old) {
-      establishMode();
-    });
-
-    $scope.$on('ReportCreated', function(event, report) { 
-      $scope.reports.push(report);
-    });
-
-  }
-}());
-
 /*! 
  * jquery.event.drag - v 2.2
  * Copyright (c) 2010 Three Dub Media - http://threedubmedia.com
@@ -2931,6 +2806,97 @@ drag.delegate = function( event ){
 };
 	
 })( jQuery );
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location', '$window',
+                          'userService', 'ReportService', 'WidgetDefinitions'];
+
+  function DashboardCtrl($rootScope, $scope, $location, $window, userService,
+                       ReportService, WidgetDefinitions) {
+
+    establishMode();
+
+    function establishMode() {
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
+      } else {
+        $location.search('ml-analytics-mode', 'home');
+      }
+    }
+
+    $scope.currentUser = null;
+    $scope.search = {};
+    $scope.showLoading = false;
+    $scope.widgetDefs = WidgetDefinitions;
+    $scope.reports = [];
+
+    // The report selected for update or delete.
+    $scope.report = {};
+
+    // Retrieve reports if the user logs in
+    $scope.$watch(userService.currentUser, function(newValue) {
+      $scope.currentUser = newValue;
+      $scope.getReports();
+    });
+
+    $scope.getReports = function() {
+      $scope.showLoading = true;
+      ReportService.getReports().then(function(response) {
+        var contentType = response.headers('content-type');
+        var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
+        $scope.reports = page.results;
+        $scope.showLoading = false;
+      }, function() {
+        $scope.showLoading = false;
+      });
+    };
+
+    $scope.addWidget = function(widgetDef) {
+      ReportService.getDashboardOptions($scope.reportDashboardOptions).addWidget({
+        name: widgetDef.name
+      });
+    };
+
+    $scope.showReportEditor = function(report) {
+      $scope.report.uri = report.uri;
+      $location.search('ml-analytics-mode', 'edit');
+      $location.search('ml-analytics-uri', $scope.report.uri);
+    };
+
+    $scope.deleteReport = function(report) {
+      if ($window.confirm(
+        'This action will delete this report permanently. ' +
+        'Are you sure you want to delete it?')) {
+        ReportService.deleteReport(report.uri).then(function(response) {
+          for (var i = 0; i < $scope.reports.length; i++) {
+            if (report.uri === $scope.reports[i].uri) {
+              // The first parameter is the index, the second 
+              // parameter is the number of elements to remove.
+              $scope.reports.splice(i, 1);
+              break;
+            }
+          }
+        }, function(response) {
+          $window.alert(response);
+        });
+      }
+    };
+
+    $scope.$on('$locationChangeSuccess', function(latest, old) {
+      establishMode();
+    });
+
+    $scope.$on('ReportCreated', function(event, report) { 
+      $scope.reports.push(report);
+    });
+
+  }
+}());
+
 (function() {
   'use strict';
 

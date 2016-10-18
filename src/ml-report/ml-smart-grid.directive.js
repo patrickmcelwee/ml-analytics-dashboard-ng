@@ -2,8 +2,8 @@
 
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest', 'NgTableParams',
-    function($compile, mlRest, NgTableParams) {
+  angular.module('ml.analyticsDashboard.report').directive('mlSmartGrid', ['$compile', 'MLRest',
+    function($compile, mlRest) {
 
     return {
       restrict: 'A',
@@ -467,23 +467,6 @@
           initialParams.sorting[headers[0]] = 'desc';
 
           var total = $scope.grid.total;
-
-          $scope.tableParams = new NgTableParams(initialParams, {
-            total: total,
-            getData: function($defer, params) {
-              //console.log(params);
-              var orderedData = params.sorting() ? 
-                  $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
-
-              orderedData = params.filter() ? 
-                  $filter('filter')(orderedData, params.filter()) : orderedData;
-
-              // Set total for recalc pagination
-              //params.total(orderedData.length);
-
-              $defer.resolve(orderedData);
-            }
-          });
         };
 
         $scope.createComplexTable = function(headers, results) {
@@ -517,22 +500,6 @@
             sorting: {}
           };
           initialParams.sorting[headers[0]] = 'desc';
-
-          $scope.tableParams = new NgTableParams(initialParams, {
-            total: records.length, // Defines the total number of items for the table
-            getData: function($defer, params) {
-              var orderedData = params.sorting() ? 
-                  $filter('orderBy')(records, $scope.tableParams.orderBy()) : records;
-
-              orderedData = params.filter() ? 
-                  $filter('filter')(orderedData, params.filter()) : orderedData;
-
-              // Set total for recalc pagination
-              params.total(orderedData.length);
-
-              $defer.resolve(orderedData.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-            }
-          });
         };
 
         $scope.fetchPage = function() {
