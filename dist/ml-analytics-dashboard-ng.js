@@ -313,6 +313,7 @@
               'text': fieldName,
               'namespaces': {}
             },
+            'collation': fieldData.collation,
             'type': dataType,
             'range-operator': 'EQ',
             'value': group.value
