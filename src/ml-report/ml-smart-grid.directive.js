@@ -510,8 +510,12 @@
         };
 
         $scope.executeSimpleQuery = function(start) {
-          var directory = '/' + $scope.widget.dataModelOptions.directory + '/';
-          var queries = $scope.widget.dataModelOptions.query.query.queries;
+          var queries;
+          if ($scope.widget.dataModelOptions.query.query) {
+            queries = $scope.widget.dataModelOptions.query.query.queries;
+          } else {
+            queries = [];
+          }
 
           setQueryParameters(queries);
 
@@ -519,18 +523,27 @@
             'queries': queries
           };
 
+          var search = {
+            'search': {
+              'query': query
+            }
+          };
+
           if ($scope.widget.mode === 'View' && $scope.executor.simple) {
             query.qtext = $scope.executor.simple;
           }
 
           var params = {
-            'directory': directory,
             'pageLength': $scope.widget.dataModelOptions.pageLength,
             'start': start, // current pagination offset
             'category': 'content',
             'view': 'metadata',
             'format': 'json'
           };
+          var directory = $scope.widget.dataModelOptions.directory;
+          if (directory) {
+            params.directory = '/' + directory + '/';
+          }
 
           $scope.clearResults();
 
@@ -550,7 +563,7 @@
           // These transforms filter the document. The XML
           // transform also converts am XML document to JSON.
           if ($scope.executor.transform) {
-            params.transform = $scope.executor.transform;
+            // params.transform = $scope.executor.transform;
 
             $scope.executor.dimensions.forEach(function(dimension) {
               params['trans:' + dimension.name] = dimension.type;
