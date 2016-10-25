@@ -61,26 +61,6 @@
 
     <highchart config="highchartConfig"></highchart>
 
-    <!-- TODO: dry up these tables into a directive -->
-    <div class="table-responsive" ng-if="executor.results.length>0">
-      <pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination>
-      <p class="metrics">
-        <em>{{ executor.results.length }} results in {{ executor.metrics['total-time'] }}</em>
-      </p>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-ng-repeat="row in executor.results">
-            <td data-ng-repeat="cell in row track by $index">{{cell}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <div class="table-responsive" ng-if="model.results.results">
       <div ng-if="model.queryError" class="alert alert-danger">{{ model.queryError }}</div>
       <pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination>
@@ -126,22 +106,6 @@
       <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
     </form>
 
-    <div class="table-responsive" ng-if="executor.results.length>0">
-      <pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></pagination>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th data-ng-repeat="dimension in executor.dimensions">{{dimension.name}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr data-ng-repeat="row in executor.results">
-            <td data-ng-repeat="cell in row track by $index">{{cell}}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
     <highchart config="highchartConfig"></highchart>
 
     <div class="table-responsive" ng-if="model.results.results">
@@ -150,7 +114,6 @@
       <p class="metrics">
         <em>{{ model.results.results.length }} results in {{ model.results.metrics['total-time'] }}</em>
       </p>
-
       <table class="table table-bordered">
         <thead>
           <tr>
