@@ -1,6 +1,6 @@
 <div class="table-responsive" ng-if="resultsObject.results"> 
   <div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div>
-  <uib-pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></uib-pagination>
+  <!-- <uib-pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></uib-pagination> -->
   <p class="metrics">
     <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
   </p>
