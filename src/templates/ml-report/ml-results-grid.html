@@ -1,19 +1,18 @@
-<div class="table-responsive" ng-if="resultsObject.results.results"> 
-  <div ng-if="resultsObject.queryError" class="alert alert-danger">{{ resultsObject.queryError }}</div>
-  <div ng-if="resultsObject.queryError" class="alert alert-danger">{{ resultsObject.queryError }}</div>
+<div class="table-responsive" ng-if="resultsObject.results"> 
+  <div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div>
   <uib-pagination ng-model="grid.page" ng-change="fetchPage()" max-size="10" boundary-links="true" total-items="grid.total" items-per-page="widget.dataModelOptions.pageLength"></uib-pagination>
   <p class="metrics">
-    <em>{{ resultsObject.results.results.length }} results in {{ resultsObject.results.metrics['total-time'] }}</em>
+    <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
   </p>
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th ng-repeat="header in resultsObject.results.headers">{{header}}</th>
+        <th ng-repeat="header in resultsObject.headers">{{header}}</th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="result in resultsObject.results.results track by $index">
-        <td ng-repeat="val in result track by $index">
+      <tr ng-repeat="result in resultsObject.results">
+        <td ng-repeat="val in result">
           <em ng-if="val === ''"></em>
           <span ng-if="val !== ''">{{ val }}</span>
         </td>

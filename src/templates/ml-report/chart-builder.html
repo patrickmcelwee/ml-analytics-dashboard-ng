@@ -61,7 +61,7 @@
 
     <highchart config="highchartConfig"></highchart>
 
-    <ml-results-grid results-object="model"></ml-results-grid>
+    <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
   </div>
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
@@ -87,7 +87,7 @@
 
     <highchart config="highchartConfig"></highchart>
 
-    <ml-results-grid results-object="model"></ml-results-grid>
+    <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
 
   </div>
 </div>

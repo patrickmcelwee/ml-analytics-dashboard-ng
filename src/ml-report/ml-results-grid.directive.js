@@ -10,7 +10,8 @@
       restrict: 'E',
       templateUrl: '/templates/ml-report/ml-results-grid.html',
       scope: {
-        resultsObject: '='
+        resultsObject: '=',
+        queryError: '='
       }
     };
   }

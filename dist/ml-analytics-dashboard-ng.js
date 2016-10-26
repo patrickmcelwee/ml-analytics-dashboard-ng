@@ -20,22 +20,22 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report',
-    [
-      'ml-dimension-builder',
-      'ml-sq-builder'
-    ]); 
-})();
-
-(function() {
-  'use strict';
-
   angular.module('ml-sq-builder', [
     'RecursionHelper',
   ]);
 
 })();
 
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report',
+    [
+      'ml-dimension-builder',
+      'ml-sq-builder'
+    ]); 
+})();
 
 (function() {
   'use strict';
@@ -139,32 +139,6 @@
 
     return angular.copy(templates[type]);
   }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
-      function(WidgetDataModel, $http) {
-        function SmartGridDataModel() {
-        }
-
-        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
-
-        SmartGridDataModel.prototype.init = function() {
-          WidgetDataModel.prototype.init.call(this);
-          this.load();
-        };
-
-        SmartGridDataModel.prototype.load = function() {
-          //console.log(this);
-        };
-
-        return SmartGridDataModel;
-      }
-    ]);
-
 })();
 
 (function() {
@@ -468,6 +442,32 @@
 
     return angular.copy(templates[type]);
   }
+
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
+      function(WidgetDataModel, $http) {
+        function SmartGridDataModel() {
+        }
+
+        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
+
+        SmartGridDataModel.prototype.init = function() {
+          WidgetDataModel.prototype.init.call(this);
+          this.load();
+        };
+
+        SmartGridDataModel.prototype.load = function() {
+          //console.log(this);
+        };
+
+        return SmartGridDataModel;
+      }
+    ]);
 
 })();
 
@@ -783,6 +783,264 @@
 
 })();
 
+(function() {
+  'use strict';
+  // Recursively decide whether to show a group or rule
+
+  angular.module('ml-sq-builder').directive('sqBuilderChooser', [
+    'RecursionHelper',
+    'groupClassHelper',
+
+    function sqBuilderChooser(RH, groupClassHelper) {
+      return {
+        scope: {
+          sqFields: '=',
+          sqParameters: '=',
+          item: '=sqBuilderChooser',
+          onRemove: '&',
+        },
+
+        templateUrl: '/ml-sq-builder/ChooserDirective.html',
+
+        compile: function (element) {
+          return RH.compile(element, function(scope, el, attrs) {
+            var depth = scope.depth = (+ attrs.depth),
+                item = scope.item;
+
+            scope.getGroupClassName = function() {
+              var level = depth;
+              if (item.type === 'group') level++;
+
+              return groupClassHelper(level);
+            };
+          });
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-sq-builder').directive('sqBuilderGroup', [
+    'RecursionHelper',
+    'groupClassHelper',
+
+    function sqBuilderGroup(RH, groupClassHelper) {
+      return {
+        scope: {
+          sqFields: '=',
+          sqParameters: '=',
+          group: '=sqBuilderGroup',
+          onRemove: '&',
+        },
+
+        templateUrl: '/ml-sq-builder/GroupDirective.html',
+
+        compile: function(element) {
+          return RH.compile(element, function(scope, el, attrs) {
+            var depth = scope.depth = (+ attrs.depth);
+            var group = scope.group;
+
+            scope.addRule = function() {
+              group.rules.push({});
+            };
+            scope.addGroup = function() {
+              group.rules.push({
+                type: 'group',
+                subType: 'and-query',
+                rules: []
+              });
+            };
+
+            scope.removeChild = function(idx) {
+              group.rules.splice(idx, 1);
+            };
+
+            scope.getGroupClassName = function() {
+              return groupClassHelper(depth + 1);
+            };
+          });
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-sq-builder').directive('sqBuilderRule', [
+    function sqBuilderRule() {
+      return {
+        scope: {
+          sqFields: '=',
+          sqParameters: '=',
+          rule: '=sqBuilderRule',
+          onRemove: '&',
+        },
+
+        templateUrl: '/ml-sq-builder/RuleDirective.html',
+
+        link: function(scope) {
+          scope.getType = function() {
+            var fields = scope.sqFields,
+              field = scope.rule.field;
+
+            if (! fields || ! field) return;
+
+            return fields[field].type;
+          };
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-sq-builder').directive('sqBuilder', [
+    'sqBuilderService',
+
+    function EB(sqBuilderService) {
+      return {
+        scope: {
+          data: '=sqBuilder',
+        },
+
+        templateUrl: '/ml-sq-builder/BuilderDirective.html',
+
+        link: function(scope) {
+          var data = scope.data;
+
+          scope.filters = [];
+
+          /**
+           * Removes either group or rule
+           */
+          scope.removeChild = function(idx) {
+            scope.filters.splice(idx, 1);
+          };
+
+          /**
+           * Adds a single rule
+           */
+          scope.addRule = function() {
+            scope.filters.push({});
+          };
+
+          /**
+           * Adds a group of rules
+           */
+          scope.addGroup = function() {
+            scope.filters.push({
+              type: 'group',
+              subType: 'and-query',
+              rules: []
+            });
+          };
+
+          if ( typeof scope.data.structuredQuery === 'undefined' ) {
+            Object.defineProperty(scope.data, 'structuredQuery', {
+              get: function() {
+                var rootQuery = {};
+                rootQuery[scope.data.operation] = {'queries': scope.data.query};
+                return {
+                  'query': {
+                    "queries": [ rootQuery ]
+                  }
+                };
+              }
+            });
+          }
+
+          scope.renderStructuredQuery = function() {
+            return JSON.stringify(scope.data.structuredQuery, null, 2);
+          };
+
+          scope.showStructuredQuery = function() {
+            scope.structuredQueryIsHidden = false;
+          };
+
+          scope.hideStructuredQuery = function() {
+            scope.structuredQueryIsHidden = true;
+          };
+
+          scope.hideStructuredQuery();
+
+          scope.$watch('data.needsUpdate', function(curr) {
+            if (! curr) return; 
+            scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
+            scope.data.needsUpdate = false;
+          });
+
+          scope.$watch('filters', function(curr) {
+            if (! curr) return;
+
+            data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
+          }, true);
+        }
+      };
+    }
+  ]);
+})();
+
+(function() {
+  'use strict';
+
+  // Determines which rule type should be displayed
+  angular.module('ml-sq-builder').directive('sqType', [
+    function() {
+      return {
+        scope: {
+          type: '=sqType',
+          rule: '=',
+          guide: '=',
+          parameters: '=',
+        },
+
+        template: '<ng-include src="getTemplateUrl()" />',
+
+        link: function(scope) {
+          scope.getTemplateUrl = function() {
+            var type = scope.type;
+            if (! type) return;
+
+            type = type.charAt(0).toUpperCase() + type.slice(1);
+
+            return '/ml-sq-builder/types/' + type + '.html';
+          };
+
+          // This is a weird hack to make sure these are numbers
+          scope.booleans = [ 'False', 'True' ];
+          scope.booleansOrder = [ 'True', 'False' ];
+
+          scope.inputNeeded = function() {
+            var needs = [
+              'value-query',
+              'word-query',
+              'EQ',
+              'NE',
+              'GT',
+              'GE',
+              'LT',
+              'LE'
+            ];
+
+            // A range query must either be backed by a 
+            // range index or used in a filtered search 
+            // operation.
+
+            return ~needs.indexOf(scope.rule.subType);
+          };
+        },
+      };
+    }
+  ]);
+})();
+
 (function () {
 
   'use strict';
@@ -795,7 +1053,8 @@
       restrict: 'E',
       templateUrl: '/templates/ml-report/ml-results-grid.html',
       scope: {
-        resultsObject: '='
+        resultsObject: '=',
+        queryError: '='
       }
     };
   }
@@ -1588,264 +1847,6 @@
   }]);
 }());
 
-(function() {
-  'use strict';
-  // Recursively decide whether to show a group or rule
-
-  angular.module('ml-sq-builder').directive('sqBuilderChooser', [
-    'RecursionHelper',
-    'groupClassHelper',
-
-    function sqBuilderChooser(RH, groupClassHelper) {
-      return {
-        scope: {
-          sqFields: '=',
-          sqParameters: '=',
-          item: '=sqBuilderChooser',
-          onRemove: '&',
-        },
-
-        templateUrl: '/ml-sq-builder/ChooserDirective.html',
-
-        compile: function (element) {
-          return RH.compile(element, function(scope, el, attrs) {
-            var depth = scope.depth = (+ attrs.depth),
-                item = scope.item;
-
-            scope.getGroupClassName = function() {
-              var level = depth;
-              if (item.type === 'group') level++;
-
-              return groupClassHelper(level);
-            };
-          });
-        }
-      };
-    }
-  ]);
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-sq-builder').directive('sqBuilderGroup', [
-    'RecursionHelper',
-    'groupClassHelper',
-
-    function sqBuilderGroup(RH, groupClassHelper) {
-      return {
-        scope: {
-          sqFields: '=',
-          sqParameters: '=',
-          group: '=sqBuilderGroup',
-          onRemove: '&',
-        },
-
-        templateUrl: '/ml-sq-builder/GroupDirective.html',
-
-        compile: function(element) {
-          return RH.compile(element, function(scope, el, attrs) {
-            var depth = scope.depth = (+ attrs.depth);
-            var group = scope.group;
-
-            scope.addRule = function() {
-              group.rules.push({});
-            };
-            scope.addGroup = function() {
-              group.rules.push({
-                type: 'group',
-                subType: 'and-query',
-                rules: []
-              });
-            };
-
-            scope.removeChild = function(idx) {
-              group.rules.splice(idx, 1);
-            };
-
-            scope.getGroupClassName = function() {
-              return groupClassHelper(depth + 1);
-            };
-          });
-        }
-      };
-    }
-  ]);
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-sq-builder').directive('sqBuilderRule', [
-    function sqBuilderRule() {
-      return {
-        scope: {
-          sqFields: '=',
-          sqParameters: '=',
-          rule: '=sqBuilderRule',
-          onRemove: '&',
-        },
-
-        templateUrl: '/ml-sq-builder/RuleDirective.html',
-
-        link: function(scope) {
-          scope.getType = function() {
-            var fields = scope.sqFields,
-              field = scope.rule.field;
-
-            if (! fields || ! field) return;
-
-            return fields[field].type;
-          };
-        }
-      };
-    }
-  ]);
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-sq-builder').directive('sqBuilder', [
-    'sqBuilderService',
-
-    function EB(sqBuilderService) {
-      return {
-        scope: {
-          data: '=sqBuilder',
-        },
-
-        templateUrl: '/ml-sq-builder/BuilderDirective.html',
-
-        link: function(scope) {
-          var data = scope.data;
-
-          scope.filters = [];
-
-          /**
-           * Removes either group or rule
-           */
-          scope.removeChild = function(idx) {
-            scope.filters.splice(idx, 1);
-          };
-
-          /**
-           * Adds a single rule
-           */
-          scope.addRule = function() {
-            scope.filters.push({});
-          };
-
-          /**
-           * Adds a group of rules
-           */
-          scope.addGroup = function() {
-            scope.filters.push({
-              type: 'group',
-              subType: 'and-query',
-              rules: []
-            });
-          };
-
-          if ( typeof scope.data.structuredQuery === 'undefined' ) {
-            Object.defineProperty(scope.data, 'structuredQuery', {
-              get: function() {
-                var rootQuery = {};
-                rootQuery[scope.data.operation] = {'queries': scope.data.query};
-                return {
-                  'query': {
-                    "queries": [ rootQuery ]
-                  }
-                };
-              }
-            });
-          }
-
-          scope.renderStructuredQuery = function() {
-            return JSON.stringify(scope.data.structuredQuery, null, 2);
-          };
-
-          scope.showStructuredQuery = function() {
-            scope.structuredQueryIsHidden = false;
-          };
-
-          scope.hideStructuredQuery = function() {
-            scope.structuredQueryIsHidden = true;
-          };
-
-          scope.hideStructuredQuery();
-
-          scope.$watch('data.needsUpdate', function(curr) {
-            if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
-            scope.data.needsUpdate = false;
-          });
-
-          scope.$watch('filters', function(curr) {
-            if (! curr) return;
-
-            data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
-          }, true);
-        }
-      };
-    }
-  ]);
-})();
-
-(function() {
-  'use strict';
-
-  // Determines which rule type should be displayed
-  angular.module('ml-sq-builder').directive('sqType', [
-    function() {
-      return {
-        scope: {
-          type: '=sqType',
-          rule: '=',
-          guide: '=',
-          parameters: '=',
-        },
-
-        template: '<ng-include src="getTemplateUrl()" />',
-
-        link: function(scope) {
-          scope.getTemplateUrl = function() {
-            var type = scope.type;
-            if (! type) return;
-
-            type = type.charAt(0).toUpperCase() + type.slice(1);
-
-            return '/ml-sq-builder/types/' + type + '.html';
-          };
-
-          // This is a weird hack to make sure these are numbers
-          scope.booleans = [ 'False', 'True' ];
-          scope.booleansOrder = [ 'True', 'False' ];
-
-          scope.inputNeeded = function() {
-            var needs = [
-              'value-query',
-              'word-query',
-              'EQ',
-              'NE',
-              'GT',
-              'GE',
-              'LT',
-              'LE'
-            ];
-
-            // A range query must either be backed by a 
-            // range index or used in a filtered search 
-            // operation.
-
-            return ~needs.indexOf(scope.rule.subType);
-          };
-        },
-      };
-    }
-  ]);
-})();
-
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
@@ -1876,20 +1877,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -1911,6 +1898,20 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -3020,29 +3021,6 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard')
-    .controller('ManageCtrl', ManageCtrl);
-
-  ManageCtrl.$inject = ['$scope', '$location'];
-
-  function ManageCtrl($scope, $location) {
-
-    $scope.newReportForm = function() {
-      $location.search('ml-analytics-mode', 'new');
-    };
-
-    $scope.gotoDesigner = function(uri) {
-      $location.search('ml-analytics-mode', 'design');
-      $location.search('ml-analytics-uri', uri);
-    };
-
-  }
-
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
     function($scope, $location, $rootScope, ReportService) {
 
@@ -3099,4 +3077,27 @@ drag.delegate = function( event ){
     };
 
   }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ManageCtrl', ManageCtrl);
+
+  ManageCtrl.$inject = ['$scope', '$location'];
+
+  function ManageCtrl($scope, $location) {
+
+    $scope.newReportForm = function() {
+      $location.search('ml-analytics-mode', 'new');
+    };
+
+    $scope.gotoDesigner = function(uri) {
+      $location.search('ml-analytics-mode', 'design');
+      $location.search('ml-analytics-uri', uri);
+    };
+
+  }
+
 }());
