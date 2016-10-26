@@ -56,7 +56,6 @@
         $scope.executor = {};
         $scope.executor.transform = 'smart-filter';
         $scope.executor.disableRun = true;
-        $scope.executor.disableDownload = true;
 
         $scope.grid = {
           page: 1,
@@ -67,7 +66,6 @@
           $scope.model.results = null;
           $scope.executor.dimensions = [];
           $scope.executor.results = [];
-          $scope.executor.disableDownload = true;
         };
 
         $scope.getDbConfig = function() {
@@ -250,44 +248,6 @@
           $scope.options.saveDashboard();
         };
 
-        $scope.download = function() {
-          var data = [];
-
-          var headerRow = [];
-          if ($scope.model.results) {
-            // Complex query
-            $scope.model.results.headers.forEach(function(header) {
-              headerRow.push(header); 
-            });
-            data.push(headerRow);
-
-            $scope.model.results.results.forEach(function(result) {
-              data.push(result); 
-            });
-          } else if ($scope.executor.results.length > 0) {
-            // Simple query
-            $scope.executor.dimensions.forEach(function(dimension) {
-              headerRow.push(dimension.name); 
-            });
-            data.push(headerRow);
-
-            $scope.executor.results.forEach(function(result) {
-              data.push(result); 
-            });
-          }
-
-          $http({
-            method: 'POST',
-            url: '/api/report/prepare',
-            data: {data : data}
-          }).then(function(response) {
-            // You can't download file through Ajax.
-            window.location = '/api/report/download';
-          }, function(response) {
-            // error
-          });
-        };
-
         $scope.execute = function() {
           var dimensions = $scope.widget.dataModelOptions.dimensions;
           // Number of groupby fields.
@@ -421,7 +381,6 @@
             $scope.createComplexTable($scope.model.results.headers, $scope.model.results.results);
             $scope.createHighcharts(count, $scope.model.results.headers, $scope.model.results.results);
 
-            $scope.executor.disableDownload = false;
           }, function(response) {
             $scope.model.loadingResults = false;
 
@@ -590,8 +549,6 @@
           //     console.log('pushing item into executor: ' + item);
           //     $scope.executor.results.push(item);
           //   });
-
-          //   $scope.executor.disableDownload = false;
 
           //   $scope.createSimpleTable(headers, $scope.executor.results);
           // });
