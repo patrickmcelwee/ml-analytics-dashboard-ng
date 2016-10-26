@@ -12,7 +12,8 @@
       scope: {
         resultsObject: '=',
         queryError: '='
-      }
+      },
+      controller: 'mlResultsGridCtrl'
     };
   }
 }());

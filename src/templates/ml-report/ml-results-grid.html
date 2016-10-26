@@ -4,17 +4,22 @@
   <p class="metrics">
     <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
   </p>
-  <table class="table table-bordered">
+  <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th ng-repeat="header in resultsObject.headers">{{header}}</th>
+        <th ng-repeat="header in resultsObject.headers track by $index">
+          <a href="#" ng-click="setSortColumn($index)">
+            {{header}}
+            <span ng-show="sortColumn == $index && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortColumn == $index && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+        </th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="result in resultsObject.results">
-        <td ng-repeat="val in result">
-          <em ng-if="val === ''"></em>
-          <span ng-if="val !== ''">{{ val }}</span>
+      <tr ng-repeat="result in resultsObject.results | orderBy:sorter:sortReverse">
+        <td ng-repeat="val in result track by $index">
+          <span>{{ val }}</span>
         </td>
       </tr>
     </tbody>
