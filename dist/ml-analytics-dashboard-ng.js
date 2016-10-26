@@ -817,6 +817,7 @@
       controller: function($scope, $http, $q, $filter) {
         // Set the initial mode for this widget to View.
         $scope.widget.mode = 'View';
+        $scope.isGridCollapsed  = true;
 
   /*
         $scope.data.fields = {

@@ -59,14 +59,18 @@
       </div>
     </div>
 
-    <uib-tabset active="activeDisplay">
-      <uib-tab heading="Chart">
-        <highchart config="highchartConfig"></highchart>
-      </uib-tab>
-      <uib-tab heading="Grid">
-        <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
-      </uib-tab>
-    </uib-tabset>
+    <highchart config="highchartConfig"></highchart>
+
+    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
+      Show results grid
+    </button>
+    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">
+      Hide results grid
+    </button>
+
+    <div uib-collapse="isGridCollapsed">
+      <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
+    </div>
   </div>
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
@@ -88,14 +92,18 @@
       <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
     </form>
 
-    <uib-tabset active="activeDisplay">
-      <uib-tab heading="Chart">
-        <highchart config="highchartConfig"></highchart>
-      </uib-tab>
-      <uib-tab heading="Grid">
-        <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
-      </uib-tab>
-    </uib-tabset>
+    <highchart config="highchartConfig"></highchart>
+
+    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
+      Show results grid
+    </button>
+    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">
+      Hide results grid
+    </button>
+
+    <div uib-collapse="isGridCollapsed">
+      <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
+    </div>
 
   </div>
 </div>
