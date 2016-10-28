@@ -58,11 +58,6 @@
         $scope.executor.transform = 'smart-filter';
         $scope.executor.disableRun = true;
 
-        $scope.grid = {
-          page: 1,
-          total: 0
-        };
-
         $scope.clearResults = function() {
           $scope.model.results = null;
           $scope.executor.dimensions = [];
@@ -394,40 +389,38 @@
           });
         };
 
-        $scope.createSimpleTable = function(headers, results) {
-          $scope.cols = [
-            //{ field: "name", title: "Name", sortable: "name", show: true },
-            //{ field: "age", title: "Age", sortable: "age", show: true },
-            //{ field: "money", title: "Money", show: true }
-          ];
+        // $scope.createSimpleTable = function(headers, results) {
+        //   $scope.cols = [
+        //     //{ field: "name", title: "Name", sortable: "name", show: true },
+        //     //{ field: "age", title: "Age", sortable: "age", show: true },
+        //     //{ field: "money", title: "Money", show: true }
+        //   ];
 
-          headers.forEach(function(header) {
-            $scope.cols.push({
-              field: header, 
-              title: header, 
-              sortable: header, 
-              show: true
-            });
-          });
+        //   headers.forEach(function(header) {
+        //     $scope.cols.push({
+        //       field: header, 
+        //       title: header, 
+        //       sortable: header, 
+        //       show: true
+        //     });
+        //   });
 
-          var records = [];
-          results.forEach(function(row) {
-            var record = {};
-            for (var i = 0; i < row.length; i++) {
-              record[headers[i]] = row[i];
-            }
-            records.push(record);
-          });
+        //   var records = [];
+        //   results.forEach(function(row) {
+        //     var record = {};
+        //     for (var i = 0; i < row.length; i++) {
+        //       record[headers[i]] = row[i];
+        //     }
+        //     records.push(record);
+        //   });
 
-          var initialParams = {
-            page: 1, // show first page
-            count: $scope.widget.dataModelOptions.pageLength, // count per page
-            sorting: {}
-          };
-          initialParams.sorting[headers[0]] = 'desc';
+        //   var initialParams = {
+        //     count: $scope.widget.dataModelOptions.pageLength, // count per page
+        //     sorting: {}
+        //   };
+        //   initialParams.sorting[headers[0]] = 'desc';
 
-          var total = $scope.grid.total;
-        };
+        // };
 
         $scope.createComplexTable = function(headers, results) {
           $scope.cols = [
@@ -455,18 +448,10 @@
           });
 
           var initialParams = {
-            page: 1, // show first page
             count: $scope.widget.dataModelOptions.pageLength, // count per page
             sorting: {}
           };
           initialParams.sorting[headers[0]] = 'desc';
-        };
-
-        $scope.fetchPage = function() {
-          var start = 1 + ($scope.grid.page - 1) * $scope.widget.dataModelOptions.pageLength;
-
-          $scope.model.loadingResults = true;
-          $scope.executeSimpleQuery(start);
         };
 
         $scope.executeSimpleQuery = function(start) {
@@ -537,8 +522,6 @@
           //   var contentType = response.headers('content-type');
           //   var pageResults = MarkLogic.Util.parseMultiPart(response.data, contentType);
           //   var results = pageResults.results;
-
-          //   $scope.grid.total = pageResults.metadata.total;
 
           //   results.forEach(function(result) {
           //     var item = [];

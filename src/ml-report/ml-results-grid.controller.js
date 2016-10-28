@@ -7,8 +7,10 @@
   mlResultsGridCtrl.$inject = ['$scope'];
 
   function mlResultsGridCtrl($scope) {
+    $scope.pageLength = '10';
     $scope.sortColumn = 0;
     $scope.sortReverse = false;
+    $scope.gridPage = 1;
 
     $scope.sorter = function(item) {
       return item[$scope.sortColumn];
