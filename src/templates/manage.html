@@ -21,7 +21,7 @@
         <div class="report-container">
           <div class="report-container-inner">
             <div class="report-item"
-                 ng-repeat="report in reports | filter : search"
+                 ng-repeat="report in reports | filter : search | orderBy:'name'"
                  ng-click="gotoDesigner(report.uri)">
               <i class="fa fa-th"></i><span>{{report.name}}</span>
               <div class="toolbar">
