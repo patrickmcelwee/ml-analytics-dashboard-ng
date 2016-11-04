@@ -49,7 +49,6 @@
     $scope.data.needsRefresh = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
     $scope.data.directory_model = null;
-    $scope.data.parameters = $scope.widget.dataModelOptions.parameters;
 
     $scope.executor = {};
     $scope.executor.transform = 'smart-filter';
@@ -270,35 +269,6 @@
       return null;
     };
 
-    function getParameterValue(name) {
-      var parameters = $scope.widget.dataModelOptions.parameters;
-
-      for (var i = 0; i < parameters.length; i++) {
-        var parameter = parameters[i];
-        var temp = '#' + parameter.name + '#';
-        if (name === temp)
-          return parameter.value;
-      }
-
-      return null;
-    }
-
-    function setQueryParameters(query) {
-      var type = typeof query;
-
-      if (type == 'object') {
-        for (var key in query) {
-          if (key === 'text' || key === 'value') {
-            var value = getParameterValue(query[key]);
-            if (value !== null)
-              query[key] = value;
-          } else {
-            setQueryParameters(query[key]);
-          }
-        }
-      }
-    }
-
     $scope.executeComplexQuery = function(count) {
       var queries = $scope.widget.dataModelOptions.query.query.queries;
       if (queries.length === 1) {
@@ -311,8 +281,6 @@
         if (firstElement[key].queries.length === 0)
           queries = [];
       }
-
-      setQueryParameters(queries);
 
       var query = {
         'queries': queries
@@ -459,8 +427,6 @@
       // } else {
       //   queries = [];
       // }
-
-      // setQueryParameters(queries);
 
       // var query = {
       //   'queries': queries

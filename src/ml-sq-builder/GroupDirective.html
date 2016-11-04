@@ -6,7 +6,7 @@
     </select> 
     of these conditions are met
   </h5> 
-  <div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div> 
+  <div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div> 
   <div class="actions" data-ng-class="getGroupClassName()"> 
     <a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"> 
       <i class="fa fa-plus"> Add Rule</i> 

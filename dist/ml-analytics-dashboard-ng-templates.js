@@ -42,7 +42,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/BuilderDirective.html',
-    '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-sq-parameters="data.parameters" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a> <a ng-if="structuredQueryIsHidden" data-ng-click="showStructuredQuery()" class="btn btn-xs btn-primary" title="Show Generated Query"><i class="fa fa-eye"></i> Show Generated Query</a> <a ng-if="!structuredQueryIsHidden" ng-click="hideStructuredQuery()" class="btn btn-xs btn-primary" title="Hide Generated Query"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Query</a></div></div></div><div uib-collapse="structuredQueryIsHidden"><pre ng-bind="renderStructuredQuery()"></pre></div></div>');
+    '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a> <a ng-if="structuredQueryIsHidden" data-ng-click="showStructuredQuery()" class="btn btn-xs btn-primary" title="Show Generated Query"><i class="fa fa-eye"></i> Show Generated Query</a> <a ng-if="!structuredQueryIsHidden" ng-click="hideStructuredQuery()" class="btn btn-xs btn-primary" title="Hide Generated Query"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Query</a></div></div></div><div uib-collapse="structuredQueryIsHidden"><pre ng-bind="renderStructuredQuery()"></pre></div></div>');
 }]);
 })();
 
@@ -54,7 +54,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/ChooserDirective.html',
-    '<div class="sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-on-remove="onRemove()"></div></div>');
+    '<div class="sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-on-remove="onRemove()"></div></div>');
 }]);
 })();
 
@@ -66,7 +66,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/GroupDirective.html',
-    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="input-sm form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-sq-parameters="sqParameters" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="input-sm form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -78,7 +78,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/RuleDirective.html',
-    '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in sqFields"></select><span data-sq-type="getType()" data-rule="rule" data-guide="sqFields[rule.field]" data-parameters="sqParameters"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in sqFields"></select><span data-sq-type="getType()" data-rule="rule" data-guide="sqFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -282,7 +282,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Decimal.html',
-    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -294,7 +294,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Int.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -306,7 +306,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Long.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -318,7 +318,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/String.html',
-    '<span class="string-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"><select class="input-sm form-control" ng-model="rule.value"><option ng-repeat="parameter in parameters" value="#{{parameter.name}}#">{{parameter.name}}</option></select></span>');
+    '<span class="string-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -390,7 +390,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/widgets/qb-settings.html',
-    '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button><h3>Settings Dialog for <small>{{widget.title}}</small></h3></div><div class="modal-body"><form name="form" novalidate="" class="form-horizontal"><div class="form-group"><label for="widgetTitle" class="col-sm-3 control-label">Title</label><div class="col-sm-9"><input type="text" class="form-control" name="widgetTitle" ng-model="result.title"></div></div><div class="form-group"><label class="col-sm-3 control-label">Page Length</label><div class="col-sm-9"><input type="number" class="form-control" name="pageLength" ng-model="result.dataModelOptions.pageLength"></div></div><div class="form-group"><label class="col-sm-3 control-label">Chart Type</label><div class="col-sm-9"><select class="form-control" ng-model="result.dataModelOptions.chart"><option>column</option><option>pie</option></select></div></div><div class="form-group has-feedback" ng-repeat="parameter in result.dataModelOptions.parameters"><div class="col-sm-5"><input type="text" class="form-control" ng-model="parameter.name"></div><div class="col-sm-7"><div class="input-group"><input type="text" class="form-control" ng-model="parameter.value"><div class="input-group-btn" style="vertical-align:top;"><a type="button" class="btn btn-danger" data-ng-click="deleteParameter($index)"><i class="fa fa-minus"></i></a></div></div></div></div><div ng-if="widget.partialSettingTemplateUrl" ng-include="widget.partialSettingTemplateUrl"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default navbar-left" ng-click="addParameter()">Add Parameter</button> <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button> <button type="button" class="btn btn-primary" ng-click="ok()">OK</button></div>');
+    '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button><h3>Settings Dialog for <small>{{widget.title}}</small></h3></div><div class="modal-body"><form name="form" novalidate="" class="form-horizontal"><div class="form-group"><label for="widgetTitle" class="col-sm-3 control-label">Title</label><div class="col-sm-9"><input type="text" class="form-control" name="widgetTitle" ng-model="result.title"></div></div><div class="form-group"><label class="col-sm-3 control-label">Page Length</label><div class="col-sm-9"><input type="number" class="form-control" name="pageLength" ng-model="result.dataModelOptions.pageLength"></div></div><div class="form-group"><label class="col-sm-3 control-label">Chart Type</label><div class="col-sm-9"><select class="form-control" ng-model="result.dataModelOptions.chart"><option>column</option><option>pie</option></select></div></div><div ng-if="widget.partialSettingTemplateUrl" ng-include="widget.partialSettingTemplateUrl"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button> <button type="button" class="btn btn-primary" ng-click="ok()">OK</button></div>');
 }]);
 })();
 

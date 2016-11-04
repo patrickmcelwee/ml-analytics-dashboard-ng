@@ -27,28 +27,11 @@
       </div>
     </div>
 
-    <div class="form-group has-feedback" ng-repeat="parameter in result.dataModelOptions.parameters">
-      <div class="col-sm-5">
-        <input type="text" class="form-control" ng-model="parameter.name" />
-      </div>
-      <div class="col-sm-7">
-        <div class="input-group">
-          <input type="text" class="form-control" ng-model="parameter.value" />
-          <div class="input-group-btn" style="vertical-align:top;">
-            <a type="button" class="btn btn-danger" data-ng-click="deleteParameter($index)">
-              <i class="fa fa-minus"></i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <div ng-if="widget.partialSettingTemplateUrl" ng-include="widget.partialSettingTemplateUrl"></div>
   </form>
 </div>
 
 <div class="modal-footer">
-  <button type="button" class="btn btn-default navbar-left" ng-click="addParameter()">Add Parameter</button>
   <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
   <button type="button" class="btn btn-primary" ng-click="ok()">OK</button>
 </div>

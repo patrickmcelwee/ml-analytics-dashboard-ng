@@ -10,7 +10,6 @@
       return {
         scope: {
           sqFields: '=',
-          sqParameters: '=',
           item: '=sqBuilderChooser',
           onRemove: '&',
         },

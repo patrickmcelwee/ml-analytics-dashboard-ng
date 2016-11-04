@@ -117,8 +117,7 @@
           query: {},
           dimensions: [],
           chart: 'column',
-          pageLength: 10,
-          parameters: []
+          pageLength: 10
         },
         style: {
           width: '100%'
@@ -133,7 +132,6 @@
           widget.title = result.title;
           widget.dataModelOptions.pageLength = result.dataModelOptions.pageLength;
           widget.dataModelOptions.chart = result.dataModelOptions.chart;
-          angular.copy(result.dataModelOptions.parameters, widget.dataModelOptions.parameters);
         },
         onSettingsDismiss: function(reason, scope) {
           // Do nothing here, since the user pressed cancel

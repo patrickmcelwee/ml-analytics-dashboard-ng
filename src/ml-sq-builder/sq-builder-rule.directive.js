@@ -6,7 +6,6 @@
       return {
         scope: {
           sqFields: '=',
-          sqParameters: '=',
           rule: '=sqBuilderRule',
           onRemove: '&',
         },

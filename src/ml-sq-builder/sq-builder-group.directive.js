@@ -9,7 +9,6 @@
       return {
         scope: {
           sqFields: '=',
-          sqParameters: '=',
           group: '=sqBuilderGroup',
           onRemove: '&',
         },

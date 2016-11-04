@@ -8,8 +8,7 @@
         scope: {
           type: '=sqType',
           rule: '=',
-          guide: '=',
-          parameters: '=',
+          guide: '='
         },
 
         template: '<ng-include src="getTemplateUrl()" />',
