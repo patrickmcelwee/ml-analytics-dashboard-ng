@@ -788,6 +788,22 @@
   'use strict';
 
   angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
     .directive('mlResultsGrid', mlResultsGrid);
 
   function mlResultsGrid() {
@@ -2172,6 +2188,17 @@ drag.delegate = function( event ){
 };
 	
 })( jQuery );
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlAnalyticsViewChartCtrl', mlAnalyticsViewChartCtrl);
+
+  function mlAnalyticsViewChartCtrl($scope) {
+  }
+
+})();
+
 (function () {
   'use strict';
 

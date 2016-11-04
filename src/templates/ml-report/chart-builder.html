@@ -81,29 +81,7 @@
       </a>
     </div>
 
-    <form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px">
-      <div class="form-group">
-        <label class="control-label">Search:</label>
-        <input type="text" name="name" class="form-control" ng-model="executor.simple" />
-      </div>
-
-      <button class="btn btn-primary" ng-disabled="executor.disableRun" ng-click="execute()">
-        <span class="fa fa-eye"></span> Filter Results with Search</button>
-      <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-    </form>
-
-    <highchart config="highchartConfig"></highchart>
-
-    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
-      Show results grid
-    </button>
-    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">
-      Hide results grid
-    </button>
-
-    <div uib-collapse="isGridCollapsed">
-      <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
-    </div>
-
+    <ml-analytics-view-chart></ml-analytics-view-chart>
   </div>
+
 </div>
