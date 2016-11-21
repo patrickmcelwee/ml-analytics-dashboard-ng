@@ -38,9 +38,10 @@
     $scope.getReports = function() {
       $scope.showLoading = true;
       ReportService.getReports().then(function(response) {
-        var contentType = response.headers('content-type');
-        var page = MarkLogic.Util.parseMultiPart(response.data, contentType);
-        $scope.reports = page.results;
+        $scope.reports = response.data.results;
+        _.each($scope.reports, function(report) {
+          report.name = report.extracted.content[0].name;
+        });
         $scope.showLoading = false;
       }, function() {
         $scope.showLoading = false;

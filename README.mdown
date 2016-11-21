@@ -19,6 +19,7 @@ front end code driving the dashboard, while the mlpm module provides the APIs
 And install the [mlpm module](https://github.com/patrickmcelwee/mlpm-analytics-dashboard):
 
     npm install -g mlpm
+    mlpm init
     mlpm install analytics-dashboard --save
 
 For now, you need to overwrite a module from the `group-by` mlpm library (which
@@ -30,72 +31,6 @@ constraining queries to work. To overwrite, run:
 Now you can deploy the mlpm_modules to MarkLogic:
     
     mlpm deploy -H localhost -P 8040 -u admin -p admin
-
-For now, you also need to edit `node-server/proxy.js` in order to allow
-searches with a 'multipart/mixed' Accept header. I hope to find a different way
-to do this soon. For now, the `proxy` function should look like this (with the
-addition of lines between the `// Analytics Dashboard` comments:
-
-```javascript
-function proxy(req, res) {
-  var queryString = req.originalUrl.split('?')[1];
-  var path = '/v1' + req.path + (queryString ? '?' + queryString : '');
-  console.log(
-    req.method + ' ' + req.path + ' proxied to ' +
-    options.mlHost + ':' + options.mlHttpPort + path);
-  // Analytics Dashboard
-  if (queryString) {
-    var querystring = require('querystring');
-    var params = querystring.parse(queryString);
-    var category = params.category;
-    // Can use the 'category' parameter only with multipart/mixed accept.
-
-    if (category) {
-      var multipartHeader = 'multipart/mixed';
-      if (req.headers.accept) {
-        req.headers.accept = multipartHeader;
-      } else if (req.headers.Accept) {
-        req.headers.Accept = multipartHeader;
-      }
-    }
-  }
-  // end of Analytics Dashboard
-  var mlReq = http.request({
-    hostname: options.mlHost,
-    port: options.mlHttpPort,
-    method: req.method,
-    path: path,
-    headers: req.headers,
-    auth: getAuth(options, req.session)
-  }, function(response) {
-
-    res.statusCode = response.statusCode;
-
-    // [GJo] (#67) forward all headers from MarkLogic
-    for (var header in response.headers) {
-      res.header(header, response.headers[header]);
-    }
-
-    response.on('data', function(chunk) {
-      res.write(chunk);
-    });
-    response.on('end', function() {
-      res.end();
-    });
-  });
-
-  req.pipe(mlReq);
-  req.on('end', function() {
-    mlReq.end();
-  });
-
-  mlReq.on('error', function(e) {
-    console.log('Problem with request: ' + e.message);
-    res.statusCode = 500;
-    res.end();
-  });
-}
-```
 
 ## Directives Provided
 

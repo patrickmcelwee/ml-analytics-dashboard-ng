@@ -37,7 +37,10 @@
       var search = {
         'search': {
           'options': {
-            'search-option': ['unfiltered']
+            'search-option': ['unfiltered'],
+            'extract-document-data': {
+              'extract-path': ['/name']
+            }
           },
           'query': {
             'queries': [{
@@ -49,15 +52,8 @@
         }
       };
 
-      // HTTP header names are case-insensitive.
-      //
-      // A multi-document read is distinguished from a normal search 
-      // operation by setting the Accept header to multipart/mixed.
-      //
-      // Can use the 'category' parameter only with multipart/mixed accept.
       return mlRest.search({
                'pageLength': 20,
-               'category': 'content',
                'format': 'json'
               }, search);
     };
