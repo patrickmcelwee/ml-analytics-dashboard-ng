@@ -11,7 +11,7 @@ describe('manage-ml-analytics-dashboard directive', function () {
     scope = _$rootScope_.$new();
   }));
 
-  it('replaces <manage-ml-analytics-dashboard> with the manager when mode is home', function() {
+  xit('replaces <manage-ml-analytics-dashboard> with the manager when mode is home', function() {
     scope.mode = 'home';
     var element = $compile('<manage-ml-analytics-dashboard></manage-ml-analytics-dashboard>')(scope);
     scope.$digest();
