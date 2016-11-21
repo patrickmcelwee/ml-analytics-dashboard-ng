@@ -26,7 +26,11 @@ For now, you need to overwrite a module from the `group-by` mlpm library (which
 is a dependency of the above `analytics-dashboard` library) to allow
 constraining queries to work. To overwrite, run:
 
-    cp bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    cp {PATH-TO-bower_components}/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    # If you are using slush-marklogic-node, that will be:
+    # cp bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    # If using slush-marklogic-spring-boot:
+    # cp src/main/resources/static/bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
 
 Now you can deploy the mlpm_modules to MarkLogic:
     
@@ -44,9 +48,10 @@ Now you can deploy the mlpm_modules to MarkLogic:
 ## Example Implementation
 
 Add the mlAnalyticsDashboard module as a dependency to your app.module. For
-example, in a [slush-generated
+example, in a [slush-marklogic-node-generated
 app](https://github.com/marklogic/slush-marklogic-node), add this to
-`ui/app/app.js`:
+`ui/app/app.js` (that will be `src/main/webapp/app/app.js` in
+a [slush-marklogic-spring-boot-generated app](slush-marklogic-spring-boot-generated app)):
 
 ```javascript
 angular.module('app', [
@@ -62,7 +67,8 @@ You can embed the ml-analytics-dashboard in your UI using the mlAnalyticsDashboa
   <ml-analytics-dashboard></ml-analytics-dashboard>
 ```
 
-At the moment, this directive brings up a configuration screen, and it probably makes sense to have on its own page. If you are using `angular-ui-router`, as in a [slush-generated](https://github.com/marklogic/slush-marklogic-node) app, you can add a state definition in `ui/app/route/routes.js` with something like this:
+At the moment, this directive brings up a configuration screen, and it probably makes sense to have on its own page. If you are using `angular-ui-router`, as in a [slush-marklogic-node-generated](https://github.com/marklogic/slush-marklogic-node) app, you can add a state definition in `ui/app/route/routes.js` (`src/main/webapp/app/route/routes.js` in
+a [slush-marklogic-spring-boot-generated app](slush-marklogic-spring-boot-generated app)) with something like this:
 
 ```javascript
   .state('root.ml-analytics-dashboard', {
