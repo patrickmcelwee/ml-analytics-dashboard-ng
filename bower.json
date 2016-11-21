@@ -1,6 +1,6 @@
 {
   "name": "ml-analytics-dashboard-ng",
-  "version": "2.2.2",
+  "version": "2.2.4",
   "authors": [
     "Patrick McElwee <patrick.mcelwee@marklogic.com>",
     "Jianmin Liu <Jianmin.Liu@marklogic.com>"
@@ -19,7 +19,6 @@
     "highcharts": "^4.0.4",
     "jquery-ui": "^1.11.0",
     "malhar-angular-dashboard": "~2.0.0",
-    "ng-sortable": "~1.3.1",
     "highcharts-ng": "^0.0.11",
     "ml-common-ng": "^1.0.1"
   },
