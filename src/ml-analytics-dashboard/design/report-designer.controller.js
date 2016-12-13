@@ -16,7 +16,6 @@
         return store[key];
       },
       setItem : function(key, value) {
-        console.log("in setItem in report-designer.controller");
         store[key] = value;
 
         $scope.report.widgets = value.widgets;

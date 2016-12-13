@@ -1094,19 +1094,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
   function mlAnalyticsDesign() {
@@ -1114,6 +1101,19 @@
       restrict: 'E',
       templateUrl: '/templates/designer.html',
       controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -2750,7 +2750,6 @@ drag.delegate = function( event ){
         return store[key];
       },
       setItem : function(key, value) {
-        console.log("in setItem in report-designer.controller");
         store[key] = value;
 
         $scope.report.widgets = value.widgets;
