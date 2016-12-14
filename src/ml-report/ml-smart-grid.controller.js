@@ -10,6 +10,7 @@
     // Set the initial mode for this widget to View.
     $scope.widget.mode = 'View';
     $scope.isGridCollapsed  = true;
+    $scope.shouldShowChart = true;
 
 /*
     $scope.data.fields = {
@@ -503,6 +504,14 @@
 
     $scope.createHighcharts = function(count, headers, results) {
       var chartType = $scope.widget.dataModelOptions.chart;
+
+      if (results[0].length === count) {
+        $scope.shouldShowChart = false;
+        $scope.isGridCollapsed = false;
+      } else {
+        $scope.shouldShowChart = true;
+        $scope.isGridCollapsed = true;
+      }
 
       if (chartType === 'column')
         $scope.createColumnHighcharts(count, headers, results);

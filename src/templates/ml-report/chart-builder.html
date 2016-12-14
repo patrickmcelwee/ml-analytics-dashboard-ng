@@ -59,18 +59,8 @@
       </div>
     </div>
 
-    <highchart config="highchartConfig"></highchart>
+    <div ng-include="'/templates/ml-report/chart-and-grid-results.html'"></div>
 
-    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
-      Show results grid
-    </button>
-    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">
-      Hide results grid
-    </button>
-
-    <div uib-collapse="isGridCollapsed">
-      <ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid>
-    </div>
   </div>
 
   <div ng-if="widget.mode === 'View'" class="view-mode">
