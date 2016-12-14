@@ -2939,7 +2939,7 @@ drag.delegate = function( event ){
 
     $scope.createReport = function() {
       $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        $scope.report.name +
+        encodeURIComponent($scope.report.name) +
         '-' +
         Math.floor((Math.random() * 1000000) + 1) +
         '.json';
