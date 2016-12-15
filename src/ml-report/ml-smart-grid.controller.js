@@ -10,7 +10,7 @@
     // Set the initial mode for this widget to View.
     $scope.widget.mode = 'View';
     $scope.isGridCollapsed  = true;
-    $scope.shouldShowChart = true;
+    $scope.shouldShowChart = false;
 
 /*
     $scope.data.fields = {
