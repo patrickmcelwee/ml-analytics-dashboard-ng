@@ -1,46 +1,58 @@
 <div>
   <div ng-if="widget.mode === 'Design'" class="design-mode">
-    <div class="pull-right">
-      <a ng-click="widget.mode = 'View'">
-        <i class="fa fa-eye" title="View this chart"></i>
-        View
-      </a>
+    <div class="col-md-12">
+      <form name="designForm" class="form-inline ml-analytics-design-form well well-sm col-lg-9 col-md-6" novalidate>
+        <div class="form-group">
+          <label class="control-label">Database</label>
+          <select class="input-sm form-control" 
+                  ng-options="database for database in model.config.databases"
+                  ng-model="model.config['current-database']"
+                  ng-change="getDbConfig()"></select>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group">
+            <label class="control-label">Limited By</label>
+            <select class="input-sm form-control" 
+                    ng-model="model.groupingStrategy"
+                    ng-change="getDbConfig()">
+              <option>collection</option>
+              <option>root</option>
+            </select>
+            <span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label">Name</label>
+            <select class="input-sm form-control" 
+                    ng-model="data.directory_model" 
+                    ng-options="d.name for d in data.docs" 
+                    ng-change="setDocument()" required>
+              <option value="">Choose...</option>
+            </select>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="col-lg-3 col-md-6">
+        <div class="pull-right">
+          <a ng-click="widget.mode = 'View'">
+            <i class="fa fa-eye" title="View this chart"></i>
+            View
+          </a>
+        </div>
+
+        <div class="ml-analytics-design-form">
+          <div class="form-group">
+            <button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid">
+              <span class="fa fa-check"></span> Save and Run
+            </button>
+            <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <form name="designForm" class="form-inline" novalidate>
-      <div class="form-group">
-        <label class="control-label">Database:</label>
-        <select class="input-sm form-control" 
-                ng-options="database for database in model.config.databases"
-                ng-model="model.config['current-database']"
-                ng-change="getDbConfig()"></select>
-      </div>
-
-      <div class="form-group">
-        <label class="control-label">Limited By:</label>
-        <select class="input-sm form-control" 
-                ng-model="model.groupingStrategy"
-                ng-change="getDbConfig()">
-          <option>root</option>
-          <option>collection</option>
-        </select>
-        <span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-      </div>
-
-      <div class="form-group">
-        <label class="control-label">Name:</label>
-        <select class="input-sm form-control" 
-                ng-model="data.directory_model" 
-                ng-options="d.name for d in data.docs" 
-                ng-change="setDocument()" required>
-          <option value="">Choose...</option>
-        </select>
-      </div>
-
-      <button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid">
-        <span class="fa fa-check"></span> Save and Run</button>
-      <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-    </form>
 
     <div class="row" style="margin-top:10px" ng-if="model.configError">
       <div class="col-md-12">

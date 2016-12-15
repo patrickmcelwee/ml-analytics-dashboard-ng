@@ -30,7 +30,7 @@
       includeFrequency: false,
       loadingConfig: false,
       loadingResults: false,
-      groupingStrategy: 'root',
+      groupingStrategy: 'collection',
       showBuilder: false
     };
 

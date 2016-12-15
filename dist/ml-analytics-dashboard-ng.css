@@ -1,6 +1,16 @@
 .modal-dialog {
   margin: 120px auto;
 }
+.ml-analytics-design-form.well {
+  margin-bottom: 2px;
+}
+.ml-analytics-design-form .form-group {
+  margin-right: 20px;
+  margin-bottom: 0px;
+}
+.ml-analytics-design-form .form-group label {
+  margin-right: 2px;
+}
 /* overwrite the dashboard styles */
 .widget-container {
   float: none;
