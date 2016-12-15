@@ -23,7 +23,7 @@
         '.json';
         
       ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('ReportCreated', $scope.report);
+        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
         $location.search('ml-analytics-mode', 'design');
         $location.search('ml-analytics-uri', $scope.report.uri);
       });

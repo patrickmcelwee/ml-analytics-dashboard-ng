@@ -92,7 +92,7 @@
       establishMode();
     });
 
-    $scope.$on('ReportCreated', function(event, report) { 
+    $scope.$on('mlAnalyticsDashboard:ReportCreated', function(event, report) { 
       $scope.reports.push(report);
     });
 

@@ -4,9 +4,9 @@
   angular.module('ml.analyticsDashboard')
     .controller('DashboardCtrl', DashboardCtrl);
 
-  DashboardCtrl.$inject = [ '$rootScope', '$scope', '$location'];
+  DashboardCtrl.$inject = ['$scope', '$location'];
 
-  function DashboardCtrl($rootScope, $scope, $location) {
+  function DashboardCtrl($scope, $location) {
 
     function establishMode() {
       if($location.search()['ml-analytics-mode']) {
