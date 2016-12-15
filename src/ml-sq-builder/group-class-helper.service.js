@@ -7,7 +7,6 @@
 
       return function(level) {
         var levels = [
-          '',
           'list-group-item-info',
           'list-group-item-success',
           'list-group-item-warning',

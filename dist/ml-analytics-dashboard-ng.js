@@ -20,22 +20,22 @@
 (function() {
   'use strict';
 
-  angular.module('ml-sq-builder', [
-    'RecursionHelper',
-  ]);
-
-})();
-
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
       'ml-sq-builder'
     ]); 
 })();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-sq-builder', [
+    'RecursionHelper',
+  ]);
+
+})();
+
 
 (function() {
   'use strict';
@@ -144,13 +144,38 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.report')
+    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
+      function(WidgetDataModel, $http) {
+        function SmartGridDataModel() {
+        }
+
+        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
+
+        SmartGridDataModel.prototype.init = function() {
+          WidgetDataModel.prototype.init.call(this);
+          this.load();
+        };
+
+        SmartGridDataModel.prototype.load = function() {
+          //console.log(this);
+        };
+
+        return SmartGridDataModel;
+      }
+    ]);
+
+})();
+
+(function() {
+  'use strict';
+
   // keeps all of the groups colored correctly
   angular.module('ml-sq-builder')
     .factory('groupClassHelper', function groupClassHelper() {
 
       return function(level) {
         var levels = [
-          '',
           'list-group-item-info',
           'list-group-item-success',
           'list-group-item-warning',
@@ -442,32 +467,6 @@
 
     return angular.copy(templates[type]);
   }
-
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
-      function(WidgetDataModel, $http) {
-        function SmartGridDataModel() {
-        }
-
-        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
-
-        SmartGridDataModel.prototype.init = function() {
-          WidgetDataModel.prototype.init.call(this);
-          this.load();
-        };
-
-        SmartGridDataModel.prototype.load = function() {
-          //console.log(this);
-        };
-
-        return SmartGridDataModel;
-      }
-    ]);
 
 })();
 
@@ -775,6 +774,68 @@
 
 })();
 
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        $scope.$watch('widget.mode', function(mode) {
+          $scope.data.needsUpdate = true;
+          $scope.data.needsRefresh = true;
+        });
+      }
+    };
+  }
+}());
+
 (function() {
   'use strict';
   // Recursively decide whether to show a group or rule
@@ -1028,68 +1089,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-          $scope.data.needsRefresh = true;
-        });
-      }
-    };
-  }
-}());
 
 (function () {
   'use strict';

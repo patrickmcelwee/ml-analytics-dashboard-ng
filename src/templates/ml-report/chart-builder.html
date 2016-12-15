@@ -62,12 +62,20 @@
 
     <div class="row" ng-show="model.showBuilder">
       <div class="col-md-5">
-        <h3 class="qb-title">Dimensions & Measures</h3>
-        <div dimension-builder="data"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4>Dimensions & Measures</h4>
+          </div>
+          <div class="panel-body" dimension-builder="data"></div>
+        </div>
       </div>
       <div class="col-md-7">
-        <h3 class="qb-title">Filters</h3>
-        <div sq-builder="data"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h4>Filters</h4>
+          </div>
+          <div class="panel-body" sq-builder="data"></div>
+        </div>
       </div>
     </div>
 
