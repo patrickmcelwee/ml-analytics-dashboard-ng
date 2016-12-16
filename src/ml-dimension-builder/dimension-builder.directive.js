@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  angular.module('ml-dimension-builder').directive('dimensionBuilder', ['dimensionBuilderService',
-    function DB(dimensionBuilderService) {
+  angular.module('ml-dimension-builder').directive('dimensionBuilder', [
+    function DB() {
       return {
         scope: {
           data: '=dimensionBuilder',
@@ -14,6 +14,21 @@
           var data = scope.data;
 
           scope.facets = [];
+
+          scope.highLevelType = function(type) {
+            switch(type) {
+              case 'int':
+              case 'unsignedInt':
+              case 'long':
+              case 'unsignedLong':
+              case 'float':
+              case 'double':
+              case 'decimal':
+                return 'numeric';
+              default:
+                return type;
+            }
+          };
 
           /**
            * Removes a dimension
@@ -49,14 +64,14 @@
           scope.$watch('data.needsRefresh', function(curr) {
             if (! curr) return;
 
-            scope.facets = dimensionBuilderService.toFacets(data.dimensions, scope.data.fields);
+            scope.facets = data.dimensions;
             scope.data.needsRefresh = false;
           });
 
           scope.$watch('facets', function(curr) {
             if (! curr) return;
 
-            data.dimensions = dimensionBuilderService.toDimensions(scope.facets, scope.data.fields);
+            data.dimensions = scope.facets;
           }, true);
         }
       };

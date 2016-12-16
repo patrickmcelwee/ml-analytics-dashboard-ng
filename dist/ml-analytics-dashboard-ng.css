@@ -199,3 +199,29 @@
   font-weight: bold;
 }
 /* end of hoptions */
+/* Ionicons */
+@font-face {
+  font-family: "Ionicons";
+  src: url("fonts/ionicons.eot?v=2.0.1");
+  src: url("fonts/ionicons.eot?v=2.0.1#iefix") format("embedded-opentype"), url("fonts/ionicons.ttf?v=2.0.1") format("truetype"), url("fonts/ionicons.woff?v=2.0.1") format("woff"), url("fonts/ionicons.svg?v=2.0.1#Ionicons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+.ion,
+.ionicons,
+.ion-pound:before {
+  display: inline-block;
+  font-family: "Ionicons";
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.ion-pound:before {
+  content: "\f219";
+}

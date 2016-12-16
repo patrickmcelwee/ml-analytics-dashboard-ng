@@ -10,18 +10,7 @@
           onRemove: '&',
         },
 
-        templateUrl: '/ml-dimension-builder/RuleDirective.html',
-
-        link: function(scope) {
-          scope.getType = function() {
-            var fields = scope.dimensionFields,
-                field = scope.rule.field;
-
-            if (! fields || ! field) return;
-
-            return fields[field].type;
-          };
-        }
+        templateUrl: '/ml-dimension-builder/RuleDirective.html'
       };
     }
   ]);

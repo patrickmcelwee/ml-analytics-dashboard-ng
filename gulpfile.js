@@ -45,6 +45,11 @@ gulp.task('styles', function() {
     .pipe(gulp.dest('dist'));
 });
 
+gulp.task('fonts', function() {
+  return gulp.src(['./src/fonts/*'])
+    .pipe(gulp.dest('dist/fonts'));
+});
+
 gulp.task('templates', function() {
   return gulp.src([ './src/**/*.html' ])
     .pipe(minifyHtml({
@@ -126,4 +131,4 @@ gulp.task('clean-code', function() {
   return del(files);
 });
 
-gulp.task('default', ['jshint', 'scripts', 'templates', 'styles', 'test']);
+gulp.task('default', ['jshint', 'scripts', 'templates', 'styles', 'fonts', 'test']);

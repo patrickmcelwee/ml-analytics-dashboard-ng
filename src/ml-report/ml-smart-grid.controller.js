@@ -12,15 +12,6 @@
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
 
-/*
-    $scope.data.fields = {
-      'state': {type: 'string', classification: 'json-property'},
-      'city': {type: 'string', classification: 'element', ns: 'claim-ns'},
-      'payor': {type: 'string', classification: 'field', collation: 'claim-collation'},
-      'payment': {type: 'number', classification: 'element', ns: '', minimum: 10, maximum: 900},
-      'paid': {type: 'boolean', classification: 'json-property', ns: '', }
-    };
-*/
     $scope.model = {
       queryConfig: null,
       queryError: null,
@@ -41,15 +32,12 @@
     $scope.deferredAbort = null;
 
     $scope.data = {};
-    $scope.data.docs = [];
-    $scope.data.fields = {};
     $scope.data.operation = 'and-query';
     $scope.data.query = [];
     $scope.data.dimensions = [];
     $scope.data.needsUpdate = true;
     $scope.data.needsRefresh = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
-    $scope.data.directory_model = null;
 
     $scope.executor = {};
     $scope.executor.transform = 'smart-filter';
@@ -87,9 +75,6 @@
         query: {query: {}}
       };
 
-      $scope.data.docs = [];
-      $scope.data.fields = {};
-
       $http.get('/v1/resources/index-discovery', {
         params: params
       }).then(function(response) {
@@ -100,68 +85,25 @@
           return;
         }
 
-        $scope.model.config = response.data;
+        $scope.data.targetDatabase = response.data['current-database'];
+        $scope.data.databases = response.data.databases;
 
-        var docsExist = !angular.equals($scope.model.config.docs, {});
-        if (docsExist) {
+        if (!_.isEmpty(response.data.docs)) {
           $scope.model.configError = null;
 
-          var docs = $scope.model.config.docs;
+          var docs = response.data.docs;
           var keys = Object.keys(docs);
-
-          // For each configured doc
-          keys.forEach(function(key) {
-            var doc = {
-              id: key, 
-              name: key,
-              fields: {}
-            };
-            var indexes = docs[key];
-
-            indexes.forEach(function(index) {
-              var field = {
-                type: index['scalar-type']
-              };
-              field['ref-type'] = index['ref-type'];
-
-              var ns = index['namespace-uri'];
-              if (ns || ns === '') {
-                field.ns = ns;
-              }
-
-              var collation = index.collation;
-              if (collation) {
-                field.collation = collation;
-              }
-
-              if (index.localname) {
-                if (index['parent-localname']) {
-                  // attribute range index
-                  field.classification = 'attribute';
-                  field['parent-localname'] = index['parent-localname'];
-                  field['parent-namespace-uri'] = index['parent-namespace-uri'];
-                } else {
-                  // element range index
-                  field.classification = 'element';
-                }
-                doc.fields[index.localname] = field;
-              } else if (index['path-expression']) {
-                // path range index
-                field.classification = 'path-expression';
-                doc.fields[index['path-expression']] = field;
-              }
+          $scope.data.originalDocs = docs;
+          $scope.data.docs = angular.copy(docs);
+          _.each(keys, function(key) {
+            _.each($scope.data.docs[key], function(doc) {
+              doc.shortName = doc.localname || doc['path-expression'];
             });
-
-            $scope.data.docs.push(doc);
           });
-
-          for (var i = 0; i < $scope.data.docs.length; i++) {
-            var model = $scope.data.docs[i];
-            if (model.id === $scope.data.directory) {
-              $scope.data.directory_model = model;
-              $scope.setDocument();
-              break;
-            }
+          $scope.data.directories = keys;
+;
+          if ($scope.data.docs[$scope.data.directory]) {
+            $scope.setDocument();
           }
 
           $scope.executor.disableRun = false;
@@ -177,24 +119,16 @@
     };
 
     $scope.setDocument = function() {
-      if ($scope.data.directory_model) {
-        var directory = $scope.data.directory_model.id;
-        $scope.data.directory = directory;
+      if ($scope.data.directory) {
         $scope.executor.dimensions = [];
         $scope.executor.results = [];
 
-        for (var i = 0; i < $scope.data.docs.length; i++) {
-          var doc = $scope.data.docs[i];
-          if (doc.id === directory) {
-            $scope.data.fields = doc.fields;
-            break;
-          }
-        }
+        $scope.data.fields = $scope.data.docs[$scope.data.directory];
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
         $scope.data.dimensions = [];
 
-        if (directory === $scope.widget.dataModelOptions.directory) {
+        if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
           if ($scope.widget.dataModelOptions.query && 
               $scope.widget.dataModelOptions.query.query &&
               $scope.widget.dataModelOptions.query.query.queries) {
@@ -228,9 +162,9 @@
     };
 
     $scope.save = function() {
-      $scope.widget.dataModelOptions.database = $scope.model.config['current-database'];
+      $scope.widget.dataModelOptions.database = $scope.data.targetDatabase;
       $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
-      $scope.widget.dataModelOptions.directory = $scope.data.directory_model.id;
+      $scope.widget.dataModelOptions.directory = $scope.data.directory;
 
       $scope.widget.dataModelOptions.query = {};
       $scope.widget.dataModelOptions.dimensions = [];
@@ -247,7 +181,7 @@
       var count = 0;
 
       dimensions.forEach(function(dimension) {
-        if (dimension.groupby) count++;
+        if (dimension.operation === 'groupby') count++;
       });
 
       // If there is no groupby dimension, we will do simple 
@@ -261,7 +195,7 @@
 
     $scope.getColumn = function(name) {
       var directory = $scope.widget.dataModelOptions.directory;
-      var fields = $scope.model.config.docs[directory];
+      var fields = $scope.data.originalDocs[directory];
       for (var i = 0; i < fields.length; i++) {
         var field = fields[i];
         if (name === field.localname || name === field['path-expression'])
@@ -308,11 +242,10 @@
 
       var dimensions = $scope.widget.dataModelOptions.dimensions;
       dimensions.forEach(function(dimension) {
-        var key = Object.keys(dimension)[0];
+        var key = dimension.operation;
 
         if (key !== 'atomic') {
-          var name = dimension[key].field;
-          var column = $scope.getColumn(name);
+          var column = $scope.getColumn(dimension.field.shortName);
 
           if (key === 'groupby') {
             queryConfig.columns.push(column);

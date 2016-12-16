@@ -1,6 +1,8 @@
 <div class="dimension-builder-rule">
-  <select class="form-control input-sm" data-ng-model="rule.field" data-ng-options="key as key for (key, value) in dimensionFields"></select>
-  <span data-dimension-type="getType()" data-rule="rule" data-guide="dimensionFields[rule.field]"></span>
+  <select class="form-control input-sm" data-ng-model="rule.field" ng-options="field.shortName for field in dimensionFields | filter:{'scalar-type': '!point'} track by field.shortName ">
+    </option>
+  </select>
+  <span data-dimension-type="rule.field['scalar-type']" data-rule="rule" data-guide="dimensionFields[rule.field]"></span>
   <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()">
     <i class="fa fa-minus"></i>
   </a>
