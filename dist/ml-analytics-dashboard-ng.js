@@ -1697,17 +1697,14 @@ drag.delegate = function( event ){
           $scope.model.configError = null;
 
           var docs = response.data.docs;
-          var keys = Object.keys(docs);
           $scope.data.originalDocs = docs;
-          $scope.data.docs = angular.copy(docs);
-          _.each(keys, function(key) {
-            _.each($scope.data.docs[key], function(doc) {
-              doc.shortName = doc.localname || doc['path-expression'];
-            });
+          $scope.data.directories = Object.keys(docs);
+          $scope.data.fields = angular.copy(docs[$scope.data.directory]);
+          _.each($scope.data.fields, function(field) {
+            field.shortName = field.localname || field['path-expression'];
           });
-          $scope.data.directories = keys;
 ;
-          if ($scope.data.docs[$scope.data.directory]) {
+          if ($scope.data.fields) {
             $scope.setDocument();
           }
 
@@ -1728,7 +1725,6 @@ drag.delegate = function( event ){
         $scope.executor.dimensions = [];
         $scope.executor.results = [];
 
-        $scope.data.fields = $scope.data.docs[$scope.data.directory];
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
         $scope.data.dimensions = [];
