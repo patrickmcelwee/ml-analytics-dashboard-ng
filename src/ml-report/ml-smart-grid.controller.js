@@ -39,13 +39,9 @@
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
 
     $scope.executor = {};
-    $scope.executor.transform = 'smart-filter';
-    $scope.executor.disableRun = true;
 
     $scope.clearResults = function() {
       $scope.model.results = null;
-      $scope.executor.dimensions = [];
-      $scope.executor.results = [];
     };
 
     $scope.getDbConfig = function() {
@@ -102,7 +98,6 @@
             $scope.setDocument();
           }
 
-          $scope.executor.disableRun = false;
         } else {
           $scope.model.configError = 'No documents with range indices in the database';
         }
@@ -116,9 +111,6 @@
 
     $scope.setDocument = function() {
       if ($scope.data.directory) {
-        $scope.executor.dimensions = [];
-        $scope.executor.results = [];
-
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
         $scope.data.dimensions = [];
@@ -215,8 +207,8 @@
         'queries': queries
       };
 
-      if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-        query.qtext = $scope.executor.simple;
+      if ($scope.widget.mode === 'View' && $scope.executor.qtext) {
+        query.qtext = $scope.executor.qtext;
       } else {
         query.qtext = '';
       }

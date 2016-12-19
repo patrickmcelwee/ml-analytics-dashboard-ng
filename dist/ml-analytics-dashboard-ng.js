@@ -1003,20 +1003,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -1038,6 +1024,20 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1645,13 +1645,9 @@ drag.delegate = function( event ){
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
 
     $scope.executor = {};
-    $scope.executor.transform = 'smart-filter';
-    $scope.executor.disableRun = true;
 
     $scope.clearResults = function() {
       $scope.model.results = null;
-      $scope.executor.dimensions = [];
-      $scope.executor.results = [];
     };
 
     $scope.getDbConfig = function() {
@@ -1708,7 +1704,6 @@ drag.delegate = function( event ){
             $scope.setDocument();
           }
 
-          $scope.executor.disableRun = false;
         } else {
           $scope.model.configError = 'No documents with range indices in the database';
         }
@@ -1722,9 +1717,6 @@ drag.delegate = function( event ){
 
     $scope.setDocument = function() {
       if ($scope.data.directory) {
-        $scope.executor.dimensions = [];
-        $scope.executor.results = [];
-
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
         $scope.data.dimensions = [];
@@ -1821,8 +1813,8 @@ drag.delegate = function( event ){
         'queries': queries
       };
 
-      if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-        query.qtext = $scope.executor.simple;
+      if ($scope.widget.mode === 'View' && $scope.executor.qtext) {
+        query.qtext = $scope.executor.qtext;
       } else {
         query.qtext = '';
       }
@@ -2309,6 +2301,70 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
+
+    $scope.report = {};
+    $scope.report.privacy = 'public';
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.createReport = function() {
+      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
+        encodeURIComponent($scope.report.name) +
+        '-' +
+        Math.floor((Math.random() * 1000000) + 1) +
+        '.json';
+        
+      ReportService.createReport($scope.report).then(function(response) {
+        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
+        $location.search('ml-analytics-mode', 'design');
+        $location.search('ml-analytics-uri', $scope.report.uri);
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
+    function($scope, $location, ReportService) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    ReportService.getReport($scope.report.uri).then(function(response) {
+      angular.extend($scope.report, response.data);
+    });
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.updateReport = function() {
+      ReportService.updateReport($scope.report).then(function(response) {
+        $location.search('ml-analytics-mode', 'home');
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -2406,68 +2462,4 @@ drag.delegate = function( event ){
 
   }
 
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
-    function($scope, $location, $rootScope, ReportService) {
-
-    $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.createReport = function() {
-      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        encodeURIComponent($scope.report.name) +
-        '-' +
-        Math.floor((Math.random() * 1000000) + 1) +
-        '.json';
-        
-      ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
-        $location.search('ml-analytics-mode', 'design');
-        $location.search('ml-analytics-uri', $scope.report.uri);
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
-    function($scope, $location, ReportService) {
-
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-    ReportService.getReport($scope.report.uri).then(function(response) {
-      angular.extend($scope.report, response.data);
-    });
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        $location.search('ml-analytics-mode', 'home');
-      });
-    };
-
-  }]);
 }());

@@ -402,7 +402,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/ml-report/ml-analytics-view-chart.html',
-    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="executor.simple"></div><button class="btn btn-primary" ng-disabled="executor.disableRun" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div>');
+    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="executor.qtext"></div><button class="btn btn-primary" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div>');
 }]);
 })();
 
