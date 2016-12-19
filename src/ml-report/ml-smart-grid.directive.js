@@ -17,7 +17,6 @@
 
         $scope.$watch('widget.mode', function(mode) {
           $scope.data.needsUpdate = true;
-          $scope.data.needsRefresh = true;
         });
       }
     };

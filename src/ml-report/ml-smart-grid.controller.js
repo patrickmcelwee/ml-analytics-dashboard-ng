@@ -36,7 +36,6 @@
     $scope.data.query = [];
     $scope.data.dimensions = [];
     $scope.data.needsUpdate = true;
-    $scope.data.needsRefresh = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
 
     $scope.executor = {};
@@ -153,7 +152,6 @@
         }
 
         $scope.data.needsUpdate = true;
-        $scope.data.needsRefresh = true;
 
         $scope.model.showBuilder = true;
       } else {

@@ -1,7 +1,7 @@
 <div class="dimension-builder">
+
   <!-- <ul class="list-unstyled"> -->
   <!--   <li ng-repeat="field in data.fields | filter:{'scalar-type': '!point'}"> -->
-  <!--     field: {{field}} -->
   <!--     <span tooltip-placement="right" uib-tooltip="Index type: {{field['ref-type']}}; Namespace: {{field.ns}}"> -->
   <!--       <span ng-switch="highLevelType(field['scalar-type'])"> -->
   <!--         <i class="fa fa-font" ng-switch-when="string"></i> -->
@@ -11,9 +11,10 @@
   <!--     </span> -->
   <!--   </li> -->
   <!-- </ul> -->
+
   <div class="filter-panels">
     <div class="form-inline">
-      <div data-ng-repeat="facet in facets" data-dimension-builder-chooser="facet" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div>
+      <div data-ng-repeat="dimension in data.dimensions" data-dimension-builder-chooser="dimension" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div>
       <div class="actions">
         <a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()">
           <i class="fa fa-plus"></i>

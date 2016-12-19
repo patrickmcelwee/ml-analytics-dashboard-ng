@@ -477,7 +477,6 @@
           groupingStrategy: '',
           directory: '',
           query: {},
-          dimensions: [],
           chart: 'column',
           pageLength: 10
         },
@@ -568,9 +567,6 @@
         templateUrl: '/ml-dimension-builder/BuilderDirective.html',
 
         link: function(scope) {
-          var data = scope.data;
-
-          scope.facets = [];
 
           scope.highLevelType = function(type) {
             switch(type) {
@@ -591,19 +587,19 @@
            * Removes a dimension
            */
           scope.removeDimension = function(idx) {
-            scope.facets.splice(idx, 1);
+            scope.data.dimensions.splice(idx, 1);
           };
 
           /**
            * Adds a dimension
            */
           scope.addDimension = function() {
-            scope.facets.push({});
+            scope.data.dimensions.push({});
           };
 
           scope.renderDimensionConfig = function() {
             var dimensions = {
-              dimensions: data.dimensions
+              dimensions: scope.data.dimensions
             };
             return JSON.stringify(dimensions, null, 2);
           };
@@ -618,18 +614,6 @@
 
           scope.hideDimensionConfig();
 
-          scope.$watch('data.needsRefresh', function(curr) {
-            if (! curr) return;
-
-            scope.facets = data.dimensions;
-            scope.data.needsRefresh = false;
-          });
-
-          scope.$watch('facets', function(curr) {
-            if (! curr) return;
-
-            data.dimensions = scope.facets;
-          }, true);
         }
       };
     }
@@ -729,7 +713,6 @@
 
         $scope.$watch('widget.mode', function(mode) {
           $scope.data.needsUpdate = true;
-          $scope.data.needsRefresh = true;
         });
       }
     };
@@ -1007,13 +990,12 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
-  function manageMlAnalyticsDashboard() {
+  function mlAnalyticsDashboardHome() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1021,12 +1003,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
 
-  function mlAnalyticsDashboardHome() {
+  function manageMlAnalyticsDashboard() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1659,7 +1642,6 @@ drag.delegate = function( event ){
     $scope.data.query = [];
     $scope.data.dimensions = [];
     $scope.data.needsUpdate = true;
-    $scope.data.needsRefresh = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
 
     $scope.executor = {};
@@ -1776,7 +1758,6 @@ drag.delegate = function( event ){
         }
 
         $scope.data.needsUpdate = true;
-        $scope.data.needsRefresh = true;
 
         $scope.model.showBuilder = true;
       } else {

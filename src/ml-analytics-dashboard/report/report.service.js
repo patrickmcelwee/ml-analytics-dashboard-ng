@@ -109,7 +109,6 @@
           groupingStrategy: '',
           directory: '',
           query: {},
-          dimensions: [],
           chart: 'column',
           pageLength: 10
         },

@@ -11,9 +11,6 @@
         templateUrl: '/ml-dimension-builder/BuilderDirective.html',
 
         link: function(scope) {
-          var data = scope.data;
-
-          scope.facets = [];
 
           scope.highLevelType = function(type) {
             switch(type) {
@@ -34,19 +31,19 @@
            * Removes a dimension
            */
           scope.removeDimension = function(idx) {
-            scope.facets.splice(idx, 1);
+            scope.data.dimensions.splice(idx, 1);
           };
 
           /**
            * Adds a dimension
            */
           scope.addDimension = function() {
-            scope.facets.push({});
+            scope.data.dimensions.push({});
           };
 
           scope.renderDimensionConfig = function() {
             var dimensions = {
-              dimensions: data.dimensions
+              dimensions: scope.data.dimensions
             };
             return JSON.stringify(dimensions, null, 2);
           };
@@ -61,18 +58,6 @@
 
           scope.hideDimensionConfig();
 
-          scope.$watch('data.needsRefresh', function(curr) {
-            if (! curr) return;
-
-            scope.facets = data.dimensions;
-            scope.data.needsRefresh = false;
-          });
-
-          scope.$watch('facets', function(curr) {
-            if (! curr) return;
-
-            data.dimensions = scope.facets;
-          }, true);
         }
       };
     }
