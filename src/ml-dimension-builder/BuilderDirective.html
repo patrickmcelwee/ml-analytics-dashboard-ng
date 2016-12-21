@@ -17,8 +17,11 @@
           <ul class="dropdown-menu">
             <!--<li><a ng-click="addRow(field)">Add Row</a></li>-->
             <li><a ng-click="addColumn(field)">Add Group By Column</a></li>
-            <li><a ng-click="addCompute(field, 'count')"
-                ng-class="{true: 'strikethru'}[ !(model.queryConfig.rows.length || model.queryConfig.columns.length) ]">Add Count</a></li>
+            <li ng-repeat="fn in availableFns(field) | orderBy:'toString()'">
+              <a ng-click="addCompute(field, fn)">
+                Add {{fn}}
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -31,13 +34,22 @@
         <span class="panel-title">Measures</span>
       </div>
       <ul class="list-unstyled panel-body">
-        <li ng-repeat="field in data.fields | filter:isComputeField">
-          <span tooltip-placement="right" uib-tooltip="Index type: {{field['ref-type']}}; Namespace: {{field.ns}}">
-            <span ng-switch="highLevelType(field['scalar-type'])">
-              <i class="icon ion-pound" ng-switch-when="numeric"></i>
+        <li uib-dropdown ng-repeat="field in data.fields | filter:isComputeField">
+          <a uib-dropdown-toggle>
+            <span tooltip-placement="right" uib-tooltip="Index type: {{field['ref-type']}}; Namespace: {{field.ns}}">
+              <span ng-switch="highLevelType(field['scalar-type'])">
+                <i class="icon ion-pound" ng-switch-when="numeric"></i>
+              </span>
+              {{shortName(field)}}
             </span>
-            {{shortName(field)}}
-          </span>
+          </a>
+          <ul class="dropdown-menu">
+            <li ng-repeat="fn in availableFns(field) | orderBy:'toString()'">
+              <a ng-click="addCompute(field, fn)">
+                Add {{fn}}
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </div>
