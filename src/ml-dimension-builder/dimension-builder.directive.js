@@ -43,7 +43,7 @@
           };
 
           scope.addColumn = function(field) {
-            scope.data.columns.push(field);
+            scope.data.serializedQuery.columns.push(field);
           };
 
           scope.availableFns = function(field) {
@@ -54,32 +54,11 @@
           };
 
           scope.addCompute = function(field, operation) {
-            scope.data.computes.push({
+            scope.data.serializedQuery.computes.push({
               fn: operation,
               ref: field
             });
           };
-
-          scope.renderGroupByConfig = function() {
-            return JSON.stringify(
-              {
-                columns: scope.data.columns,
-                computes: scope.data.computes
-              },
-              null,
-              2
-            );
-          };
-
-          scope.showGroupByConfig = function() {
-            scope.groupByConfigIsHidden = false;
-          };
-
-          scope.hideGroupByConfig = function() {
-            scope.groupByConfigIsHidden = true;
-          };
-
-          scope.hideGroupByConfig();
 
         }
       };

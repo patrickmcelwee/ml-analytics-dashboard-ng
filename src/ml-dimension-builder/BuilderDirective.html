@@ -55,24 +55,4 @@
     </div>
   </div>
 
-  <div class="filter-panels">
-    <div class="form-inline">
-      <div class="actions">
-        <a ng-if="groupByConfigIsHidden" data-ng-click="showGroupByConfig()" class="btn btn-xs btn-primary" title="Show Generated Dimensions">
-          <i class="fa fa-eye"></i>
-          Show Generated Group-by Query
-        </a>
-        <a ng-if="!groupByConfigIsHidden" ng-click="hideGroupByConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions">
-          <span class="fa-stack fa-stack-xs">
-            <i class="fa fa-eye fa-stack-1x"></i>
-            <i class="fa fa-ban fa-stack-1x text-danger"></i>
-          </span>
-          Hide Generated Group-by Query
-        </a>
-     </div>
-    </div>
-  </div>
-  <div uib-collapse="groupByConfigIsHidden">
-    <pre ng-bind="renderGroupByConfig()"></pre>
-  </div>
 </div>

@@ -13,12 +13,10 @@
     $scope.shouldShowChart = false;
 
     $scope.model = {
-      queryConfig: null,
       queryError: null,
       config: null,
       configError: null,
       results: null,
-      includeFrequency: false,
       loadingConfig: false,
       loadingResults: false,
       groupingStrategy: 'collection',
@@ -36,8 +34,14 @@
     $scope.data.query = [];
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
-    $scope.data.columns = [];
-    $scope.data.computes = [];
+    $scope.data.serializedQuery = {
+      'result-type': 'group-by',
+      rows: [],
+      columns: [],
+      computes: [],
+      options: ['headers=true'],
+      query: {query: {}}
+    };
 
     $scope.executor = {};
 
@@ -48,12 +52,24 @@
     // TODO: move into column/row directive
     $scope.dataManager = {
       removeCompute: function(index) {
-        $scope.data.computes.splice(index, 1);
+        $scope.data.serializedQuery.computes.splice(index, 1);
       },
       removeColumn: function(index) {
-        $scope.data.columns.splice(index, 1);
+        $scope.data.serializedQuery.columns.splice(index, 1);
       }
     };
+
+    // TODO: move into showQuery directive?
+    $scope.renderGroupByConfig = function() {
+      return angular.toJson($scope.generateQueryConfig(), true);
+    };
+    $scope.showGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = false;
+    };
+    $scope.hideGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = true;
+    };
+    $scope.hideGroupByConfig();
 
     $scope.shortName = function(field) {
       return field.localname || field['path-expression'];
@@ -74,16 +90,7 @@
       }
 
       $scope.clearResults();
-      $scope.model.includeFrequency = false;
       // $scope.model.config = null;
-      $scope.model.queryConfig = {
-        'result-type': 'group-by',
-        rows: [],
-        columns: [],
-        computes: [],
-        options: ['headers=true'],
-        query: {query: {}}
-      };
 
       $http.get('/v1/resources/index-discovery', {
         params: params
@@ -140,20 +147,20 @@
           }
 
           if ($scope.widget.dataModelOptions.columns) {
-            angular.copy($scope.widget.dataModelOptions.columns, $scope.data.columns);
+            angular.copy($scope.widget.dataModelOptions.columns, $scope.data.serializedQuery.columns);
           } else {
-            $scope.data.columns = [];
+            $scope.data.serializedQuery.columns = [];
           }
           if ($scope.widget.dataModelOptions.computes) {
-            angular.copy($scope.widget.dataModelOptions.computes, $scope.data.computes);
+            angular.copy($scope.widget.dataModelOptions.computes, $scope.data.serializedQuery.computes);
           } else {
-            $scope.data.computes = [];
+            $scope.data.serializedQuery.computes = [];
           }
         } else {
           $scope.data.operation = 'and-query';
           $scope.data.query = [];
-          $scope.data.columns = [];
-          $scope.data.computes = [];
+          $scope.data.serializedQuery.columns = [];
+          $scope.data.serializedQuery.computes = [];
         }
 
         $scope.data.needsUpdate = true;
@@ -172,8 +179,8 @@
       $scope.widget.dataModelOptions.query = {};
 
       angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
-      $scope.widget.dataModelOptions.columns = $scope.data.columns;
-      $scope.widget.dataModelOptions.computes = $scope.data.computes;
+      $scope.widget.dataModelOptions.columns = $scope.data.serializedQuery.columns;
+      $scope.widget.dataModelOptions.computes = $scope.data.serializedQuery.computes;
 
       $scope.options.saveDashboard();
     };
@@ -192,7 +199,7 @@
         $scope.executeSimpleQuery(1);
     };
 
-    $scope.executeComplexQuery = function(count) {
+    $scope.generateQueryConfig = function() {
       var queries = $scope.widget.dataModelOptions.query.query.queries;
       if (queries.length === 1) {
         // The first element has only one key.
@@ -204,32 +211,25 @@
         if (firstElement[key].queries.length === 0)
           queries = [];
       }
-
       var query = {
         'queries': queries
       };
-
       if ($scope.widget.mode === 'View' && $scope.executor.qtext) {
         query.qtext = $scope.executor.qtext;
       } else {
         query.qtext = '';
       }
+      $scope.data.serializedQuery.query.query = query;
 
+      return $scope.data.serializedQuery;
+    };
+
+    $scope.executeComplexQuery = function(count) {
       var params = {};
-      var queryConfig = angular.copy($scope.model.queryConfig);
 
       if ($scope.model.config) {
         params['rs:database'] = $scope.model.config['current-database'];
       }
-
-      if ($scope.model.includeFrequency) {
-        queryConfig.computes.push({fn: 'frequency'});
-      }
-
-      queryConfig.query.query = query;
-
-      queryConfig.columns = $scope.widget.dataModelOptions.columns;
-      queryConfig.computes = $scope.widget.dataModelOptions.computes;
 
       $scope.model.loadingResults = true;
       $scope.clearResults();
@@ -239,7 +239,7 @@
         method: 'POST',
         url: '/v1/resources/group-by',
         params: params,
-        data: queryConfig,
+        data: $scope.generateQueryConfig(),
         timeout: $scope.deferredAbort.promise
       }).then(function(response) {
         $scope.model.results = response.data;

@@ -67,6 +67,7 @@
     <div class="row">
       <div class="col-md-4" ng-show="model.showBuilder">
         <div dimension-builder="data"></div>
+
         <div>
           <div class="panel panel-default panel-sm">
             <div class="panel-heading">
@@ -75,6 +76,24 @@
             <div class="panel-body" sq-builder="data"></div>
           </div>
         </div>
+
+        <div>
+          <a ng-if="groupByConfigIsHidden" data-ng-click="showGroupByConfig()" class="btn btn-xs btn-primary">
+            <i class="fa fa-eye"></i>
+            Show Generated Group-by Query
+          </a>
+          <a ng-if="!groupByConfigIsHidden" ng-click="hideGroupByConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions">
+            <span class="fa-stack fa-stack-xs">
+              <i class="fa fa-eye fa-stack-1x"></i>
+              <i class="fa fa-ban fa-stack-1x text-danger"></i>
+            </span>
+            Hide Generated Group-by Query
+          </a>
+          <div uib-collapse="groupByConfigIsHidden">
+            <pre ng-bind="renderGroupByConfig()"></pre>
+          </div>
+        </div>
+
       </div>
 
       <div class="col-md-8">
@@ -84,7 +103,7 @@
               <span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span>
             </div>
             <div class="panel-body">
-              <div class="btn-group" ng-repeat="column in data.columns">
+              <div class="btn-group" ng-repeat="column in data.serializedQuery.columns">
                 <button type="button" class="btn btn-xs btn-info">
                   {{shortName(column)}}
                 </button>
@@ -99,7 +118,7 @@
               <span class="panel-title"><i class="fa fa-list"></i> Rows</span>
             </div>
             <div class="panel-body">
-              <div class="btn-group" ng-repeat="compute in data.computes">
+              <div class="btn-group" ng-repeat="compute in data.serializedQuery.computes">
                 <button type="button" class="btn btn-xs btn-success">
                   {{compute.fn}}({{shortName(compute.ref)}})
                 </button>
