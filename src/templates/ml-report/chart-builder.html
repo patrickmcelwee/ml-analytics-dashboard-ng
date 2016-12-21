@@ -84,7 +84,14 @@
               <span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span>
             </div>
             <div class="panel-body">
-              <span class="label label-info" ng-repeat="column in data.columns">{{shortName(column)}}</span>
+              <div class="btn-group" ng-repeat="column in data.columns">
+                <button type="button" class="btn btn-xs btn-info">
+                  {{shortName(column)}}
+                </button>
+                <button type="button" class="btn btn-xs btn-info" ng-click="dataManager.removeColumn($index)">
+                  <i class="fa fa-remove"></i>
+                </button>
+              </div>
             </div>
           </div>
           <div class="ml-analytics-rows panel panel-default panel-horizontal panel-sm">
@@ -92,7 +99,14 @@
               <span class="panel-title"><i class="fa fa-list"></i> Rows</span>
             </div>
             <div class="panel-body">
-              <span class="label label-success" ng-repeat="compute in data.computes">{{compute.fn}}({{shortName(compute.ref)}})</span>
+              <div class="btn-group" ng-repeat="compute in data.computes">
+                <button type="button" class="btn btn-xs btn-success">
+                  {{compute.fn}}({{shortName(compute.ref)}})
+                </button>
+                <button type="button" class="btn btn-xs btn-success" ng-click="dataManager.removeCompute($index)">
+                  <i class="fa fa-remove"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

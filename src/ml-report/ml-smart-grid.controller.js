@@ -45,6 +45,16 @@
       $scope.model.results = null;
     };
 
+    // TODO: move into column/row directive
+    $scope.dataManager = {
+      removeCompute: function(index) {
+        $scope.data.computes.splice(index, 1);
+      },
+      removeColumn: function(index) {
+        $scope.data.columns.splice(index, 1);
+      }
+    };
+
     $scope.shortName = function(field) {
       return field.localname || field['path-expression'];
     };
