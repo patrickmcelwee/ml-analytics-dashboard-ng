@@ -27,36 +27,49 @@
             }
           };
 
-          /**
-           * Removes a dimension
-           */
-          scope.removeDimension = function(idx) {
-            scope.data.dimensions.splice(idx, 1);
+          scope.isColumnField = function(field) {
+            return scope.highLevelType(field['scalar-type']) === 'string';
           };
 
-          /**
-           * Adds a dimension
-           */
-          scope.addDimension = function() {
-            scope.data.dimensions.push({});
+          scope.isComputeField = function(field) {
+            return scope.highLevelType(field['scalar-type']) === 'numeric';
           };
 
-          scope.renderDimensionConfig = function() {
-            var dimensions = {
-              dimensions: scope.data.dimensions
-            };
-            return JSON.stringify(dimensions, null, 2);
+          scope.shortName = function(field) {
+            return field.localname || field['path-expression'];
           };
 
-          scope.showDimensionConfig = function() {
-            scope.dimensionConfigIsHidden = false;
+          scope.addColumn = function(field) {
+            scope.data.columns.push(field);
           };
 
-          scope.hideDimensionConfig = function() {
-            scope.dimensionConfigIsHidden = true;
+          scope.addCompute = function(field, operation) {
+            scope.data.computes.push({
+              fn: operation,
+              ref: field
+            });
           };
 
-          scope.hideDimensionConfig();
+          scope.renderGroupByConfig = function() {
+            return JSON.stringify(
+              {
+                columns: scope.data.columns,
+                computes: scope.data.computes
+              },
+              null,
+              2
+            );
+          };
+
+          scope.showGroupByConfig = function() {
+            scope.groupByConfigIsHidden = false;
+          };
+
+          scope.hideGroupByConfig = function() {
+            scope.groupByConfigIsHidden = true;
+          };
+
+          scope.hideGroupByConfig();
 
         }
       };

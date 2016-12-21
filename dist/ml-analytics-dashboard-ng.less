@@ -148,12 +148,6 @@
   display: inline-block;
 }
 
-/* Dimension Builder */
-
-.dimension-builder-rule {
-  margin-top: 5px;
-}
-
 /* Structured Query Builder */
 .actions {
   margin-top: 10px;
@@ -283,3 +277,40 @@
 }
 
 .@{ionicons-prefix}pound:before { content: @ionicon-var-pound; }
+
+/* Horizontal panels for columns and rows */
+.panel.panel-sm {
+  margin-bottom: 10px;
+  .panel-body {
+    padding: 5px;
+  }
+  .panel-heading {
+    padding: 4px 10px;
+    .panel-title {
+      font-size: 12px;
+    }
+  }
+}
+.panel.panel-horizontal {
+  display:table;
+  width:100%;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-body, .panel.panel-horizontal > .panel-footer {
+  display:table-cell;
+}
+.panel.panel-horizontal > .panel-heading, .panel.panel-horizontal > .panel-footer {
+  width: 18%;
+  border:0;
+  vertical-align: middle;
+  text-align: left;
+}
+.panel.panel-horizontal > .panel-heading {
+  border-right: 1px solid #ddd;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 4px;
+}
+.panel.panel-horizontal > .panel-footer {
+  border-left: 1px solid #ddd;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 4px;
+}

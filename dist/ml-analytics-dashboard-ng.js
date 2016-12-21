@@ -20,16 +20,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report',
-    [
-      'ml-dimension-builder',
-      'ml-sq-builder'
-    ]); 
-})();
-
-(function() {
-  'use strict';
-
   angular.module('ml-sq-builder', [
     'RecursionHelper',
   ]);
@@ -40,27 +30,11 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report')
-    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
-      function(WidgetDataModel, $http) {
-        function SmartGridDataModel() {
-        }
-
-        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
-
-        SmartGridDataModel.prototype.init = function() {
-          WidgetDataModel.prototype.init.call(this);
-          this.load();
-        };
-
-        SmartGridDataModel.prototype.load = function() {
-          //console.log(this);
-        };
-
-        return SmartGridDataModel;
-      }
-    ]);
-
+  angular.module('ml.analyticsDashboard.report',
+    [
+      'ml-dimension-builder',
+      'ml-sq-builder'
+    ]); 
 })();
 
 (function() {
@@ -369,6 +343,32 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.report')
+    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
+      function(WidgetDataModel, $http) {
+        function SmartGridDataModel() {
+        }
+
+        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
+
+        SmartGridDataModel.prototype.init = function() {
+          WidgetDataModel.prototype.init.call(this);
+          this.load();
+        };
+
+        SmartGridDataModel.prototype.load = function() {
+          //console.log(this);
+        };
+
+        return SmartGridDataModel;
+      }
+    ]);
+
+})();
+
+(function() {
+  'use strict';
+
   // Report Service
   angular.module('ml.analyticsDashboard').service('ReportService', ['$http', '$q', 'MLRest', function($http, $q, mlRest) {
     var dashboardOptions = null;
@@ -519,44 +519,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml-dimension-builder').directive('dimensionBuilderChooser', [
-    function dimensionBuilderChooser() {
-      return {
-        scope: {
-          dimensionFields: '=',
-          item: '=dimensionBuilderChooser',
-          onRemove: '&',
-        },
-
-        templateUrl: '/ml-dimension-builder/ChooserDirective.html'
-      };
-    }
-  ]);
-
-
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-dimension-builder').directive('dimensionBuilderRule', [
-    function dimensionBuilderRule() {
-      return {
-        scope: {
-          dimensionFields: '=',
-          rule: '=dimensionBuilderRule',
-          onRemove: '&',
-        },
-
-        templateUrl: '/ml-dimension-builder/RuleDirective.html'
-      };
-    }
-  ]);
-})();
-
-(function() {
-  'use strict';
-
   angular.module('ml-dimension-builder').directive('dimensionBuilder', [
     function DB() {
       return {
@@ -583,141 +545,55 @@
             }
           };
 
-          /**
-           * Removes a dimension
-           */
-          scope.removeDimension = function(idx) {
-            scope.data.dimensions.splice(idx, 1);
+          scope.isColumnField = function(field) {
+            return scope.highLevelType(field['scalar-type']) === 'string';
           };
 
-          /**
-           * Adds a dimension
-           */
-          scope.addDimension = function() {
-            scope.data.dimensions.push({});
+          scope.isComputeField = function(field) {
+            return scope.highLevelType(field['scalar-type']) === 'numeric';
           };
 
-          scope.renderDimensionConfig = function() {
-            var dimensions = {
-              dimensions: scope.data.dimensions
-            };
-            return JSON.stringify(dimensions, null, 2);
+          scope.shortName = function(field) {
+            return field.localname || field['path-expression'];
           };
 
-          scope.showDimensionConfig = function() {
-            scope.dimensionConfigIsHidden = false;
+          scope.addColumn = function(field) {
+            scope.data.columns.push(field);
           };
 
-          scope.hideDimensionConfig = function() {
-            scope.dimensionConfigIsHidden = true;
+          scope.addCompute = function(field, operation) {
+            scope.data.computes.push({
+              fn: operation,
+              ref: field
+            });
           };
 
-          scope.hideDimensionConfig();
+          scope.renderGroupByConfig = function() {
+            return JSON.stringify(
+              {
+                columns: scope.data.columns,
+                computes: scope.data.computes
+              },
+              null,
+              2
+            );
+          };
+
+          scope.showGroupByConfig = function() {
+            scope.groupByConfigIsHidden = false;
+          };
+
+          scope.hideGroupByConfig = function() {
+            scope.groupByConfigIsHidden = true;
+          };
+
+          scope.hideGroupByConfig();
 
         }
       };
     }
   ]);
 })();
-
-(function() {
-  'use strict';
-
-  // Determines which Rule type should be displayed
-  angular.module('ml-dimension-builder').directive('dimensionType', [
-    function dimensionType() {
-      return {
-        scope: {
-          type: '=dimensionType',
-          rule: '=',
-          guide: '=',
-        },
-
-        template: '<ng-include src="getTemplateUrl()" />',
-
-        link: function(scope) {
-          scope.getTemplateUrl = function() {
-            var type = scope.type;
-            if (! type) return;
-
-            type = type.charAt(0).toUpperCase() + type.slice(1);
-
-            return '/ml-dimension-builder/types/' + type + '.html';
-          };
-
-          scope.inputNeeded = function() {
-            // None of these requires an input.
-            var needs = [];
-
-            return ~needs.indexOf(scope.rule.operation);
-          };
-        },
-      };
-    }
-  ]);
-
-})();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-        });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -974,6 +850,80 @@
 })();
 
 (function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        $scope.$watch('widget.mode', function(mode) {
+          $scope.data.needsUpdate = true;
+        });
+      }
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
+    };
+  }
+}());
+
+(function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
@@ -990,12 +940,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
 
-  function mlAnalyticsDashboardHome() {
+  function manageMlAnalyticsDashboard() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1024,20 +975,6 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1640,14 +1577,19 @@ drag.delegate = function( event ){
     $scope.data = {};
     $scope.data.operation = 'and-query';
     $scope.data.query = [];
-    $scope.data.dimensions = [];
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
+    $scope.data.columns = [];
+    $scope.data.computes = [];
 
     $scope.executor = {};
 
     $scope.clearResults = function() {
       $scope.model.results = null;
+    };
+
+    $scope.shortName = function(field) {
+      return field.localname || field['path-expression'];
     };
 
     $scope.getDbConfig = function() {
@@ -1696,9 +1638,6 @@ drag.delegate = function( event ){
           $scope.data.originalDocs = docs;
           $scope.data.directories = Object.keys(docs);
           $scope.data.fields = angular.copy(docs[$scope.data.directory]);
-          _.each($scope.data.fields, function(field) {
-            field.shortName = field.localname || field['path-expression'];
-          });
 ;
           if ($scope.data.fields) {
             $scope.setDocument();
@@ -1719,7 +1658,6 @@ drag.delegate = function( event ){
       if ($scope.data.directory) {
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
-        $scope.data.dimensions = [];
 
         if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
           if ($scope.widget.dataModelOptions.query && 
@@ -1734,15 +1672,21 @@ drag.delegate = function( event ){
             $scope.data.query = [];
           }
 
-          if ($scope.widget.dataModelOptions.dimensions) {
-            angular.copy($scope.widget.dataModelOptions.dimensions, $scope.data.dimensions);
+          if ($scope.widget.dataModelOptions.columns) {
+            angular.copy($scope.widget.dataModelOptions.columns, $scope.data.columns);
           } else {
-            $scope.data.dimensions = [];
+            $scope.data.columns = [];
+          }
+          if ($scope.widget.dataModelOptions.computes) {
+            angular.copy($scope.widget.dataModelOptions.computes, $scope.data.computes);
+          } else {
+            $scope.data.computes = [];
           }
         } else {
           $scope.data.operation = 'and-query';
           $scope.data.query = [];
-          $scope.data.dimensions = [];
+          $scope.data.columns = [];
+          $scope.data.computes = [];
         }
 
         $scope.data.needsUpdate = true;
@@ -1759,41 +1703,26 @@ drag.delegate = function( event ){
       $scope.widget.dataModelOptions.directory = $scope.data.directory;
 
       $scope.widget.dataModelOptions.query = {};
-      $scope.widget.dataModelOptions.dimensions = [];
 
       angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
-      angular.copy($scope.data.dimensions, $scope.widget.dataModelOptions.dimensions);
+      $scope.widget.dataModelOptions.columns = $scope.data.columns;
+      $scope.widget.dataModelOptions.computes = $scope.data.computes;
 
       $scope.options.saveDashboard();
     };
 
     $scope.execute = function() {
-      var dimensions = $scope.widget.dataModelOptions.dimensions;
+      var columns = $scope.widget.dataModelOptions.columns;
       // Number of groupby fields.
-      var count = 0;
+      var count = columns.length;
 
-      dimensions.forEach(function(dimension) {
-        if (dimension.operation === 'groupby') count++;
-      });
-
-      // If there is no groupby dimension, we will do simple 
+      // If there is no column, we will do simple 
       // search, otherwise we will do aggregate computations.
       $scope.model.loadingResults = true;
       if (count)
         $scope.executeComplexQuery(count);
       else
         $scope.executeSimpleQuery(1);
-    };
-
-    $scope.getColumn = function(name) {
-      var directory = $scope.widget.dataModelOptions.directory;
-      var fields = $scope.data.originalDocs[directory];
-      for (var i = 0; i < fields.length; i++) {
-        var field = fields[i];
-        if (name === field.localname || name === field['path-expression'])
-          return field;
-      }
-      return null;
     };
 
     $scope.executeComplexQuery = function(count) {
@@ -1832,23 +1761,8 @@ drag.delegate = function( event ){
 
       queryConfig.query.query = query;
 
-      var dimensions = $scope.widget.dataModelOptions.dimensions;
-      dimensions.forEach(function(dimension) {
-        var key = dimension.operation;
-
-        if (key !== 'atomic') {
-          var column = $scope.getColumn(dimension.field.shortName);
-
-          if (key === 'groupby') {
-            queryConfig.columns.push(column);
-          } else {
-            queryConfig.computes.push({
-              fn: key,
-              ref: column
-            });
-          }
-        }
-      });
+      queryConfig.columns = $scope.widget.dataModelOptions.columns;
+      queryConfig.computes = $scope.widget.dataModelOptions.computes;
 
       $scope.model.loadingResults = true;
       $scope.clearResults();
@@ -1880,45 +1794,8 @@ drag.delegate = function( event ){
       });
     };
 
-    // $scope.createSimpleTable = function(headers, results) {
-    //   $scope.cols = [
-    //     //{ field: "name", title: "Name", sortable: "name", show: true },
-    //     //{ field: "age", title: "Age", sortable: "age", show: true },
-    //     //{ field: "money", title: "Money", show: true }
-    //   ];
-
-    //   headers.forEach(function(header) {
-    //     $scope.cols.push({
-    //       field: header, 
-    //       title: header, 
-    //       sortable: header, 
-    //       show: true
-    //     });
-    //   });
-
-    //   var records = [];
-    //   results.forEach(function(row) {
-    //     var record = {};
-    //     for (var i = 0; i < row.length; i++) {
-    //       record[headers[i]] = row[i];
-    //     }
-    //     records.push(record);
-    //   });
-
-    //   var initialParams = {
-    //     count: $scope.widget.dataModelOptions.pageLength, // count per page
-    //     sorting: {}
-    //   };
-    //   initialParams.sorting[headers[0]] = 'desc';
-
-    // };
-
     $scope.createComplexTable = function(headers, results) {
-      $scope.cols = [
-        //{ field: "name", title: "Name", sortable: "name", show: true },
-        //{ field: "age", title: "Age", sortable: "age", show: true },
-        //{ field: "money", title: "Money", show: true }
-      ];
+      $scope.cols = [];
 
       headers.forEach(function(header) {
         $scope.cols.push({
@@ -1947,84 +1824,6 @@ drag.delegate = function( event ){
 
     $scope.executeSimpleQuery = function(start) {
       $scope.model.loadingResults = false;
-      // var queries;
-      // if ($scope.widget.dataModelOptions.query.query) {
-      //   queries = $scope.widget.dataModelOptions.query.query.queries;
-      // } else {
-      //   queries = [];
-      // }
-
-      // var query = {
-      //   'queries': queries
-      // };
-
-      // var search = {
-      //   'search': {
-      //     'query': query
-      //   }
-      // };
-
-      // if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-      //   query.qtext = $scope.executor.simple;
-      // }
-
-      // var params = {
-      //   'pageLength': $scope.widget.dataModelOptions.pageLength,
-      //   'start': start, // current pagination offset
-      //   'category': 'content',
-      //   'view': 'metadata',
-      //   'format': 'json'
-      // };
-      // var directory = $scope.widget.dataModelOptions.directory;
-      // if (directory) {
-      //   params.directory = '/' + directory + '/';
-      // }
-
-      // $scope.clearResults();
-
-      // var dimensions = $scope.widget.dataModelOptions.dimensions;
-      // var headers = [];
-
-      // dimensions.forEach(function(dimension) {
-      //   var key = Object.keys(dimension)[0];
-      //   var name = dimension[key].field;
-      //   var type = $scope.data.fields[name].type;
-      //   var item = {name: name, type: type};
-      //   $scope.executor.dimensions.push(item);
-      //   headers.push(name);
-      // });
-
-      // // We need two transforms: one for JSON, one for XML.
-      // // These transforms filter the document. The XML
-      // // transform also converts am XML document to JSON.
-      // if ($scope.executor.transform) {
-      //   // params.transform = $scope.executor.transform;
-
-      //   $scope.executor.dimensions.forEach(function(dimension) {
-      //     params['trans:' + dimension.name] = dimension.type;
-      //   });
-      // }
-
-      // mlRest.search(params, search).then(function(response) {
-      //   $scope.model.loadingResults = false;
-
-      //   var contentType = response.headers('content-type');
-      //   var pageResults = MarkLogic.Util.parseMultiPart(response.data, contentType);
-      //   var results = pageResults.results;
-
-      //   results.forEach(function(result) {
-      //     var item = [];
-      //     $scope.executor.dimensions.forEach(function(dimension) {
-      //       var name = dimension.name;
-      //       item.push(result[name]);
-      //     });
-
-      //     console.log('pushing item into executor: ' + item);
-      //     $scope.executor.results.push(item);
-      //   });
-
-      //   $scope.createSimpleTable(headers, $scope.executor.results);
-      // });
     };
 
     $scope.createHighcharts = function(count, headers, results) {
@@ -2301,70 +2100,6 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
-    function($scope, $location, $rootScope, ReportService) {
-
-    $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.createReport = function() {
-      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        encodeURIComponent($scope.report.name) +
-        '-' +
-        Math.floor((Math.random() * 1000000) + 1) +
-        '.json';
-        
-      ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
-        $location.search('ml-analytics-mode', 'design');
-        $location.search('ml-analytics-uri', $scope.report.uri);
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
-    function($scope, $location, ReportService) {
-
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-    ReportService.getReport($scope.report.uri).then(function(response) {
-      angular.extend($scope.report, response.data);
-    });
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        $location.search('ml-analytics-mode', 'home');
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -2462,4 +2197,68 @@ drag.delegate = function( event ){
 
   }
 
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
+
+    $scope.report = {};
+    $scope.report.privacy = 'public';
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.createReport = function() {
+      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
+        encodeURIComponent($scope.report.name) +
+        '-' +
+        Math.floor((Math.random() * 1000000) + 1) +
+        '.json';
+        
+      ReportService.createReport($scope.report).then(function(response) {
+        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
+        $location.search('ml-analytics-mode', 'design');
+        $location.search('ml-analytics-uri', $scope.report.uri);
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
+    function($scope, $location, ReportService) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    ReportService.getReport($scope.report.uri).then(function(response) {
+      angular.extend($scope.report, response.data);
+    });
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.updateReport = function() {
+      ReportService.updateReport($scope.report).then(function(response) {
+        $location.search('ml-analytics-mode', 'home');
+      });
+    };
+
+  }]);
 }());

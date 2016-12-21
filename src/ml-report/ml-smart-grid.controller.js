@@ -34,14 +34,19 @@
     $scope.data = {};
     $scope.data.operation = 'and-query';
     $scope.data.query = [];
-    $scope.data.dimensions = [];
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
+    $scope.data.columns = [];
+    $scope.data.computes = [];
 
     $scope.executor = {};
 
     $scope.clearResults = function() {
       $scope.model.results = null;
+    };
+
+    $scope.shortName = function(field) {
+      return field.localname || field['path-expression'];
     };
 
     $scope.getDbConfig = function() {
@@ -90,9 +95,6 @@
           $scope.data.originalDocs = docs;
           $scope.data.directories = Object.keys(docs);
           $scope.data.fields = angular.copy(docs[$scope.data.directory]);
-          _.each($scope.data.fields, function(field) {
-            field.shortName = field.localname || field['path-expression'];
-          });
 ;
           if ($scope.data.fields) {
             $scope.setDocument();
@@ -113,7 +115,6 @@
       if ($scope.data.directory) {
         $scope.data.operation = 'and-query';
         $scope.data.query = [];
-        $scope.data.dimensions = [];
 
         if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
           if ($scope.widget.dataModelOptions.query && 
@@ -128,15 +129,21 @@
             $scope.data.query = [];
           }
 
-          if ($scope.widget.dataModelOptions.dimensions) {
-            angular.copy($scope.widget.dataModelOptions.dimensions, $scope.data.dimensions);
+          if ($scope.widget.dataModelOptions.columns) {
+            angular.copy($scope.widget.dataModelOptions.columns, $scope.data.columns);
           } else {
-            $scope.data.dimensions = [];
+            $scope.data.columns = [];
+          }
+          if ($scope.widget.dataModelOptions.computes) {
+            angular.copy($scope.widget.dataModelOptions.computes, $scope.data.computes);
+          } else {
+            $scope.data.computes = [];
           }
         } else {
           $scope.data.operation = 'and-query';
           $scope.data.query = [];
-          $scope.data.dimensions = [];
+          $scope.data.columns = [];
+          $scope.data.computes = [];
         }
 
         $scope.data.needsUpdate = true;
@@ -153,41 +160,26 @@
       $scope.widget.dataModelOptions.directory = $scope.data.directory;
 
       $scope.widget.dataModelOptions.query = {};
-      $scope.widget.dataModelOptions.dimensions = [];
 
       angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
-      angular.copy($scope.data.dimensions, $scope.widget.dataModelOptions.dimensions);
+      $scope.widget.dataModelOptions.columns = $scope.data.columns;
+      $scope.widget.dataModelOptions.computes = $scope.data.computes;
 
       $scope.options.saveDashboard();
     };
 
     $scope.execute = function() {
-      var dimensions = $scope.widget.dataModelOptions.dimensions;
+      var columns = $scope.widget.dataModelOptions.columns;
       // Number of groupby fields.
-      var count = 0;
+      var count = columns.length;
 
-      dimensions.forEach(function(dimension) {
-        if (dimension.operation === 'groupby') count++;
-      });
-
-      // If there is no groupby dimension, we will do simple 
+      // If there is no column, we will do simple 
       // search, otherwise we will do aggregate computations.
       $scope.model.loadingResults = true;
       if (count)
         $scope.executeComplexQuery(count);
       else
         $scope.executeSimpleQuery(1);
-    };
-
-    $scope.getColumn = function(name) {
-      var directory = $scope.widget.dataModelOptions.directory;
-      var fields = $scope.data.originalDocs[directory];
-      for (var i = 0; i < fields.length; i++) {
-        var field = fields[i];
-        if (name === field.localname || name === field['path-expression'])
-          return field;
-      }
-      return null;
     };
 
     $scope.executeComplexQuery = function(count) {
@@ -226,23 +218,8 @@
 
       queryConfig.query.query = query;
 
-      var dimensions = $scope.widget.dataModelOptions.dimensions;
-      dimensions.forEach(function(dimension) {
-        var key = dimension.operation;
-
-        if (key !== 'atomic') {
-          var column = $scope.getColumn(dimension.field.shortName);
-
-          if (key === 'groupby') {
-            queryConfig.columns.push(column);
-          } else {
-            queryConfig.computes.push({
-              fn: key,
-              ref: column
-            });
-          }
-        }
-      });
+      queryConfig.columns = $scope.widget.dataModelOptions.columns;
+      queryConfig.computes = $scope.widget.dataModelOptions.computes;
 
       $scope.model.loadingResults = true;
       $scope.clearResults();
@@ -274,45 +251,8 @@
       });
     };
 
-    // $scope.createSimpleTable = function(headers, results) {
-    //   $scope.cols = [
-    //     //{ field: "name", title: "Name", sortable: "name", show: true },
-    //     //{ field: "age", title: "Age", sortable: "age", show: true },
-    //     //{ field: "money", title: "Money", show: true }
-    //   ];
-
-    //   headers.forEach(function(header) {
-    //     $scope.cols.push({
-    //       field: header, 
-    //       title: header, 
-    //       sortable: header, 
-    //       show: true
-    //     });
-    //   });
-
-    //   var records = [];
-    //   results.forEach(function(row) {
-    //     var record = {};
-    //     for (var i = 0; i < row.length; i++) {
-    //       record[headers[i]] = row[i];
-    //     }
-    //     records.push(record);
-    //   });
-
-    //   var initialParams = {
-    //     count: $scope.widget.dataModelOptions.pageLength, // count per page
-    //     sorting: {}
-    //   };
-    //   initialParams.sorting[headers[0]] = 'desc';
-
-    // };
-
     $scope.createComplexTable = function(headers, results) {
-      $scope.cols = [
-        //{ field: "name", title: "Name", sortable: "name", show: true },
-        //{ field: "age", title: "Age", sortable: "age", show: true },
-        //{ field: "money", title: "Money", show: true }
-      ];
+      $scope.cols = [];
 
       headers.forEach(function(header) {
         $scope.cols.push({
@@ -341,84 +281,6 @@
 
     $scope.executeSimpleQuery = function(start) {
       $scope.model.loadingResults = false;
-      // var queries;
-      // if ($scope.widget.dataModelOptions.query.query) {
-      //   queries = $scope.widget.dataModelOptions.query.query.queries;
-      // } else {
-      //   queries = [];
-      // }
-
-      // var query = {
-      //   'queries': queries
-      // };
-
-      // var search = {
-      //   'search': {
-      //     'query': query
-      //   }
-      // };
-
-      // if ($scope.widget.mode === 'View' && $scope.executor.simple) {
-      //   query.qtext = $scope.executor.simple;
-      // }
-
-      // var params = {
-      //   'pageLength': $scope.widget.dataModelOptions.pageLength,
-      //   'start': start, // current pagination offset
-      //   'category': 'content',
-      //   'view': 'metadata',
-      //   'format': 'json'
-      // };
-      // var directory = $scope.widget.dataModelOptions.directory;
-      // if (directory) {
-      //   params.directory = '/' + directory + '/';
-      // }
-
-      // $scope.clearResults();
-
-      // var dimensions = $scope.widget.dataModelOptions.dimensions;
-      // var headers = [];
-
-      // dimensions.forEach(function(dimension) {
-      //   var key = Object.keys(dimension)[0];
-      //   var name = dimension[key].field;
-      //   var type = $scope.data.fields[name].type;
-      //   var item = {name: name, type: type};
-      //   $scope.executor.dimensions.push(item);
-      //   headers.push(name);
-      // });
-
-      // // We need two transforms: one for JSON, one for XML.
-      // // These transforms filter the document. The XML
-      // // transform also converts am XML document to JSON.
-      // if ($scope.executor.transform) {
-      //   // params.transform = $scope.executor.transform;
-
-      //   $scope.executor.dimensions.forEach(function(dimension) {
-      //     params['trans:' + dimension.name] = dimension.type;
-      //   });
-      // }
-
-      // mlRest.search(params, search).then(function(response) {
-      //   $scope.model.loadingResults = false;
-
-      //   var contentType = response.headers('content-type');
-      //   var pageResults = MarkLogic.Util.parseMultiPart(response.data, contentType);
-      //   var results = pageResults.results;
-
-      //   results.forEach(function(result) {
-      //     var item = [];
-      //     $scope.executor.dimensions.forEach(function(dimension) {
-      //       var name = dimension.name;
-      //       item.push(result[name]);
-      //     });
-
-      //     console.log('pushing item into executor: ' + item);
-      //     $scope.executor.results.push(item);
-      //   });
-
-      //   $scope.createSimpleTable(headers, $scope.executor.results);
-      // });
     };
 
     $scope.createHighcharts = function(count, headers, results) {

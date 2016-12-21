@@ -6,31 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder"><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="dimension in data.dimensions" data-dimension-builder-chooser="dimension" data-dimension-fields="data.fields" data-on-remove="removeDimension($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Dimension" data-ng-click="addDimension()"><i class="fa fa-plus"></i> Add Dimension</a> <a ng-if="dimensionConfigIsHidden" data-ng-click="showDimensionConfig()" class="btn btn-xs btn-primary" title="Show Generated Dimensions"><i class="fa fa-eye"></i> Show Generated Dimensions</a> <a ng-if="!dimensionConfigIsHidden" ng-click="hideDimensionConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Dimensions</a></div></div></div><div uib-collapse="dimensionConfigIsHidden"><pre ng-bind="renderDimensionConfig()"></pre></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/ChooserDirective.html',
-    '<div class="dimension-builder-chooser form-group"><div data-dimension-builder-rule="item" data-dimension-fields="dimensionFields" data-on-remove="onRemove()"></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/RuleDirective.html',
-    '<div class="dimension-builder-rule"><select class="form-control input-sm" data-ng-model="rule.field" ng-options="field.shortName for field in dimensionFields | filter:{\'scalar-type\': \'!point\'} track by field.shortName"></select><span data-dimension-type="rule.field[\'scalar-type\']" data-rule="rule" data-guide="dimensionFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+    '<div class="dimension-builder row"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body"><li uib-dropdown="" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li><a ng-click="addCompute(field, \'count\')" ng-class="{true: \'strikethru\'}[ !(model.queryConfig.rows.length || model.queryConfig.columns.length) ]">Add Count</a></li></ul></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body"><li ng-repeat="field in data.fields | filter:isComputeField"><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</span></li></ul></div></div><div class="filter-panels"><div class="form-inline"><div class="actions"><a ng-if="groupByConfigIsHidden" data-ng-click="showGroupByConfig()" class="btn btn-xs btn-primary" title="Show Generated Dimensions"><i class="fa fa-eye"></i> Show Generated Group-by Query</a> <a ng-if="!groupByConfigIsHidden" ng-click="hideGroupByConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Group-by Query</a></div></div></div><div uib-collapse="groupByConfigIsHidden"><pre ng-bind="renderGroupByConfig()"></pre></div></div>');
 }]);
 })();
 
@@ -163,78 +139,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/new-report.html',
     '<div><h1>Create New Report</h1><div class="row" ng-if="!currentUser"><div class="col-md-12">Please log in to create new report.</div></div><div class="row" ng-if="currentUser"><div class="col-md-12"><p>A report primarily consists of widgets. This view will create a blank report. You can then add widgets into the report using the Report Dashboard.</p><p>The fields marked with asterisk <i class="fa fa-asterisk mandatory-field"></i> are mandatory.</p><form name="newReportForm" ng-submit="createReport()" novalidate=""><div class="form-group" ng-class="{ \'has-error\' : newReportForm.name.$invalid && !newReportForm.name.$pristine }"><label class="control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label> <input type="text" name="name" class="form-control" ng-model="report.name" required=""><p ng-show="newReportForm.name.$invalid && !newReportForm.name.$pristine" class="help-block">Name is required.</p></div><div class="form-group"><label class="control-label">Description</label> <input type="text" name="description" class="form-control" ng-model="report.description"></div><div class="form-group" ng-class="{ \'has-error\' : newReportForm.classification.$invalid && !newReportForm.classification.$pristine }"><label class="control-label">Classification <i class="fa fa-asterisk mandatory-field"></i></label> <input type="text" name="classification" class="form-control" ng-model="report.classification" required=""><p ng-show="newReportForm.classification.$invalid && !newReportForm.classification.$pristine" class="help-block">Classification is required.</p></div><div class="form-group"><label class="control-label">Privacy</label><div class="hcontainer"><ul class="hoptions"><li ng-class="{current:isActive(\'public\')}"><div class="radio"><label><input type="radio" data-ng-click="setOption(\'public\')" ng-model="report.privacy" name="privacy" value="public">Public</label></div></li><li ng-class="{current:isActive(\'private\')}"><div class="radio"><label><input type="radio" data-ng-click="setOption(\'private\')" ng-model="report.privacy" name="privacy" value="private">Private</label></div></li></ul><div class="hpanel"><div class="hcontent" ng-class="{show:isActive(\'public\')}"><p>A public report is available for anyone to view.</p></div><div class="hcontent" ng-class="{show:isActive(\'private\')}"><p>A private report is only available for its owner.</p></div></div></div></div><div class="btn-toolbar" role="toolbar" style="margin-top:10px"><div class="btn-group pull-right"><button type="submit" class="btn btn-primary" ng-disabled="newReportForm.$invalid"><span class="fa fa-check"></span> Submit</button></div></div></form><p>{{error_message}}</p></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/Boolean.html',
-    '<span class="boolean-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/Date.html',
-    '<span class="date-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">Standard</option></optgroup></select></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/Decimal.html',
-    '<span class="decimal-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/Int.html',
-    '<span class="integer-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/Long.html',
-    '<span class="integer-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Function"><option value="avg">avg</option><option value="count">count</option><option value="max">max</option><option value="median">median</option><option value="min">min</option><option value="stddev">stddev</option><option value="stddev-population">stddev-population</option><option value="sum">sum</option><option value="variance">variance</option><option value="variance-population">variance-population</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="number" min="{{ guide.minimum }}" max="{{ guide.maximum }}"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/types/String.html',
-    '<span class="string-rule"><select data-ng-model="rule.operation" class="input-sm form-control"><optgroup label="Text"><option value="count">count</option></optgroup><optgroup label="Generic"><option value="groupby">group by</option><option value="atomic">atomic</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -390,7 +294,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/ml-report/chart-builder.html',
-    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="col-md-12"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm col-lg-9 col-md-7" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in data.databases" ng-model="data.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="model.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option>root</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="data.directory" ng-change="setDocument()" required=""><option value="">Choose...</option><option ng-repeat="dir in data.directories" value="{{dir}}">{{dir}}</option></select></div></div></form><div class="col-lg-3 col-md-5"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><div class="ml-analytics-design-form"><div class="form-group"><button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save and Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div></div></div></div><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row" ng-show="model.showBuilder"><div class="col-md-5"><div class="panel panel-default"><div class="panel-heading"><h4>Dimensions & Measures</h4></div><div class="panel-body" dimension-builder="data"></div></div></div><div class="col-md-7"><div class="panel panel-default"><div class="panel-heading"><h4>Filters</h4></div><div class="panel-body" sq-builder="data"></div></div></div></div><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><ml-analytics-view-chart></ml-analytics-view-chart></div></div>');
+    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="row"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in data.databases" ng-model="data.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="model.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option>root</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="data.directory" ng-change="setDocument()" required=""><option value="">Choose...</option><option ng-repeat="dir in data.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div><div class="col-lg-3 col-md-5"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><div class="ml-analytics-design-form"><div class="form-group"><button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save and Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div></div></div></div><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row"><div class="col-md-4" ng-show="model.showBuilder"><div dimension-builder="data"></div><div><div class="panel panel-default panel-sm"><div class="panel-heading"><h4>Filters</h4></div><div class="panel-body" sq-builder="data"></div></div></div></div><div class="col-md-8"><div class="ml-analytics-columns-and-rows"><div class="ml-analytics-columns panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span></div><div class="panel-body"><span class="label label-info" ng-repeat="column in data.columns">{{shortName(column)}}</span></div></div><div class="ml-analytics-rows panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list"></i> Rows</span></div><div class="panel-body"><span class="label label-success" ng-repeat="compute in data.computes">{{compute.fn}}({{shortName(compute.ref)}})</span></div></div></div><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><ml-analytics-view-chart></ml-analytics-view-chart></div></div>');
 }]);
 })();
 
