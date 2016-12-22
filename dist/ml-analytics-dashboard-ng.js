@@ -476,6 +476,8 @@
           database: '',
           groupingStrategy: '',
           directory: '',
+          columns: [],
+          computes: [],
           query: {},
           chart: 'column',
           pageLength: 10
@@ -902,13 +904,12 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
-  function mlAnalyticsDesign() {
+  function mlAnalyticsDashboardHome() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -916,12 +917,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
-  function mlAnalyticsDashboardHome() {
+  function mlAnalyticsDesign() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
     };
   }
 }());
@@ -1572,7 +1574,7 @@ drag.delegate = function( event ){
       columns: [],
       computes: [],
       options: ['headers=true'],
-      query: {query: {}}
+      query: {query: {queries: [], qtext: ''}}
     };
 
     $scope.executor = {};
@@ -1720,19 +1722,21 @@ drag.delegate = function( event ){
     $scope.execute = function() {
       var columns = $scope.widget.dataModelOptions.columns;
       // Number of groupby fields.
-      var count = columns.length;
+      var count; 
+      if(columns) {
+        count = columns.length;
+      } else {
+        count = 0;
+      }
 
       // If there is no column, we will do simple 
       // search, otherwise we will do aggregate computations.
       $scope.model.loadingResults = true;
-      if (count)
-        $scope.executeComplexQuery(count);
-      else
-        $scope.executeSimpleQuery(1);
+      $scope.executeComplexQuery(count);
     };
 
     $scope.generateQueryConfig = function() {
-      var queries = $scope.widget.dataModelOptions.query.query.queries;
+      var queries = $scope.data.serializedQuery.query.query.queries;
       if (queries.length === 1) {
         // The first element has only one key.
         var firstElement = queries[0];
@@ -1819,10 +1823,6 @@ drag.delegate = function( event ){
         sorting: {}
       };
       initialParams.sorting[headers[0]] = 'desc';
-    };
-
-    $scope.executeSimpleQuery = function(start) {
-      $scope.model.loadingResults = false;
     };
 
     $scope.createHighcharts = function(count, headers, results) {

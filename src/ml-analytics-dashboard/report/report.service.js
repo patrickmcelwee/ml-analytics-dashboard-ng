@@ -108,6 +108,8 @@
           database: '',
           groupingStrategy: '',
           directory: '',
+          columns: [],
+          computes: [],
           query: {},
           chart: 'column',
           pageLength: 10

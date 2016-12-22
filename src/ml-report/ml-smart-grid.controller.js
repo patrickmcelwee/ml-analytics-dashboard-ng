@@ -40,7 +40,7 @@
       columns: [],
       computes: [],
       options: ['headers=true'],
-      query: {query: {}}
+      query: {query: {queries: [], qtext: ''}}
     };
 
     $scope.executor = {};
@@ -188,19 +188,21 @@
     $scope.execute = function() {
       var columns = $scope.widget.dataModelOptions.columns;
       // Number of groupby fields.
-      var count = columns.length;
+      var count; 
+      if(columns) {
+        count = columns.length;
+      } else {
+        count = 0;
+      }
 
       // If there is no column, we will do simple 
       // search, otherwise we will do aggregate computations.
       $scope.model.loadingResults = true;
-      if (count)
-        $scope.executeComplexQuery(count);
-      else
-        $scope.executeSimpleQuery(1);
+      $scope.executeComplexQuery(count);
     };
 
     $scope.generateQueryConfig = function() {
-      var queries = $scope.widget.dataModelOptions.query.query.queries;
+      var queries = $scope.data.serializedQuery.query.query.queries;
       if (queries.length === 1) {
         // The first element has only one key.
         var firstElement = queries[0];
@@ -287,10 +289,6 @@
         sorting: {}
       };
       initialParams.sorting[headers[0]] = 'desc';
-    };
-
-    $scope.executeSimpleQuery = function(start) {
-      $scope.model.loadingResults = false;
     };
 
     $scope.createHighcharts = function(count, headers, results) {
