@@ -904,19 +904,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
   function mlAnalyticsDesign() {
@@ -924,6 +911,19 @@
       restrict: 'E',
       templateUrl: '/templates/designer.html',
       controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1736,26 +1736,17 @@ drag.delegate = function( event ){
     };
 
     $scope.generateQueryConfig = function() {
-      var queries = $scope.data.serializedQuery.query.query.queries;
-      if (queries.length === 1) {
+      var query = $scope.data.serializedQuery.query.query;
+      if (query.queries.length === 1) {
         // The first element has only one key.
-        var firstElement = queries[0];
+        var firstElement = query.queries[0];
         var key = Object.keys(firstElement)[0];
 
         // The group-by will fail if an or-query is empty, so we
         // convert an empty query at the root level.
         if (firstElement[key].queries.length === 0)
-          queries = [];
+          query.queries = [];
       }
-      var query = {
-        'queries': queries
-      };
-      if ($scope.widget.mode === 'View' && $scope.executor.qtext) {
-        query.qtext = $scope.executor.qtext;
-      } else {
-        query.qtext = '';
-      }
-      $scope.data.serializedQuery.query.query = query;
 
       return $scope.data.serializedQuery;
     };
