@@ -104,24 +104,23 @@
     }
 
     var fieldName = group.field;
-    var fieldData = fieldMap[fieldName];
 
-    if (! fieldName) return;
+    if (!group.field) return;
 
-    switch (fieldData.type) {
+    switch (group.field['scalar-type']) {
       case 'string':
         // A query for a string field is translated 
         // to value-query or word-query or range-query.
 
-        if (fieldData.classification === 'path-expression') {
+        if (group.field['ref-type'] === 'path-reference') {
           // Convert path rule to range-query
-          var dataType = 'xs:' + fieldData.type;
+          var dataType = 'xs:' + group.field['scalar-type'];
           obj['range-query'] = {
             'path-index': {
-              'text': fieldName,
+              'text': group.field['path-expression'],
               'namespaces': {}
             },
-            'collation': fieldData.collation,
+            'collation': group.field.collation,
             'type': dataType,
             'range-operator': 'EQ',
             'value': group.value
@@ -137,7 +136,7 @@
             'text': group.value
           };
 
-          setConstraint(value, fieldName, fieldData);
+          setConstraint(value, group.field);
 
           obj[group.subType] = value;
         }
@@ -165,9 +164,9 @@
 
         setConstraint(value, fieldName, fieldData);
 
-        if (fieldData.classification === 'path-expression') {
+        if (group.field['ref-type'] === 'path-reference') {
           value['path-index'] = {
-            text: fieldName,
+            text: group.field['path-expression'],
             namespaces: {}
           };
         }
@@ -225,25 +224,25 @@
   // You must specify at least one element, json-property, 
   // or field to define the range constraint to apply to 
   // the query. These components are mutually exclusive.
-  function setConstraint(value, fieldName, fieldData) {
-    var claz = fieldData.classification;
+  function setConstraint(value, field) {
+    var claz = field['ref-type'];
 
-    if (claz === 'json-property') {
-      value[claz] = fieldName;
-    } else if (claz === 'element' || claz === 'attribute') {
-      value[claz] = {
-        name: fieldName,
-        ns: fieldData.ns
+    if (claz === 'json-property-reference') {
+      value[claz] = field.localname;
+    } else if (claz === 'element-reference' || claz === 'attribute-reference') {
+      value[claz.split('-')[0]] = {
+        name: field.localname,
+        ns: field['namespace-uri']
       };
-      if (claz === 'attribute') {
+      if (claz === 'attribute-reference') {
         value.element = {
-          name: fieldData['parent-localname'],
-          ns: fieldData['parent-namespace-uri']
+          name: field['parent-localname'],
+          ns: field['parent-namespace-uri']
         };
       }
     } else if (claz === 'field') {
       value[claz] = {
-        name: fieldName,
+        name: field.localname,
         collation: fieldData.collation
       };
     }

@@ -70,11 +70,11 @@
 
           scope.hideStructuredQuery();
 
-          scope.$watch('data.needsUpdate', function(curr) {
-            if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
-            scope.data.needsUpdate = false;
-          });
+          // scope.$watch('data.needsUpdate', function(curr) {
+          //   if (! curr) return; 
+          //   scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
+          //   scope.data.needsUpdate = false;
+          // });
 
           scope.$watch('filters', function(curr) {
             if (! curr) return;

@@ -203,17 +203,20 @@
 
     $scope.generateQueryConfig = function() {
       var query = $scope.data.serializedQuery.query.query;
-      if (query.queries.length === 1) {
-        // The first element has only one key.
-        var firstElement = query.queries[0];
-        var key = Object.keys(firstElement)[0];
+      // if (query.queries.length === 1) {
+      //   // The first element has only one key.
+      //   var firstElement = query.queries[0];
+      //   var key = Object.keys(firstElement)[0];
 
-        // The group-by will fail if an or-query is empty, so we
-        // convert an empty query at the root level.
-        if (firstElement[key].queries.length === 0)
-          query.queries = [];
+      //   // The group-by will fail if an or-query is empty, so we
+      //   // convert an empty query at the root level.
+      //   if (firstElement[key].queries.length === 0)
+      //     query.queries = [];
+      // }
+
+      if ($scope.data.structuredQuery) {
+        $scope.data.serializedQuery.query = $scope.data.structuredQuery;
       }
-
       return $scope.data.serializedQuery;
     };
 

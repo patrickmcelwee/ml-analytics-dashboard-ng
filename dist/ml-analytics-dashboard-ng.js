@@ -191,24 +191,23 @@
     }
 
     var fieldName = group.field;
-    var fieldData = fieldMap[fieldName];
 
-    if (! fieldName) return;
+    if (!group.field) return;
 
-    switch (fieldData.type) {
+    switch (group.field['scalar-type']) {
       case 'string':
         // A query for a string field is translated 
         // to value-query or word-query or range-query.
 
-        if (fieldData.classification === 'path-expression') {
+        if (group.field['ref-type'] === 'path-reference') {
           // Convert path rule to range-query
-          var dataType = 'xs:' + fieldData.type;
+          var dataType = 'xs:' + group.field['scalar-type'];
           obj['range-query'] = {
             'path-index': {
-              'text': fieldName,
+              'text': group.field['path-expression'],
               'namespaces': {}
             },
-            'collation': fieldData.collation,
+            'collation': group.field.collation,
             'type': dataType,
             'range-operator': 'EQ',
             'value': group.value
@@ -224,7 +223,7 @@
             'text': group.value
           };
 
-          setConstraint(value, fieldName, fieldData);
+          setConstraint(value, group.field);
 
           obj[group.subType] = value;
         }
@@ -252,9 +251,9 @@
 
         setConstraint(value, fieldName, fieldData);
 
-        if (fieldData.classification === 'path-expression') {
+        if (group.field['ref-type'] === 'path-reference') {
           value['path-index'] = {
-            text: fieldName,
+            text: group.field['path-expression'],
             namespaces: {}
           };
         }
@@ -312,25 +311,25 @@
   // You must specify at least one element, json-property, 
   // or field to define the range constraint to apply to 
   // the query. These components are mutually exclusive.
-  function setConstraint(value, fieldName, fieldData) {
-    var claz = fieldData.classification;
+  function setConstraint(value, field) {
+    var claz = field['ref-type'];
 
-    if (claz === 'json-property') {
-      value[claz] = fieldName;
-    } else if (claz === 'element' || claz === 'attribute') {
-      value[claz] = {
-        name: fieldName,
-        ns: fieldData.ns
+    if (claz === 'json-property-reference') {
+      value[claz] = field.localname;
+    } else if (claz === 'element-reference' || claz === 'attribute-reference') {
+      value[claz.split('-')[0]] = {
+        name: field.localname,
+        ns: field['namespace-uri']
       };
-      if (claz === 'attribute') {
+      if (claz === 'attribute-reference') {
         value.element = {
-          name: fieldData['parent-localname'],
-          ns: fieldData['parent-namespace-uri']
+          name: field['parent-localname'],
+          ns: field['parent-namespace-uri']
         };
       }
     } else if (claz === 'field') {
       value[claz] = {
-        name: fieldName,
+        name: field.localname,
         collation: fieldData.collation
       };
     }
@@ -745,13 +744,8 @@
         templateUrl: '/ml-sq-builder/RuleDirective.html',
 
         link: function(scope) {
-          scope.getType = function() {
-            var fields = scope.sqFields,
-              field = scope.rule.field;
-
-            if (! fields || ! field) return;
-
-            return fields[field].type;
+          scope.shortName = function(field) {
+            return field.localname || field['path-expression'];
           };
         }
       };
@@ -831,11 +825,11 @@
 
           scope.hideStructuredQuery();
 
-          scope.$watch('data.needsUpdate', function(curr) {
-            if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
-            scope.data.needsUpdate = false;
-          });
+          // scope.$watch('data.needsUpdate', function(curr) {
+          //   if (! curr) return; 
+          //   scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
+          //   scope.data.needsUpdate = false;
+          // });
 
           scope.$watch('filters', function(curr) {
             if (! curr) return;
@@ -904,6 +898,20 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
   function mlAnalyticsDashboardHome() {
@@ -924,20 +932,6 @@
       restrict: 'E',
       templateUrl: '/templates/manage.html',
       controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
-
-  function mlAnalyticsDesign() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
     };
   }
 }());
@@ -978,6 +972,28 @@
   HomeCtrl.$inject = [];
 
   function HomeCtrl() {
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = ['$scope', '$location'];
+
+  function DashboardCtrl($scope, $location) {
+
+    function establishMode() {
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
+      } else {
+        $location.search('ml-analytics-mode', 'home');
+      }
+    }
+
+    establishMode();
   }
 }());
 
@@ -1470,28 +1486,6 @@ drag.delegate = function( event ){
 };
 	
 })( jQuery );
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('DashboardCtrl', DashboardCtrl);
-
-  DashboardCtrl.$inject = ['$scope', '$location'];
-
-  function DashboardCtrl($scope, $location) {
-
-    function establishMode() {
-      if($location.search()['ml-analytics-mode']) {
-        $scope.mode = $location.search()['ml-analytics-mode'];
-      } else {
-        $location.search('ml-analytics-mode', 'home');
-      }
-    }
-
-    establishMode();
-  }
-}());
-
 (function () {
   'use strict';
 
@@ -1737,17 +1731,20 @@ drag.delegate = function( event ){
 
     $scope.generateQueryConfig = function() {
       var query = $scope.data.serializedQuery.query.query;
-      if (query.queries.length === 1) {
-        // The first element has only one key.
-        var firstElement = query.queries[0];
-        var key = Object.keys(firstElement)[0];
+      // if (query.queries.length === 1) {
+      //   // The first element has only one key.
+      //   var firstElement = query.queries[0];
+      //   var key = Object.keys(firstElement)[0];
 
-        // The group-by will fail if an or-query is empty, so we
-        // convert an empty query at the root level.
-        if (firstElement[key].queries.length === 0)
-          query.queries = [];
+      //   // The group-by will fail if an or-query is empty, so we
+      //   // convert an empty query at the root level.
+      //   if (firstElement[key].queries.length === 0)
+      //     query.queries = [];
+      // }
+
+      if ($scope.data.structuredQuery) {
+        $scope.data.serializedQuery.query = $scope.data.structuredQuery;
       }
-
       return $scope.data.serializedQuery;
     };
 
@@ -2008,6 +2005,92 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$location', 'ReportService', 'WidgetDefinitions',
+    function($scope, $location, ReportService, WidgetDefinitions) {
+     
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+
+    var defaultWidgets;
+    createDefaultWidgets();
+
+    var store = {};
+    var storage = {
+      getItem : function(key) {
+        return store[key];
+      },
+      setItem : function(key, value) {
+        store[key] = value;
+
+        $scope.report.widgets = value.widgets;
+        $scope.saveWidgets();
+      },
+      removeItem : function(key) {
+        delete store[key];
+      }
+    };
+
+    $scope.reportDashboardOptions = {
+      widgetButtons: true,
+      widgetDefinitions: WidgetDefinitions,
+      defaultWidgets: defaultWidgets,
+      hideToolbar: false,
+      hideWidgetName: true,
+      explicitSave: false,
+      stringifyStorage: false,
+      storage: storage,
+      storageId: $scope.report.uri
+    };
+
+    ReportService.setDashboardOptions($scope.reportDashboardOptions);
+
+    ReportService.getReport($scope.report.uri)
+      .then(function(resp) {
+        angular.extend($scope.report, resp.data);
+        initWithData();
+    });
+
+
+    function initWithData() {
+      createDefaultWidgets();
+      ReportService.loadWidgets(defaultWidgets);
+    }
+
+    function createDefaultWidgets() {
+      if ($scope.report.widgets) {
+        defaultWidgets = _.map($scope.report.widgets, function(widget) {
+          return {
+            name: widget.name,
+            title: widget.title,
+            attrs: widget.attrs,
+            style: widget.size,
+            dataModelOptions: widget.dataModelOptions
+          };
+        });
+      } else {
+        defaultWidgets = [];
+      }
+    }
+
+    $scope.returnHome = function() {
+      $location.search('ml-analytics-mode', 'home');
+      $location.search('ml-analytics-uri', null);
+    };
+
+    $scope.$on('widgetAdded', function(event, widget) {
+      event.stopPropagation();
+    });
+
+    $scope.saveWidgets = function() {
+      ReportService.updateReport($scope.report);
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -2105,92 +2188,6 @@ drag.delegate = function( event ){
 
   }
 
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$location', 'ReportService', 'WidgetDefinitions',
-    function($scope, $location, ReportService, WidgetDefinitions) {
-     
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-
-    var defaultWidgets;
-    createDefaultWidgets();
-
-    var store = {};
-    var storage = {
-      getItem : function(key) {
-        return store[key];
-      },
-      setItem : function(key, value) {
-        store[key] = value;
-
-        $scope.report.widgets = value.widgets;
-        $scope.saveWidgets();
-      },
-      removeItem : function(key) {
-        delete store[key];
-      }
-    };
-
-    $scope.reportDashboardOptions = {
-      widgetButtons: true,
-      widgetDefinitions: WidgetDefinitions,
-      defaultWidgets: defaultWidgets,
-      hideToolbar: false,
-      hideWidgetName: true,
-      explicitSave: false,
-      stringifyStorage: false,
-      storage: storage,
-      storageId: $scope.report.uri
-    };
-
-    ReportService.setDashboardOptions($scope.reportDashboardOptions);
-
-    ReportService.getReport($scope.report.uri)
-      .then(function(resp) {
-        angular.extend($scope.report, resp.data);
-        initWithData();
-    });
-
-
-    function initWithData() {
-      createDefaultWidgets();
-      ReportService.loadWidgets(defaultWidgets);
-    }
-
-    function createDefaultWidgets() {
-      if ($scope.report.widgets) {
-        defaultWidgets = _.map($scope.report.widgets, function(widget) {
-          return {
-            name: widget.name,
-            title: widget.title,
-            attrs: widget.attrs,
-            style: widget.size,
-            dataModelOptions: widget.dataModelOptions
-          };
-        });
-      } else {
-        defaultWidgets = [];
-      }
-    }
-
-    $scope.returnHome = function() {
-      $location.search('ml-analytics-mode', 'home');
-      $location.search('ml-analytics-uri', null);
-    };
-
-    $scope.$on('widgetAdded', function(event, widget) {
-      event.stopPropagation();
-    });
-
-    $scope.saveWidgets = function() {
-      ReportService.updateReport($scope.report);
-    };
-
-  }]);
 }());
 
 (function() {
