@@ -111,7 +111,7 @@
           var docs = response.data.docs;
           $scope.data.originalDocs = docs;
           $scope.data.directories = Object.keys(docs);
-          $scope.data.fields = angular.copy(docs[$scope.data.directory]);
+          $scope.data.fields = docs[$scope.data.directory];
 ;
           if ($scope.data.fields) {
             $scope.setDocument();
@@ -461,6 +461,10 @@
         series: series
       };
     };
+
+    $scope.$watch('data.directory', function() {
+      $scope.data.fields = $scope.data.originalDocs[$scope.data.directory];
+    });
 
     // Kick off
     $scope.getDbConfig();
