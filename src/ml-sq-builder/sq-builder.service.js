@@ -12,19 +12,19 @@
       }
     ]);
 
-  function toFilters(query, fieldMap) {
-    var filters = query.map(parseQueryGroup.bind(query, fieldMap));
+  function toFilters(query, fields) {
+    var filters = query.map(parseQueryGroup.bind(query, fields));
     return filters;
   }
 
-  function toQuery(filters, fieldMap) {
-    var query = filters.map(parseFilterGroup.bind(filters, fieldMap)).filter(function(item) {
+  function toQuery(filters, fields) {
+    var query = filters.map(parseFilterGroup.bind(filters, fields)).filter(function(item) {
       return !! item;
     });
     return query;
   }
 
-  function parseQueryGroup(fieldMap, group) {
+  function parseQueryGroup(fields, group) {
     var typeMap = {
       'or-query': 'group',
       'and-query': 'group',
@@ -42,15 +42,14 @@
     switch (key) {
       case 'or-query':
       case 'and-query':
-        obj.rules = group[key].queries.map(parseQueryGroup.bind(group, fieldMap));
+        obj.rules = group[key].queries.map(parseQueryGroup.bind(group, fields));
         obj.subType = key;
         break;
       case 'value-query':
-        obj.field = getConstraintName(query);
+      case 'word-query':
         obj.subType = key;
-
-        var fieldData = fieldMap[obj.field];
-        if (fieldData.type === 'boolean') {
+        obj.field = findField(fields, query);
+        if (obj.field['scalar-type'] === 'boolean') {
           // group.text is true or false
           obj.value = query.text ? 1 : 0;
         } else {
@@ -58,21 +57,14 @@
         }
 
         break;
-      case 'word-query':
-        obj.field = getConstraintName(query);
-        obj.subType = key;
-        obj.value = query.text;
-        break;
       case 'range-query':
-        if (query['path-index']) {
-          obj.field = getConstraintName(query);
-          obj.subType = 'value-query';
+          obj.field = findField(fields, query);
           obj.value = query.value;
+        if (query['path-index']) {
+          obj.subType = 'value-query';
         } else {
-          obj.field = getConstraintName(query);
           obj.subType = query['range-operator'];
           obj.operator = obj.subType;
-          obj.value = query.value;
         }
         break;
       default:
@@ -82,11 +74,11 @@
     return obj;
   }
 
-  function parseFilterGroup(fieldMap, group) {
+  function parseFilterGroup(fields, group) {
     var obj = {};
 
     if (group.type === 'group') {
-      obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fieldMap)).filter(function(item) {
+      obj[group.subType] = group.rules.map(parseFilterGroup.bind(group, fields)).filter(function(item) {
         return !! item;
       });
 
@@ -154,7 +146,7 @@
           group.subType = 'EQ';
         }
 
-        var dataType = 'xs:' + fieldData.type;
+        var dataType = 'xs:' + group.field['scalar-type'];
 
         var value = {
           'type': dataType,
@@ -162,7 +154,7 @@
           'value': group.value
         };
 
-        setConstraint(value, fieldName, fieldData);
+        setConstraint(value, group.field);
 
         if (group.field['ref-type'] === 'path-reference') {
           value['path-index'] = {
@@ -191,7 +183,7 @@
           value.type = 'boolean';
         }
 
-        setConstraint(value, fieldName, fieldData);
+        setConstraint(value, group.field);
 
         obj['value-query'] = value;
 
@@ -219,6 +211,16 @@
     } else if (query['path-index']) {
       return query['path-index'].text; 
     }
+  }
+
+  function shortName(field) {
+    return field.localname || field['path-expression'];
+  } 
+
+  function findField(fields, query) {
+    return _.find(fields, function(field) {
+      return shortName(field) === getConstraintName(query);
+    });
   }
 
   // You must specify at least one element, json-property, 
