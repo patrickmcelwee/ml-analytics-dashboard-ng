@@ -143,10 +143,11 @@
         $scope.data.operation = 'and-query';
 
         if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
-          if ($scope.widget.dataModelOptions.query && 
-              $scope.widget.dataModelOptions.query.query &&
-              $scope.widget.dataModelOptions.query.query.queries) {
-            var query = $scope.widget.dataModelOptions.query.query.queries[0];
+
+          if ($scope.widget.dataModelOptions.serializedQuery) {
+            $scope.data.serializedQuery = $scope.widget.dataModelOptions.serializedQuery;
+
+            var query = $scope.widget.dataModelOptions.serializedQuery.query.query.queries[0];
             var operation = Object.keys(query)[0];
             $scope.data.query = query[operation].queries;
             $scope.data.operation = operation;
@@ -154,27 +155,9 @@
             $scope.data.rootQuery[$scope.data.operation] = {
               'queries': $scope.data.query
             };
-          } else {
-            $scope.data.operation = 'and-query';
           }
-
-          if ($scope.widget.dataModelOptions.columns) {
-            angular.copy($scope.widget.dataModelOptions.columns, $scope.data.serializedQuery.columns);
-          } else {
-            $scope.data.serializedQuery.columns = [];
-          }
-          if ($scope.widget.dataModelOptions.computes) {
-            angular.copy($scope.widget.dataModelOptions.computes, $scope.data.serializedQuery.computes);
-          } else {
-            $scope.data.serializedQuery.computes = [];
-          }
-        } else {
-          $scope.data.operation = 'and-query';
-          $scope.data.serializedQuery.columns = [];
-          $scope.data.serializedQuery.computes = [];
+          $scope.data.needsUpdate = true;
         }
-
-        $scope.data.needsUpdate = true;
 
         $scope.model.showBuilder = true;
       } else {
@@ -186,17 +169,13 @@
       $scope.widget.dataModelOptions.database = $scope.data.targetDatabase;
       $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
       $scope.widget.dataModelOptions.directory = $scope.data.directory;
-
-      $scope.widget.dataModelOptions.query = $scope.data.serializedQuery.query;
-
-      $scope.widget.dataModelOptions.columns = $scope.data.serializedQuery.columns;
-      $scope.widget.dataModelOptions.computes = $scope.data.serializedQuery.computes;
+      $scope.widget.dataModelOptions.serializedQuery = $scope.data.serializedQuery;
 
       $scope.options.saveDashboard();
     };
 
     $scope.execute = function() {
-      var columns = $scope.widget.dataModelOptions.columns;
+      var columns = $scope.widget.dataModelOptions.serializedQuery.columns;
       // Number of groupby fields.
       var count; 
       if(columns) {
