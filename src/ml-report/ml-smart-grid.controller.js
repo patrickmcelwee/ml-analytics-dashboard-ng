@@ -34,6 +34,7 @@
     $scope.data.query = [];
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
+    $scope.data.originalDocs = [];
     $scope.data.serializedQuery = {
       'result-type': 'group-by',
       rows: [],

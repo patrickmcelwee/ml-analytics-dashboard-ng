@@ -900,13 +900,12 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
-  function mlAnalyticsDesign() {
+  function mlAnalyticsDashboardHome() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -914,12 +913,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
-  function mlAnalyticsDashboardHome() {
+  function mlAnalyticsDesign() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
     };
   }
 }());
@@ -974,28 +974,6 @@
   HomeCtrl.$inject = [];
 
   function HomeCtrl() {
-  }
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('DashboardCtrl', DashboardCtrl);
-
-  DashboardCtrl.$inject = ['$scope', '$location'];
-
-  function DashboardCtrl($scope, $location) {
-
-    function establishMode() {
-      if($location.search()['ml-analytics-mode']) {
-        $scope.mode = $location.search()['ml-analytics-mode'];
-      } else {
-        $location.search('ml-analytics-mode', 'home');
-      }
-    }
-
-    establishMode();
   }
 }());
 
@@ -1488,6 +1466,28 @@ drag.delegate = function( event ){
 };
 	
 })( jQuery );
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = ['$scope', '$location'];
+
+  function DashboardCtrl($scope, $location) {
+
+    function establishMode() {
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
+      } else {
+        $location.search('ml-analytics-mode', 'home');
+      }
+    }
+
+    establishMode();
+  }
+}());
+
 (function () {
   'use strict';
 
@@ -1564,6 +1564,7 @@ drag.delegate = function( event ){
     $scope.data.query = [];
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
+    $scope.data.originalDocs = [];
     $scope.data.serializedQuery = {
       'result-type': 'group-by',
       rows: [],
