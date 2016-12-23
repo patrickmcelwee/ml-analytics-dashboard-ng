@@ -18,21 +18,7 @@
           <i class="fa fa-list"></i> 
            Add Group
         </a> 
-        <a ng-if="structuredQueryIsHidden" data-ng-click="showStructuredQuery()" class="btn btn-xs btn-primary" title="Show Generated Query">
-          <i class="fa fa-eye"></i>
-          Show Generated Query
-        </a>
-        <a ng-if="!structuredQueryIsHidden" ng-click="hideStructuredQuery()" class="btn btn-xs btn-primary" title="Hide Generated Query">
-          <span class="fa-stack fa-stack-xs">
-            <i class="fa fa-eye fa-stack-1x"></i>
-            <i class="fa fa-ban fa-stack-1x text-danger"></i>
-          </span>
-          Hide Generated Query
-        </a>
       </div> 
     </div> 
   </div> 
-  <div uib-collapse="structuredQueryIsHidden">
-    <pre ng-bind="renderStructuredQuery()"></pre>
-  </div>
 </div>

@@ -42,44 +42,21 @@
             });
           };
 
-          if ( typeof scope.data.structuredQuery === 'undefined' ) {
-            Object.defineProperty(scope.data, 'structuredQuery', {
-              get: function() {
-                var rootQuery = {};
-                rootQuery[scope.data.operation] = {'queries': scope.data.query};
-                return {
-                  'query': {
-                    "queries": [ rootQuery ]
-                  }
-                };
-              }
-            });
-          }
-
-          scope.renderStructuredQuery = function() {
-            return JSON.stringify(scope.data.structuredQuery, null, 2);
-          };
-
-          scope.showStructuredQuery = function() {
-            scope.structuredQueryIsHidden = false;
-          };
-
-          scope.hideStructuredQuery = function() {
-            scope.structuredQueryIsHidden = true;
-          };
-
-          scope.hideStructuredQuery();
-
           scope.$watch('data.needsUpdate', function(curr) {
             if (! curr) return; 
             scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
             scope.data.needsUpdate = false;
           });
 
-          scope.$watch('filters', function(curr) {
-            if (! curr) return;
+          scope.$watch('filters', function(newValue, oldValue) {
+            if (!angular.equals(newValue, oldValue))  {
+              scope.data.query.length = 0;
+              angular.extend(
+                scope.data.query,
+                sqBuilderService.toQuery(scope.filters, scope.data.fields)
+              );
+            }
 
-            data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
           }, true);
         }
       };

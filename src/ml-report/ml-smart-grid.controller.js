@@ -35,13 +35,22 @@
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
     $scope.data.originalDocs = [];
+    $scope.data.rootQuery = {};
+    $scope.data.rootQuery[$scope.data.operation] = {
+      'queries': $scope.data.query
+    };
     $scope.data.serializedQuery = {
       'result-type': 'group-by',
       rows: [],
       columns: [],
       computes: [],
       options: ['headers=true'],
-      query: {query: {queries: [], qtext: ''}}
+      query: {
+        query: {
+          queries: [$scope.data.rootQuery],
+          qtext: ''
+        }
+      }
     };
 
     $scope.executor = {};
@@ -62,7 +71,7 @@
 
     // TODO: move into showQuery directive?
     $scope.renderGroupByConfig = function() {
-      return angular.toJson($scope.generateQueryConfig(), true);
+      return angular.toJson($scope.data.serializedQuery, true);
     };
     $scope.showGroupByConfig = function() {
       $scope.groupByConfigIsHidden = false;
@@ -132,7 +141,6 @@
     $scope.setDocument = function() {
       if ($scope.data.directory) {
         $scope.data.operation = 'and-query';
-        $scope.data.query = [];
 
         if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
           if ($scope.widget.dataModelOptions.query && 
@@ -140,11 +148,14 @@
               $scope.widget.dataModelOptions.query.query.queries) {
             var query = $scope.widget.dataModelOptions.query.query.queries[0];
             var operation = Object.keys(query)[0];
-            $scope.data.operation = operation;
             $scope.data.query = query[operation].queries;
+            $scope.data.operation = operation;
+            delete $scope.data.rootQuery['and-query'];
+            $scope.data.rootQuery[$scope.data.operation] = {
+              'queries': $scope.data.query
+            };
           } else {
             $scope.data.operation = 'and-query';
-            $scope.data.query = [];
           }
 
           if ($scope.widget.dataModelOptions.columns) {
@@ -159,7 +170,6 @@
           }
         } else {
           $scope.data.operation = 'and-query';
-          $scope.data.query = [];
           $scope.data.serializedQuery.columns = [];
           $scope.data.serializedQuery.computes = [];
         }
@@ -177,9 +187,8 @@
       $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
       $scope.widget.dataModelOptions.directory = $scope.data.directory;
 
-      $scope.widget.dataModelOptions.query = {};
+      $scope.widget.dataModelOptions.query = $scope.data.serializedQuery.query;
 
-      angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
       $scope.widget.dataModelOptions.columns = $scope.data.serializedQuery.columns;
       $scope.widget.dataModelOptions.computes = $scope.data.serializedQuery.computes;
 
@@ -202,25 +211,6 @@
       $scope.executeComplexQuery(count);
     };
 
-    $scope.generateQueryConfig = function() {
-      var query = $scope.data.serializedQuery.query.query;
-      // if (query.queries.length === 1) {
-      //   // The first element has only one key.
-      //   var firstElement = query.queries[0];
-      //   var key = Object.keys(firstElement)[0];
-
-      //   // The group-by will fail if an or-query is empty, so we
-      //   // convert an empty query at the root level.
-      //   if (firstElement[key].queries.length === 0)
-      //     query.queries = [];
-      // }
-
-      if ($scope.data.structuredQuery) {
-        $scope.data.serializedQuery.query = $scope.data.structuredQuery;
-      }
-      return $scope.data.serializedQuery;
-    };
-
     $scope.executeComplexQuery = function(count) {
       var params = {};
 
@@ -236,7 +226,7 @@
         method: 'POST',
         url: '/v1/resources/group-by',
         params: params,
-        data: $scope.generateQueryConfig(),
+        data: $scope.data.serializedQuery,
         timeout: $scope.deferredAbort.promise
       }).then(function(response) {
         $scope.model.results = response.data;
@@ -468,6 +458,15 @@
 
     $scope.$watch('data.directory', function() {
       $scope.data.fields = $scope.data.originalDocs[$scope.data.directory];
+    });
+
+    $scope.$watch('data.operation', function(newOperation, oldOperation) {
+      if (newOperation !== oldOperation) {
+        delete $scope.data.rootQuery[oldOperation];
+        $scope.data.rootQuery[newOperation] = {
+          'queries': $scope.data.query
+        };
+      }
     });
 
     // Kick off

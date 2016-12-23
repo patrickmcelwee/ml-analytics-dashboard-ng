@@ -799,44 +799,21 @@
             });
           };
 
-          if ( typeof scope.data.structuredQuery === 'undefined' ) {
-            Object.defineProperty(scope.data, 'structuredQuery', {
-              get: function() {
-                var rootQuery = {};
-                rootQuery[scope.data.operation] = {'queries': scope.data.query};
-                return {
-                  'query': {
-                    "queries": [ rootQuery ]
-                  }
-                };
-              }
-            });
-          }
-
-          scope.renderStructuredQuery = function() {
-            return JSON.stringify(scope.data.structuredQuery, null, 2);
-          };
-
-          scope.showStructuredQuery = function() {
-            scope.structuredQueryIsHidden = false;
-          };
-
-          scope.hideStructuredQuery = function() {
-            scope.structuredQueryIsHidden = true;
-          };
-
-          scope.hideStructuredQuery();
-
           scope.$watch('data.needsUpdate', function(curr) {
             if (! curr) return; 
             scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
             scope.data.needsUpdate = false;
           });
 
-          scope.$watch('filters', function(curr) {
-            if (! curr) return;
+          scope.$watch('filters', function(newValue, oldValue) {
+            if (!angular.equals(newValue, oldValue))  {
+              scope.data.query.length = 0;
+              angular.extend(
+                scope.data.query,
+                sqBuilderService.toQuery(scope.filters, scope.data.fields)
+              );
+            }
 
-            data.query = sqBuilderService.toQuery(scope.filters, scope.data.fields);
           }, true);
         }
       };
@@ -900,19 +877,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
   function mlAnalyticsDesign() {
@@ -920,6 +884,19 @@
       restrict: 'E',
       templateUrl: '/templates/designer.html',
       controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1565,13 +1542,22 @@ drag.delegate = function( event ){
     $scope.data.needsUpdate = true;
     $scope.data.directory = $scope.widget.dataModelOptions.directory;
     $scope.data.originalDocs = [];
+    $scope.data.rootQuery = {};
+    $scope.data.rootQuery[$scope.data.operation] = {
+      'queries': $scope.data.query
+    };
     $scope.data.serializedQuery = {
       'result-type': 'group-by',
       rows: [],
       columns: [],
       computes: [],
       options: ['headers=true'],
-      query: {query: {queries: [], qtext: ''}}
+      query: {
+        query: {
+          queries: [$scope.data.rootQuery],
+          qtext: ''
+        }
+      }
     };
 
     $scope.executor = {};
@@ -1592,7 +1578,7 @@ drag.delegate = function( event ){
 
     // TODO: move into showQuery directive?
     $scope.renderGroupByConfig = function() {
-      return angular.toJson($scope.generateQueryConfig(), true);
+      return angular.toJson($scope.data.serializedQuery, true);
     };
     $scope.showGroupByConfig = function() {
       $scope.groupByConfigIsHidden = false;
@@ -1662,7 +1648,6 @@ drag.delegate = function( event ){
     $scope.setDocument = function() {
       if ($scope.data.directory) {
         $scope.data.operation = 'and-query';
-        $scope.data.query = [];
 
         if ($scope.data.directory === $scope.widget.dataModelOptions.directory) {
           if ($scope.widget.dataModelOptions.query && 
@@ -1670,11 +1655,14 @@ drag.delegate = function( event ){
               $scope.widget.dataModelOptions.query.query.queries) {
             var query = $scope.widget.dataModelOptions.query.query.queries[0];
             var operation = Object.keys(query)[0];
-            $scope.data.operation = operation;
             $scope.data.query = query[operation].queries;
+            $scope.data.operation = operation;
+            delete $scope.data.rootQuery['and-query'];
+            $scope.data.rootQuery[$scope.data.operation] = {
+              'queries': $scope.data.query
+            };
           } else {
             $scope.data.operation = 'and-query';
-            $scope.data.query = [];
           }
 
           if ($scope.widget.dataModelOptions.columns) {
@@ -1689,7 +1677,6 @@ drag.delegate = function( event ){
           }
         } else {
           $scope.data.operation = 'and-query';
-          $scope.data.query = [];
           $scope.data.serializedQuery.columns = [];
           $scope.data.serializedQuery.computes = [];
         }
@@ -1707,9 +1694,8 @@ drag.delegate = function( event ){
       $scope.widget.dataModelOptions.groupingStrategy = $scope.model.groupingStrategy;
       $scope.widget.dataModelOptions.directory = $scope.data.directory;
 
-      $scope.widget.dataModelOptions.query = {};
+      $scope.widget.dataModelOptions.query = $scope.data.serializedQuery.query;
 
-      angular.copy($scope.data.structuredQuery, $scope.widget.dataModelOptions.query);
       $scope.widget.dataModelOptions.columns = $scope.data.serializedQuery.columns;
       $scope.widget.dataModelOptions.computes = $scope.data.serializedQuery.computes;
 
@@ -1732,25 +1718,6 @@ drag.delegate = function( event ){
       $scope.executeComplexQuery(count);
     };
 
-    $scope.generateQueryConfig = function() {
-      var query = $scope.data.serializedQuery.query.query;
-      // if (query.queries.length === 1) {
-      //   // The first element has only one key.
-      //   var firstElement = query.queries[0];
-      //   var key = Object.keys(firstElement)[0];
-
-      //   // The group-by will fail if an or-query is empty, so we
-      //   // convert an empty query at the root level.
-      //   if (firstElement[key].queries.length === 0)
-      //     query.queries = [];
-      // }
-
-      if ($scope.data.structuredQuery) {
-        $scope.data.serializedQuery.query = $scope.data.structuredQuery;
-      }
-      return $scope.data.serializedQuery;
-    };
-
     $scope.executeComplexQuery = function(count) {
       var params = {};
 
@@ -1766,7 +1733,7 @@ drag.delegate = function( event ){
         method: 'POST',
         url: '/v1/resources/group-by',
         params: params,
-        data: $scope.generateQueryConfig(),
+        data: $scope.data.serializedQuery,
         timeout: $scope.deferredAbort.promise
       }).then(function(response) {
         $scope.model.results = response.data;
@@ -1998,6 +1965,15 @@ drag.delegate = function( event ){
 
     $scope.$watch('data.directory', function() {
       $scope.data.fields = $scope.data.originalDocs[$scope.data.directory];
+    });
+
+    $scope.$watch('data.operation', function(newOperation, oldOperation) {
+      if (newOperation !== oldOperation) {
+        delete $scope.data.rootQuery[oldOperation];
+        $scope.data.rootQuery[newOperation] = {
+          'queries': $scope.data.query
+        };
+      }
     });
 
     // Kick off
