@@ -891,19 +891,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
 
   function manageMlAnalyticsDashboard() {
@@ -911,6 +898,19 @@
       restrict: 'E',
       templateUrl: '/templates/manage.html',
       controller: 'ManageCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1786,7 +1786,7 @@ drag.delegate = function( event ){
     $scope.createHighcharts = function(count, headers, results) {
       var chartType = $scope.widget.dataModelOptions.chart;
 
-      if (results[0].length === count) {
+      if (results[0] && results[0].length === count) {
         $scope.shouldShowChart = false;
         $scope.isGridCollapsed = false;
       } else {

@@ -279,7 +279,7 @@
     $scope.createHighcharts = function(count, headers, results) {
       var chartType = $scope.widget.dataModelOptions.chart;
 
-      if (results[0].length === count) {
+      if (results[0] && results[0].length === count) {
         $scope.shouldShowChart = false;
         $scope.isGridCollapsed = false;
       } else {
