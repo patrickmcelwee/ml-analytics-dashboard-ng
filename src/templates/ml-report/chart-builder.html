@@ -15,7 +15,7 @@
             <div class="form-group">
               <label class="control-label">Limited By</label>
               <select class="input-sm form-control" 
-                      ng-model="model.groupingStrategy"
+                      ng-model="data.groupingStrategy"
                       ng-change="getDbConfig()">
                 <option>collection</option>
                 <option>root</option>
@@ -27,7 +27,7 @@
               <label class="control-label">Name</label>
               <select class="input-sm form-control" 
                       ng-model="data.directory" 
-                      ng-change="setDocument()" required>
+                      ng-change="initializeQuery()" required>
                 <option value="">Choose...</option>
                 <option ng-repeat="dir in data.directories" value="{{dir}}">
                 {{dir}}
@@ -65,7 +65,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-4" ng-show="model.showBuilder">
+      <div class="col-md-4">
         <div dimension-builder="data"></div>
 
         <div>
