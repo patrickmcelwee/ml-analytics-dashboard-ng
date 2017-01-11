@@ -1673,22 +1673,22 @@ drag.delegate = function( event ){
     };
 
     $scope.execute = function() {
-      var columns = $scope.data.serializedQuery && $scope.data.serializedQuery.columns;
-      // Number of groupby fields.
-      var count; 
-      if (columns) {
-        count = columns.length;
+      var columns, computes;
+      if ($scope.data.serializedQuery) {
+        columns  = $scope.data.serializedQuery.columns;
+        computes = $scope.data.serializedQuery.computes;
       } else {
-        count = 0;
+        columns  = [];
+        computes = [];
       }
 
-      // If there is no column, we will do simple 
-      // search, otherwise we will do aggregate computations.
-      $scope.model.loadingResults = true;
-      $scope.executeComplexQuery(count);
+      if (columns.length + computes.length > 0) {
+        $scope.model.loadingResults = true;
+        $scope.executeComplexQuery(columns.length);
+      }
     };
 
-    $scope.executeComplexQuery = function(count) {
+    $scope.executeComplexQuery = function(columnCount) {
       var params = {};
 
       $scope.model.loadingResults = true;
@@ -1707,7 +1707,7 @@ drag.delegate = function( event ){
         $scope.model.loadingResults = false;
 
         $scope.createComplexTable($scope.model.results.headers, $scope.model.results.results);
-        $scope.createHighcharts(count, $scope.model.results.headers, $scope.model.results.results);
+        $scope.createHighcharts(columnCount, $scope.model.results.headers, $scope.model.results.results);
 
       }, function(response) {
         $scope.model.loadingResults = false;
@@ -1749,10 +1749,10 @@ drag.delegate = function( event ){
       initialParams.sorting[headers[0]] = 'desc';
     };
 
-    $scope.createHighcharts = function(count, headers, results) {
+    $scope.createHighcharts = function(columnCount, headers, results) {
       var chartType = $scope.widget.dataModelOptions.chart;
 
-      if (results[0] && results[0].length === count) {
+      if (results[0] && results[0].length === columnCount) {
         $scope.shouldShowChart = false;
         $scope.isGridCollapsed = false;
       } else {
@@ -1761,19 +1761,19 @@ drag.delegate = function( event ){
       }
 
       if (chartType === 'column')
-        $scope.createColumnHighcharts(count, headers, results);
+        $scope.createColumnHighcharts(columnCount, headers, results);
       else
-        $scope.createPieHighcharts(count, headers, results);
+        $scope.createPieHighcharts(columnCount, headers, results);
     };
 
     // Create a column chart
-    $scope.createColumnHighcharts = function(count, headers, results) {
+    $scope.createColumnHighcharts = function(columnCount, headers, results) {
       var categories = [];
       var series = [];
 
-      // count is number of groupby fields.
+      // columnCount is number of groupby fields.
       // Skip all groupby fields.
-      for (var i = count; i < headers.length; i++) {
+      for (var i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
           data: []
@@ -1782,13 +1782,13 @@ drag.delegate = function( event ){
 
       results.forEach(function(row) {
         var groups = [];
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < columnCount; i++) {
           groups.push(row[i]);
         }
         categories.push(groups.join(','));
 
-        for (i = count; i < row.length; i++) {
-          series[i-count].data.push(row[i]);
+        for (i = columnCount; i < row.length; i++) {
+          series[i-columnCount].data.push(row[i]);
         }
       });
 
@@ -1830,14 +1830,14 @@ drag.delegate = function( event ){
     };
 
     // Create a pie chart
-    $scope.createPieHighcharts = function(count, headers, results) {
+    $scope.createPieHighcharts = function(columnCount, headers, results) {
       var colors = Highcharts.getOptions().colors;
       var measures = [];
       var series = [];
 
-      // count is number of groupby fields.
+      // columnCount is number of groupby fields.
       // Skip all groupby fields.
-      for (var i = count; i < headers.length; i++) {
+      for (var i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
           data: []
@@ -1867,15 +1867,15 @@ drag.delegate = function( event ){
 
       results.forEach(function(row) {
         var groups = [];
-        for (var i = 0; i < count; i++) {
+        for (var i = 0; i < columnCount; i++) {
           groups.push(row[i]);
         }
         var category = groups.join(',');
 
-        for (i = count; i < row.length; i++) {
-          series[i-count].data.push({
+        for (i = columnCount; i < row.length; i++) {
+          series[i-columnCount].data.push({
             name: category,
-            color: colors[i-count],
+            color: colors[i-columnCount],
             y: row[i]
           });
         }

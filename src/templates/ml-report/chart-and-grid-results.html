@@ -1,5 +1,5 @@
-<div>
-  <highchart ng-if="shouldShowChart" config="highchartConfig"></highchart> 
+<div class="ml-analytics-results" ng-if="shouldShowChart">
+  <highchart config="highchartConfig"></highchart> 
   <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
     Show results grid
   </button>

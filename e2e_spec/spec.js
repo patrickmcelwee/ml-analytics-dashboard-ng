@@ -30,10 +30,12 @@ describe('Protractor Demo App', function() {
     expect( element(by.css('.view-title')).getText() ).toContain(reportName);
   });
 
-  it('should create a new chart', function() {
+  it('should create a new chart with no results', function() {
     expect(chartWidgets.count()).toEqual(0);
     element(by.buttonText('Add Chart')).click();
     expect(chartWidgets.count()).toEqual(1);
+
+    expect(element(by.css('.ml-analytics-results')).isPresent()).toBe(false);
   });
 
   it('defaults to current database and collection strategy', function() {
