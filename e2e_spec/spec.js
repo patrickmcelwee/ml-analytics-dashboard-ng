@@ -36,16 +36,21 @@ describe('Protractor Demo App', function() {
     expect(chartWidgets.count()).toEqual(1);
   });
 
-  it('forces data source to be selected', function() {
+  it('defaults to current database and collection strategy', function() {
     element(by.linkText('Design')).click();
     expectSelection(
       element(by.model('data.targetDatabase')),
       'developing-analytics-dashboard-content'
     );
     expectSelection(element(by.model('data.groupingStrategy')), 'collection');
-    expect(
-      element(by.model('data.directory')).getAttribute('class')
-    ).toContain('ng-invalid');
+  });
+
+  it('forces data source to be selected', function() {
+    var directoryInput = element(by.model('data.directory'));
+    expect( directoryInput.getAttribute('class') ).toContain('ng-invalid');
+    directoryInput.sendKeys('data');
+    expectSelection(directoryInput, 'data');
+    expect( directoryInput.getAttribute('class') ).not.toContain('ng-invalid');
   });
 
 });
