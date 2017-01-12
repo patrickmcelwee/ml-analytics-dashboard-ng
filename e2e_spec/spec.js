@@ -68,11 +68,22 @@ describe('Protractor Demo App', function() {
     expect(element(by.css('.highcharts-container')).isPresent()).toBe(true);
   });
 
-  it('allows selection of group-by column', function() {
-    var firstDimension = element.all(by.css('.ml-analytics-dimension')).first();
-    firstDimension.element(by.css('a')).click();
-    firstDimension.element(by.partialLinkText('Add Group By')).click();
+  it('allows selection of group-by column and adds to xaxis', function() {
+    var eyeColorDimension = element(by.css('.ml-analytics-dimensions'))
+      .element(by.partialLinkText('eyeColor'));
+    eyeColorDimension.click();
+    eyeColorDimension
+      .element(by.xpath('..'))
+      .element(by.partialLinkText('Add Group By'))
+      .click();
     expect(element.all(by.css('.ml-analytics-column')).count()).toBe(1);
+    element(by.partialButtonText('Save and Run')).click();
+    expect(
+        element(by.cssContainingText(
+          '.highcharts-xaxis-labels tspan',
+          'amethyst'
+        )).isPresent()
+    ).toBe(true);
   });
 
 });

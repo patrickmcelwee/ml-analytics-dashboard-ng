@@ -21,16 +21,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report',
-    [
-      'ml-dimension-builder',
-      'ml-sq-builder'
-    ]); 
-})();
-
-(function() {
-  'use strict';
-
   angular.module('ml-sq-builder', [
     'RecursionHelper',
   ]);
@@ -41,27 +31,11 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report')
-    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
-      function(WidgetDataModel, $http) {
-        function SmartGridDataModel() {
-        }
-
-        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
-
-        SmartGridDataModel.prototype.init = function() {
-          WidgetDataModel.prototype.init.call(this);
-          this.load();
-        };
-
-        SmartGridDataModel.prototype.load = function() {
-          //console.log(this);
-        };
-
-        return SmartGridDataModel;
-      }
-    ]);
-
+  angular.module('ml.analyticsDashboard.report',
+    [
+      'ml-dimension-builder',
+      'ml-sq-builder'
+    ]); 
 })();
 
 (function() {
@@ -371,6 +345,32 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.report')
+    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
+      function(WidgetDataModel, $http) {
+        function SmartGridDataModel() {
+        }
+
+        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
+
+        SmartGridDataModel.prototype.init = function() {
+          WidgetDataModel.prototype.init.call(this);
+          this.load();
+        };
+
+        SmartGridDataModel.prototype.load = function() {
+          //console.log(this);
+        };
+
+        return SmartGridDataModel;
+      }
+    ]);
+
+})();
+
+(function() {
+  'use strict';
+
   // Report Service
   angular.module('ml.analyticsDashboard').service('ReportService', ['$http', '$q', 'MLRest', function($http, $q, mlRest) {
     var dashboardOptions = null;
@@ -587,67 +587,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-        });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -876,6 +815,67 @@
 })();
 
 (function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        $scope.$watch('widget.mode', function(mode) {
+          $scope.data.needsUpdate = true;
+        });
+      }
+    };
+  }
+}());
+
+(function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
@@ -905,6 +905,20 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -926,20 +940,6 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
     };
   }
 }());
@@ -2036,70 +2036,6 @@ drag.delegate = function( event ){
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
-    function($scope, $location, $rootScope, ReportService) {
-
-    $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.createReport = function() {
-      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        encodeURIComponent($scope.report.name) +
-        '-' +
-        Math.floor((Math.random() * 1000000) + 1) +
-        '.json';
-        
-      ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
-        $location.search('ml-analytics-mode', 'design');
-        $location.search('ml-analytics-uri', $scope.report.uri);
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
-    function($scope, $location, ReportService) {
-
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-    ReportService.getReport($scope.report.uri).then(function(response) {
-      angular.extend($scope.report, response.data);
-    });
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        $location.search('ml-analytics-mode', 'home');
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -2197,4 +2133,68 @@ drag.delegate = function( event ){
 
   }
 
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
+
+    $scope.report = {};
+    $scope.report.privacy = 'public';
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.createReport = function() {
+      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
+        encodeURIComponent($scope.report.name) +
+        '-' +
+        Math.floor((Math.random() * 1000000) + 1) +
+        '.json';
+        
+      ReportService.createReport($scope.report).then(function(response) {
+        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
+        $location.search('ml-analytics-mode', 'design');
+        $location.search('ml-analytics-uri', $scope.report.uri);
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
+    function($scope, $location, ReportService) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    ReportService.getReport($scope.report.uri).then(function(response) {
+      angular.extend($scope.report, response.data);
+    });
+
+    $scope.setOption = function(option) {
+      $scope.report.privacy = option;
+    };
+
+    $scope.isActive = function(option) {
+      return option === $scope.report.privacy;
+    };
+
+    $scope.updateReport = function() {
+      ReportService.updateReport($scope.report).then(function(response) {
+        $location.search('ml-analytics-mode', 'home');
+      });
+    };
+
+  }]);
 }());
