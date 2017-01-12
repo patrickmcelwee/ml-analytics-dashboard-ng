@@ -39,7 +39,6 @@ describe('Protractor Demo App', function() {
   });
 
   it('defaults to current database and collection strategy', function() {
-    element(by.linkText('Design')).click();
     expectSelection(
       element(by.model('data.targetDatabase')),
       'developing-analytics-dashboard-content'

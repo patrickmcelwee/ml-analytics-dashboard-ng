@@ -7,8 +7,7 @@
   mlSmartGridCtrl.$inject = ['$scope', '$http', '$q'];
 
   function mlSmartGridCtrl($scope, $http, $q) {
-    // Set the initial mode for this widget to View.
-    $scope.widget.mode = 'View';
+    $scope.widget.mode = 'Design';
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
 

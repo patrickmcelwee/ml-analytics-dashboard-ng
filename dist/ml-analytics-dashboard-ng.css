@@ -7,6 +7,18 @@
 .ml-analytics-design-form .form-group .ng-invalid {
   color: #d9534f;
 }
+.ml-analytics-design-form.well-sm {
+  margin-bottom: 10px;
+}
+.gutter-10.row {
+  margin-right: -5px;
+  margin-left: -5px;
+}
+.gutter-10 > [class^="col-"],
+.gutter-10 > [class^=" col-"] {
+  padding-right: 5px;
+  padding-left: 5px;
+}
 /* overwrite the malhar dashboard styles */
 .widget-container {
   float: none;
