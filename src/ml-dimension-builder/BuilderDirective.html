@@ -5,7 +5,10 @@
         <span class="panel-title">Dimensions</span>
       </div>
       <ul class="list-unstyled panel-body">
-        <li uib-dropdown ng-repeat="field in data.fields | filter:isColumnField">
+        <li
+          uib-dropdown
+          class="ml-analytics-dimension"
+          ng-repeat="field in data.fields | filter:isColumnField">
           <a uib-dropdown-toggle>
             <span ng-switch="highLevelType(field['scalar-type'])">
               <i class="fa fa-font" ng-switch-when="string"></i>
@@ -35,7 +38,10 @@
         <span class="panel-title">Measures</span>
       </div>
       <ul class="list-unstyled panel-body">
-        <li uib-dropdown ng-repeat="field in data.fields | filter:isComputeField">
+        <li
+          uib-dropdown
+          class="ml-analytics-measure"
+          ng-repeat="field in data.fields | filter:isComputeField">
           <a uib-dropdown-toggle>
             <span ng-switch="highLevelType(field['scalar-type'])">
               <i class="icon ion-pound" ng-switch-when="numeric"></i>

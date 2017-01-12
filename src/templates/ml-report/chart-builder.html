@@ -103,7 +103,7 @@
               <span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span>
             </div>
             <div class="panel-body">
-              <div class="btn-group" ng-repeat="column in data.serializedQuery.columns">
+              <div class="btn-group ml-analytics-column" ng-repeat="column in data.serializedQuery.columns">
                 <button type="button" class="btn btn-xs btn-info">
                   {{shortName(column)}}
                 </button>
@@ -118,7 +118,7 @@
               <span class="panel-title"><i class="fa fa-list"></i> Rows</span>
             </div>
             <div class="panel-body">
-              <div class="btn-group" ng-repeat="compute in data.serializedQuery.computes">
+              <div class="btn-group ml-analytics-row" ng-repeat="compute in data.serializedQuery.computes">
                 <button type="button" class="btn btn-xs btn-success">
                   {{compute.fn}}({{shortName(compute.ref)}})
                 </button>

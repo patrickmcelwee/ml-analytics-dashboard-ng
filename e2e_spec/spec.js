@@ -58,4 +58,21 @@ describe('Protractor Demo App', function() {
     expect( dimensionBuilder.isPresent() ).toBe(true);
   });
 
+  it('allows selection of compute row and creates chart', function() {
+    expect(element(by.css('.highcharts-container')).isPresent()).toBe(false);
+    var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
+    firstMeasure.element(by.css('a')).click();
+    firstMeasure.element(by.linkText('Add count')).click();
+    expect(element.all(by.css('.ml-analytics-row')).count()).toBe(1);
+    element(by.partialButtonText('Save and Run')).click();
+    expect(element(by.css('.highcharts-container')).isPresent()).toBe(true);
+  });
+
+  it('allows selection of group-by column', function() {
+    var firstDimension = element.all(by.css('.ml-analytics-dimension')).first();
+    firstDimension.element(by.css('a')).click();
+    firstDimension.element(by.partialLinkText('Add Group By')).click();
+    expect(element.all(by.css('.ml-analytics-column')).count()).toBe(1);
+  });
+
 });
