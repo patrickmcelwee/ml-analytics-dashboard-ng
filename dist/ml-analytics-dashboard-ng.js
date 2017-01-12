@@ -5,15 +5,9 @@
     'highcharts-ng',
     'ml.analyticsDashboard.report',
     'ml.common',
+    'ngAnimate',
     'ui.dashboard'
   ]);
-
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml-dimension-builder', []);
 
 }());
 
@@ -26,6 +20,13 @@
       'ml-sq-builder'
     ]); 
 })();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder', []);
+
+}());
 
 (function() {
   'use strict';
@@ -519,6 +520,67 @@
   }
 }());
 
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        $scope.$watch('widget.mode', function(mode) {
+          $scope.data.needsUpdate = true;
+        });
+      }
+    };
+  }
+}());
+
 (function() {
   'use strict';
 
@@ -586,67 +648,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-        });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -877,13 +878,12 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
-  function mlAnalyticsDesign() {
+  function mlAnalyticsDashboardHome() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -891,12 +891,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
-  function mlAnalyticsDashboardHome() {
+  function mlAnalyticsDesign() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
     };
   }
 }());

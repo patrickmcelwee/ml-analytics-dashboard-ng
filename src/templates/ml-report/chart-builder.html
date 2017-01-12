@@ -1,6 +1,6 @@
 <div>
   <div ng-if="widget.mode === 'Design'" class="design-mode">
-    <div class="row gutter-10">
+    <div class="row ml-analytics-gutter-10">
       <div class="col-lg-9 col-md-7">
         <form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate>
           <div class="form-group">
@@ -18,7 +18,7 @@
                       ng-model="data.groupingStrategy"
                       ng-change="getDbConfig()">
                 <option>collection</option>
-                <option>root</option>
+                <option value="root">root element name</option>
               </select>
               <span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
             </div>
@@ -64,7 +64,7 @@
       </div>
     </div>
 
-    <div class="row gutter-10">
+    <div class="row ml-analytics-gutter-10 ml-analytics-fading" ng-if="data.directory">
       <div class="col-md-4">
         <div dimension-builder="data"></div>
 

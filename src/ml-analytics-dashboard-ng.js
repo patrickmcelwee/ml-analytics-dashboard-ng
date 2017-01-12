@@ -5,6 +5,7 @@
     'highcharts-ng',
     'ml.analyticsDashboard.report',
     'ml.common',
+    'ngAnimate',
     'ui.dashboard'
   ]);
 

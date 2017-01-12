@@ -16,13 +16,28 @@
   margin-bottom: 10px;
 }
 
-.gutter-10.row {
+.ml-analytics-gutter-10.row {
   margin-right: -5px;
   margin-left: -5px;
 }
-.gutter-10 > [class^="col-"], .gutter-10 > [class^=" col-"] {
+.ml-analytics-gutter-10 > [class^="col-"], .ml-analytics-gutter-10 > [class^=" col-"] {
   padding-right: 5px;
   padding-left: 5px;
+}
+
+.ml-analytics-fading.ng-enter {
+  transition:0.5s linear all;
+  opacity:0;
+}
+.ml-analytics-fading.ng-enter.ng-enter-active {
+  opacity:1;
+}
+.ml-analytics-fading.ng-leave {
+  transition:0.5s linear all;
+  opacity:1;
+}
+.ml-analytics-fading.ng-leave.ng-leave-active {
+  opacity:0;
 }
 
 /* overwrite the malhar dashboard styles */

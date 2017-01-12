@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder row gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body"><li uib-dropdown="" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body"><li uib-dropdown="" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul></li></ul></div></div></div>');
+    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body"><li uib-dropdown="" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body"><li uib-dropdown="" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span tooltip-placement="right" uib-tooltip="Index type: {{field[\'ref-type\']}}; Namespace: {{field.ns}}"><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul></li></ul></div></div></div>');
 }]);
 })();
 
@@ -221,54 +221,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/templates/ml-report/chart-and-grid-results.html',
-    '<div class="ml-analytics-results" ng-if="shouldShowChart"><highchart config="highchartConfig"></highchart><button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">Show results grid</button> <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">Hide results grid</button><div uib-collapse="isGridCollapsed"><ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/templates/ml-report/chart-builder.html',
-    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="row gutter-10"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in data.databases" ng-model="data.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="data.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option>root</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="data.directory" ng-change="initializeQuery()" required=""><option value="">Choose...</option><option ng-repeat="dir in data.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div><div class="col-lg-3 col-md-5"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><div class="ml-analytics-design-form"><div class="form-group"><button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save and Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div></div></div></div><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row gutter-10"><div class="col-md-4"><div dimension-builder="data"></div><div><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Document Query Filters</span></div><div class="panel-body" sq-builder="data"></div></div></div><div><a ng-if="groupByConfigIsHidden" data-ng-click="showGroupByConfig()" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> Show Generated Group-by Query</a> <a ng-if="!groupByConfigIsHidden" ng-click="hideGroupByConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Group-by Query</a><div uib-collapse="groupByConfigIsHidden"><pre ng-bind="renderGroupByConfig()"></pre></div></div></div><div class="col-md-8"><div class="ml-analytics-columns-and-rows"><div class="ml-analytics-columns panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span></div><div class="panel-body"><div class="btn-group" ng-repeat="column in data.serializedQuery.columns"><button type="button" class="btn btn-xs btn-info">{{shortName(column)}}</button> <button type="button" class="btn btn-xs btn-info" ng-click="dataManager.removeColumn($index)"><i class="fa fa-remove"></i></button></div></div></div><div class="ml-analytics-rows panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list"></i> Rows</span></div><div class="panel-body"><div class="btn-group" ng-repeat="compute in data.serializedQuery.computes"><button type="button" class="btn btn-xs btn-success">{{compute.fn}}({{shortName(compute.ref)}})</button> <button type="button" class="btn btn-xs btn-success" ng-click="dataManager.removeCompute($index)"><i class="fa fa-remove"></i></button></div></div></div></div><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><ml-analytics-view-chart></ml-analytics-view-chart></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/templates/ml-report/ml-analytics-view-chart.html',
-    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="data.serializedQuery.query.query.qtext"></div><button class="btn btn-primary" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/templates/ml-report/ml-results-grid.html',
-    '<div class="table-responsive" ng-if="resultsObject.results"><div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div><div><uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.results.length" items-per-page="pageLength"></uib-pagination><div class="pull-right"><span class="metrics"><em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics[\'total-time\'] }}</em></span> | <span>Results per page:</span><select ng-model="pageLength"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div></div><table class="table table-bordered table-striped table-condensed"><thead><tr><th ng-repeat="header in resultsObject.headers track by $index"><a href="#" ng-click="setSortColumn($index)">{{header}} <span ng-show="sortColumn == $index && !sortReverse" class="fa fa-caret-down"></span> <span ng-show="sortColumn == $index && sortReverse" class="fa fa-caret-up"></span></a></th></tr></thead><tbody><tr ng-repeat="result in resultsObject.results | orderBy:sorter:sortReverse | limitTo:pageLength:(pageLength*(gridPage - 1))"><td ng-repeat="val in result track by $index"><span>{{ val }}</span></td></tr></tbody></table></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/indexes/path-namespace.html',
     '<div class="form-group" ng-class="{ \'has-error\' : indexForm.prefix.$invalid && !indexForm.prefix.$pristine }"><label class="col-sm-4 control-label">prefix <i class="fa fa-asterisk mandatory-field"></i></label><div class="col-sm-8"><input type="text" name="prefix" class="form-control" ng-model="current_index.prefix" required=""><p ng-show="indexForm.prefix.$invalid && !indexForm.prefix.$pristine" class="help-block">prefix is required.</p></div></div><div class="form-group" ng-class="{ \'has-error\' : indexForm.namespaceUri.$invalid && !indexForm.namespaceUri.$pristine }"><label class="col-sm-4 control-label">namespace uri <i class="fa fa-asterisk mandatory-field"></i></label><div class="col-sm-8"><input type="text" name="namespaceUri" class="form-control" ng-model="current_index[\'namespace-uri\']" required=""><p ng-show="indexForm.namespaceUri.$invalid && !indexForm.namespaceUri.$pristine" class="help-block">namespace uri is required.</p></div></div>');
 }]);
@@ -319,6 +271,54 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/indexes/range-path-index.html',
     '<div class="form-group" ng-class="{ \'has-error\' : indexForm.pathExpression.$invalid && !indexForm.pathExpression.$pristine }"><label class="col-sm-4 control-label">path expression <i class="fa fa-asterisk mandatory-field"></i></label><div class="col-sm-8"><input type="text" name="pathExpression" class="form-control" ng-model="current_index[\'path-expression\']" required=""><p ng-show="indexForm.pathExpression.$invalid && !indexForm.pathExpression.$pristine" class="help-block">path expression uri is required.</p></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/templates/ml-report/chart-and-grid-results.html',
+    '<div class="ml-analytics-results" ng-if="shouldShowChart"><highchart config="highchartConfig"></highchart><button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">Show results grid</button> <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">Hide results grid</button><div uib-collapse="isGridCollapsed"><ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/templates/ml-report/chart-builder.html',
+    '<div><div ng-if="widget.mode === \'Design\'" class="design-mode"><div class="row ml-analytics-gutter-10"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in data.databases" ng-model="data.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="data.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option value="root">root element name</option></select><span ng-show="model.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="data.directory" ng-change="initializeQuery()" required=""><option value="">Choose...</option><option ng-repeat="dir in data.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div><div class="col-lg-3 col-md-5"><div class="pull-right"><a ng-click="widget.mode = \'View\'"><i class="fa fa-eye" title="View this chart"></i> View</a></div><div class="ml-analytics-design-form"><div class="form-group"><button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid"><span class="fa fa-check"></span> Save and Run</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div></div></div></div><div class="row" style="margin-top:10px" ng-if="model.configError"><div class="col-md-12"><div class="alert alert-danger">{{model.configError}}</div></div></div><div class="row ml-analytics-gutter-10 ml-analytics-fading" ng-if="data.directory"><div class="col-md-4"><div dimension-builder="data"></div><div><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Document Query Filters</span></div><div class="panel-body" sq-builder="data"></div></div></div><div><a ng-if="groupByConfigIsHidden" data-ng-click="showGroupByConfig()" class="btn btn-xs btn-primary"><i class="fa fa-eye"></i> Show Generated Group-by Query</a> <a ng-if="!groupByConfigIsHidden" ng-click="hideGroupByConfig()" class="btn btn-xs btn-primary" title="Hide Generated Dimensions"><span class="fa-stack fa-stack-xs"><i class="fa fa-eye fa-stack-1x"></i> <i class="fa fa-ban fa-stack-1x text-danger"></i></span> Hide Generated Group-by Query</a><div uib-collapse="groupByConfigIsHidden"><pre ng-bind="renderGroupByConfig()"></pre></div></div></div><div class="col-md-8"><div class="ml-analytics-columns-and-rows"><div class="ml-analytics-columns panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list fa-rotate-90"></i> Columns</span></div><div class="panel-body"><div class="btn-group" ng-repeat="column in data.serializedQuery.columns"><button type="button" class="btn btn-xs btn-info">{{shortName(column)}}</button> <button type="button" class="btn btn-xs btn-info" ng-click="dataManager.removeColumn($index)"><i class="fa fa-remove"></i></button></div></div></div><div class="ml-analytics-rows panel panel-default panel-horizontal panel-sm"><div class="panel-heading"><span class="panel-title"><i class="fa fa-list"></i> Rows</span></div><div class="panel-body"><div class="btn-group" ng-repeat="compute in data.serializedQuery.computes"><button type="button" class="btn btn-xs btn-success">{{compute.fn}}({{shortName(compute.ref)}})</button> <button type="button" class="btn btn-xs btn-success" ng-click="dataManager.removeCompute($index)"><i class="fa fa-remove"></i></button></div></div></div></div><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div></div></div><div ng-if="widget.mode === \'View\'" class="view-mode"><div class="pull-right"><a ng-click="widget.mode = \'Design\'"><i class="fa fa-cog" title="Design this chart"></i> Design</a></div><ml-analytics-view-chart></ml-analytics-view-chart></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/templates/ml-report/ml-analytics-view-chart.html',
+    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="data.serializedQuery.query.query.qtext"></div><button class="btn btn-primary" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><div ng-include="\'/templates/ml-report/chart-and-grid-results.html\'"></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/templates/ml-report/ml-results-grid.html',
+    '<div class="table-responsive" ng-if="resultsObject.results"><div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div><div><uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.results.length" items-per-page="pageLength"></uib-pagination><div class="pull-right"><span class="metrics"><em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics[\'total-time\'] }}</em></span> | <span>Results per page:</span><select ng-model="pageLength"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select></div></div><table class="table table-bordered table-striped table-condensed"><thead><tr><th ng-repeat="header in resultsObject.headers track by $index"><a href="#" ng-click="setSortColumn($index)">{{header}} <span ng-show="sortColumn == $index && !sortReverse" class="fa fa-caret-down"></span> <span ng-show="sortColumn == $index && sortReverse" class="fa fa-caret-up"></span></a></th></tr></thead><tbody><tr ng-repeat="result in resultsObject.results | orderBy:sorter:sortReverse | limitTo:pageLength:(pageLength*(gridPage - 1))"><td ng-repeat="val in result track by $index"><span>{{ val }}</span></td></tr></tbody></table></div>');
 }]);
 })();
 

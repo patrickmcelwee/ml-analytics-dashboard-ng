@@ -17,7 +17,7 @@ describe('Protractor Demo App', function() {
     element(by.partialButtonText('Submit')).click();
   });
 
-  afterAll(function(){
+  afterAll(function() {
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
     var trash = element(by.cssContainingText('span', reportName))
       .element(by.xpath('..'))
@@ -48,10 +48,14 @@ describe('Protractor Demo App', function() {
 
   it('forces data source to be selected', function() {
     var directoryInput = element(by.model('data.directory'));
+    var dimensionBuilder = element(by.css('.dimension-builder'));
     expect( directoryInput.getAttribute('class') ).toContain('ng-invalid');
+    expect( dimensionBuilder.isPresent() ).toBe(false);
+
     directoryInput.sendKeys('data');
     expectSelection(directoryInput, 'data');
     expect( directoryInput.getAttribute('class') ).not.toContain('ng-invalid');
+    expect( dimensionBuilder.isPresent() ).toBe(true);
   });
 
 });
