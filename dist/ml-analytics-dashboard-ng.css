@@ -33,6 +33,10 @@
 .ml-analytics-fading.ng-leave.ng-leave-active {
   opacity: 0;
 }
+.dimension-builder .popover {
+  max-width: 370px;
+  width: 370px;
+}
 /* overwrite the malhar dashboard styles */
 .widget-container {
   float: none;

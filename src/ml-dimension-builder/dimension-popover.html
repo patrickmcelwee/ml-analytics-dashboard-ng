@@ -1,0 +1,11 @@
+<div class="panel panel-default panel-sm">
+  <div class="panel-heading">
+    <span>Range Index Details for {{shortName(field)}}</span>
+  </div>
+  <ul class="list-unstyled panel-body">
+    <li><b>Index type:</b> {{field['ref-type']}}</li>
+    <li ng-if="field['namespace-uri']"><b>Namespace:</b> {{field['namespace-uri']}}</li>
+    <li ng-if="field['scalar-type']"><b>Scalar type:</b> {{field['scalar-type']}}</li>
+    <li ng-if="field.collation"><b>Collation:</b> {{field.collation}}</li>
+  </ul>
+</div>
