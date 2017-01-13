@@ -8,6 +8,7 @@ describe('Protractor Demo App', function() {
   var columns = element.all(by.css('.ml-analytics-column'));
 
   var groupingStrategySelector = element(by.model('data.groupingStrategy'));
+  var directorySelector = element(by.model('data.directory'));
 
   // expectations
   function expectSelection(element, value) {
@@ -25,6 +26,12 @@ describe('Protractor Demo App', function() {
     var containmentArgs = arguments;
     return function() {
       this.toContain.apply(this, containmentArgs);
+    };
+  }
+
+  function not(expectation) {
+    return function() {
+      expectation.call(this.not);
     };
   }
 
@@ -66,14 +73,13 @@ describe('Protractor Demo App', function() {
   });
 
   it('forces data source to be selected', function() {
-    var directoryInput = element(by.model('data.directory'));
     var dimensionBuilder = element(by.css('.dimension-builder'));
-    expect( directoryInput.getAttribute('class') ).toContain('ng-invalid');
+    expect( directorySelector.getAttribute('class') ).toContain('ng-invalid');
     expect( dimensionBuilder.isPresent() ).toBe(false);
 
-    directoryInput.sendKeys('data');
-    expectSelection(directoryInput, 'data');
-    expect( directoryInput.getAttribute('class') ).not.toContain('ng-invalid');
+    directorySelector.sendKeys('data');
+    expectSelection(directorySelector, 'data');
+    expect( directorySelector.getAttribute('class') ).not.toContain('ng-invalid');
     expect( dimensionBuilder.isPresent() ).toBe(true);
   });
 
@@ -119,6 +125,8 @@ describe('Protractor Demo App', function() {
     groupingStrategySelector.sendKeys('root');
     expect(columns.count()).toBe(0);
     expect(rows.count()).toBe(0);
+    directorySelector.sendKeys('patient-summary');
+    expectGeneratedQuery(not(toContain('query')));
   });
 
   xit('includes root-name query for root-scoped data source', function() {
