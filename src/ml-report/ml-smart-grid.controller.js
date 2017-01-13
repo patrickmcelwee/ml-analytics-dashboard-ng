@@ -22,6 +22,14 @@
     $scope.deferredAbort = null;
 
     $scope.initializeQuery = function() {
+      $scope.data.metaConstraint = {};
+      if ($scope.data.groupingStrategy === 'collection' && $scope.data.directory) {
+        $scope.data.metaConstraint = {
+          'collection-query': {
+            'uri': [$scope.data.directory]
+          }
+        };
+      }
       $scope.data.operation = 'and-query';
       $scope.data.rootQuery = {};
       $scope.data.rootQuery[$scope.data.operation] = {
@@ -34,32 +42,24 @@
         options: ['headers=true'],
         query: {
           query: {
-            queries: [$scope.data.rootQuery],
+            queries: [$scope.data.metaConstraint, $scope.data.rootQuery],
             qtext: ''
           }
         }
       };
-      // if ($scope.data.groupingStrategy === 'collection' && $scope.data.directory) {
-      //   $scope.data.serializedQuery.query.query.queries.push({
-      //     'collection-query': {
-      //       'uri': [$scope.data.directory]
-      //     }
-      //   });
-      // }
     };
 
     if ($scope.widget.dataModelOptions.data) {
       $scope.data = $scope.widget.dataModelOptions.data;
-      if ($scope.widget.dataModelOptions.data.serializedQuery) {
-        var query = $scope.widget.dataModelOptions.data.serializedQuery.query.query.queries[0];
-        var operation = Object.keys(query)[0];
-        $scope.data.query = query[operation].queries;
-        $scope.data.operation = operation;
-        $scope.data.rootQuery[$scope.data.operation] = {
-          'queries': $scope.data.query
-        };
-        $scope.data.serializedQuery.query.query.queries = [$scope.data.rootQuery];
-      }
+      // Wire up references between parts of the data structure
+      // TODO? Eliminate these and just always use in-place?
+      $scope.data.rootQuery[$scope.data.operation] = {
+        'queries': $scope.data.query
+      };
+      $scope.data.serializedQuery.query.query.queries = [
+        $scope.data.metaConstraint,
+        $scope.data.rootQuery
+      ];
     } else {
       $scope.data = {
         groupingStrategy: 'collection',

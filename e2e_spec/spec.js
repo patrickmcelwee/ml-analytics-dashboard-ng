@@ -86,4 +86,19 @@ describe('Protractor Demo App', function() {
     ).toBe(true);
   });
 
+  it('includes query for collection-scoped data source', function() {
+    element(by.linkText('Show Generated Group-by Query')).click();
+    expect(element(by.binding('renderGroupByConfig()')).getText())
+      .toContain('collection-query');
+  });
+
+  xit('allows creation of a query filter', function() {
+  });
+
+  xit('can refresh the page and recover a saved query', function() {
+  });
+
+  xit('includes root-name query for root-scoped data source', function() {
+  });
+
 });
