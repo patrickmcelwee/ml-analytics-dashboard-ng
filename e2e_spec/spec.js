@@ -15,24 +15,13 @@ describe('Protractor Demo App', function() {
     expect(element.$('option:checked').getText()).toEqual(value);
   }
 
-  function expectGeneratedQuery(expectation) {
+  function expectGeneratedQuery() {
+    // we return an expectation, but also do clean-up work,
+    // hiding the opened generatedQuery
     element(by.linkText('Show Generated Group-by Query')).click();
     var generatedQuery = element(by.binding('renderGroupByConfig()')).getText();
     element(by.linkText('Hide Generated Group-by Query')).click();
-    expectation.call(expect(generatedQuery));
-  }
-
-  function toContain() {
-    var containmentArgs = arguments;
-    return function() {
-      this.toContain.apply(this, containmentArgs);
-    };
-  }
-
-  function not(expectation) {
-    return function() {
-      expectation.call(this.not);
-    };
+    return expect(generatedQuery);
   }
 
   beforeAll(function() {
@@ -112,7 +101,7 @@ describe('Protractor Demo App', function() {
   });
 
   it('includes query for collection-scoped data source', function() {
-    expectGeneratedQuery(toContain('collection-query'));
+    expectGeneratedQuery().toContain('collection-query');
   });
 
   it('allows creation of a query filter', function() {
@@ -126,7 +115,7 @@ describe('Protractor Demo App', function() {
     expect(columns.count()).toBe(0);
     expect(rows.count()).toBe(0);
     directorySelector.sendKeys('patient-summary');
-    expectGeneratedQuery(not(toContain('query')));
+    expectGeneratedQuery().not.toContain('collection-query');
   });
 
   xit('includes root-name query for root-scoped data source', function() {
