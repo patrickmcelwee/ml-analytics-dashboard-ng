@@ -4,6 +4,13 @@ describe('Protractor Demo App', function() {
   var reportName = 'automated-test-' + rand;
 
   var chartWidgets = element.all(by.repeater('widget in widgets'));
+  var rows = element.all(by.css('.ml-analytics-row'));
+  var columns = element.all(by.css('.ml-analytics-column'));
+
+  var structuredQuery = element(by.binding('renderGroupByConfig()'));
+
+  var groupingStrategySelector = element(by.model('data.groupingStrategy'));
+  var showQueryButton = element(by.linkText('Show Generated Group-by Query'));
 
   function expectSelection(element, value) {
     expect(element.$('option:checked').getText()).toEqual(value);
@@ -43,7 +50,7 @@ describe('Protractor Demo App', function() {
       element(by.model('data.targetDatabase')),
       'developing-analytics-dashboard-content'
     );
-    expectSelection(element(by.model('data.groupingStrategy')), 'collection');
+    expectSelection(groupingStrategySelector, 'collection');
   });
 
   it('forces data source to be selected', function() {
@@ -63,7 +70,7 @@ describe('Protractor Demo App', function() {
     var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
     firstMeasure.element(by.css('a')).click();
     firstMeasure.element(by.linkText('Add count')).click();
-    expect(element.all(by.css('.ml-analytics-row')).count()).toBe(1);
+    expect(rows.count()).toBe(1);
     element(by.partialButtonText('Save and Run')).click();
     expect(element(by.css('.highcharts-container')).isPresent()).toBe(true);
   });
@@ -76,7 +83,7 @@ describe('Protractor Demo App', function() {
       .element(by.xpath('..'))
       .element(by.partialLinkText('Add Group By'))
       .click();
-    expect(element.all(by.css('.ml-analytics-column')).count()).toBe(1);
+    expect(columns.count()).toBe(1);
     element(by.partialButtonText('Save and Run')).click();
     expect(
         element(by.cssContainingText(
@@ -87,9 +94,8 @@ describe('Protractor Demo App', function() {
   });
 
   it('includes query for collection-scoped data source', function() {
-    element(by.linkText('Show Generated Group-by Query')).click();
-    expect(element(by.binding('renderGroupByConfig()')).getText())
-      .toContain('collection-query');
+    showQueryButton.click();
+    expect(structuredQuery.getText()).toContain('collection-query');
   });
 
   xit('allows creation of a query filter', function() {
@@ -98,7 +104,19 @@ describe('Protractor Demo App', function() {
   xit('can refresh the page and recover a saved query', function() {
   });
 
+  it('resets when the data-source-strategy is changed', function() {
+    groupingStrategySelector.sendKeys('root');
+    expect(columns.count()).toBe(0);
+    expect(rows.count()).toBe(0);
+  });
+
   xit('includes root-name query for root-scoped data source', function() {
+    showQueryButton.click();
+    // This is potentially quite difficult, because we
+    //   are attempting to turn a structured query into a cts:query in the
+    //   group-by library. I'm not sure you can just pass options through the
+    //   workaround we are currently using there. It needs testing });
+    //   In particular: look at grpj:cts-query-parser
   });
 
 });
