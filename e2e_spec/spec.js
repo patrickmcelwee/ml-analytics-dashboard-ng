@@ -7,13 +7,25 @@ describe('Protractor Demo App', function() {
   var rows = element.all(by.css('.ml-analytics-row'));
   var columns = element.all(by.css('.ml-analytics-column'));
 
-  var structuredQuery = element(by.binding('renderGroupByConfig()'));
-
   var groupingStrategySelector = element(by.model('data.groupingStrategy'));
-  var showQueryButton = element(by.linkText('Show Generated Group-by Query'));
 
+  // expectations
   function expectSelection(element, value) {
     expect(element.$('option:checked').getText()).toEqual(value);
+  }
+
+  function expectGeneratedQuery(expectation) {
+    element(by.linkText('Show Generated Group-by Query')).click();
+    var generatedQuery = element(by.binding('renderGroupByConfig()')).getText();
+    element(by.linkText('Hide Generated Group-by Query')).click();
+    expectation.call(expect(generatedQuery));
+  }
+
+  function toContain() {
+    var containmentArgs = arguments;
+    return function() {
+      this.toContain.apply(this, containmentArgs);
+    };
   }
 
   beforeAll(function() {
@@ -94,11 +106,10 @@ describe('Protractor Demo App', function() {
   });
 
   it('includes query for collection-scoped data source', function() {
-    showQueryButton.click();
-    expect(structuredQuery.getText()).toContain('collection-query');
+    expectGeneratedQuery(toContain('collection-query'));
   });
 
-  xit('allows creation of a query filter', function() {
+  it('allows creation of a query filter', function() {
   });
 
   xit('can refresh the page and recover a saved query', function() {
