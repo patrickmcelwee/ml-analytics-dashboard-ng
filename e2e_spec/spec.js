@@ -6,6 +6,7 @@ describe('Protractor Demo App', function() {
   var chartWidgets = element.all(by.repeater('widget in widgets'));
   var rows = element.all(by.css('.ml-analytics-row'));
   var columns = element.all(by.css('.ml-analytics-column'));
+  var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'))
 
   var groupingStrategySelector = element(by.model('data.groupingStrategy'));
   var directorySelector = element(by.model('data.directory'));
@@ -15,13 +16,19 @@ describe('Protractor Demo App', function() {
     expect(element.$('option:checked').getText()).toEqual(value);
   }
 
+  function stripAll(textPromise) {
+    return textPromise.then(function(text) {
+      return text.replace(/\s+/g, '');
+    });
+  }
+
   function expectGeneratedQuery() {
     // we return an expectation, but also do clean-up work,
     // hiding the opened generatedQuery
     element(by.linkText('Show Generated Group-by Query')).click();
     var generatedQuery = element(by.binding('renderGroupByConfig()')).getText();
     element(by.linkText('Hide Generated Group-by Query')).click();
-    return expect(generatedQuery);
+    return expect(stripAll(generatedQuery));
   }
 
   beforeAll(function() {
@@ -78,7 +85,7 @@ describe('Protractor Demo App', function() {
     firstMeasure.element(by.css('a')).click();
     firstMeasure.element(by.linkText('Add count')).click();
     expect(rows.count()).toBe(1);
-    element(by.partialButtonText('Save and Run')).click();
+    element(by.buttonText('Save and Run')).click();
     expect(element(by.css('.highcharts-container')).isPresent()).toBe(true);
   });
 
@@ -91,13 +98,9 @@ describe('Protractor Demo App', function() {
       .element(by.partialLinkText('Add Group By'))
       .click();
     expect(columns.count()).toBe(1);
-    element(by.partialButtonText('Save and Run')).click();
-    expect(
-        element(by.cssContainingText(
-          '.highcharts-xaxis-labels tspan',
-          'amethyst'
-        )).isPresent()
-    ).toBe(true);
+    element(by.buttonText('Save and Run')).click();
+    expect(xAxisLabels.count()).toEqual(7);
+    expect(xAxisLabels.getText()).toContain('amethyst');
   });
 
   it('includes query for collection-scoped data source', function() {
@@ -105,6 +108,17 @@ describe('Protractor Demo App', function() {
   });
 
   it('allows creation of a query filter', function() {
+    element(by.linkText('Add Rule')).click();
+    element(by.model('rule.field')).sendKeys('eyeColor');
+    element(by.model('rule.subType')).sendKeys('Equals');
+    element(by.model('rule.value')).sendKeys('amethyst');
+
+    element(by.buttonText('Save and Run')).click();
+
+    expectGeneratedQuery().toContain('"value-query":{"text":"amethyst","element":{"name":"eyeColor","ns":""}}');
+    expect(xAxisLabels.count()).toEqual(1);
+    expect(xAxisLabels.getText()).toContain('amethyst');
+    expect(xAxisLabels.getText()).not.toContain('blue');
   });
 
   xit('can refresh the page and recover a saved query', function() {
@@ -114,7 +128,11 @@ describe('Protractor Demo App', function() {
     groupingStrategySelector.sendKeys('root');
     expect(columns.count()).toBe(0);
     expect(rows.count()).toBe(0);
+    expect( directorySelector.getAttribute('class') ).toContain('ng-invalid');
+
     directorySelector.sendKeys('patient-summary');
+
+    expect( directorySelector.getAttribute('class') ).not.toContain('ng-invalid');
     expectGeneratedQuery().not.toContain('collection-query');
   });
 
