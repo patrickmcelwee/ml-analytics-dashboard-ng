@@ -22,15 +22,18 @@ And install the [mlpm module](https://github.com/patrickmcelwee/mlpm-analytics-d
     mlpm init
     mlpm install analytics-dashboard --save
 
-For now, you need to overwrite a module from the `group-by` mlpm library (which
+For now, you need to overwrite two modules from the `group-by` mlpm library (which
 is a dependency of the above `analytics-dashboard` library) to allow
 constraining queries to work. To overwrite, run:
 
     cp {PATH-TO-bower_components}/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    cp {PATH-TO-bower_components}/ml-analytics-dashboard-ng/group-by.xqy mlpm_modules/group-by/
     # If you are using slush-marklogic-node, that will be:
     # cp bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    # cp bower_components/ml-analytics-dashboard-ng/group-by.xqy mlpm_modules/group-by/
     # If using slush-marklogic-spring-boot:
     # cp src/main/resources/static/bower_components/ml-analytics-dashboard-ng/group-by-json.xqy mlpm_modules/group-by/
+    # cp src/main/resources/static/bower_components/ml-analytics-dashboard-ng/group-by.xqy mlpm_modules/group-by/
 
 Now you can deploy the mlpm_modules to MarkLogic:
     
