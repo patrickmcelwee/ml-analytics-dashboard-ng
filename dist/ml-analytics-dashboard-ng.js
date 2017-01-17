@@ -1518,6 +1518,7 @@ drag.delegate = function( event ){
     $scope.widget.mode = 'Design';
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
+    $scope.shouldShowGrid = false;
 
     $scope.model = {
       queryError: null,
@@ -1754,9 +1755,12 @@ drag.delegate = function( event ){
 
       if (results[0] && results[0].length === columnCount) {
         $scope.shouldShowChart = false;
+        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = false;
       } else {
         $scope.shouldShowChart = true;
+        $scope.shouldShowGrid = true;
+        console.log('setting grid collapsed to true');
         $scope.isGridCollapsed = true;
       }
 

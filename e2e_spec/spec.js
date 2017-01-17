@@ -6,10 +6,12 @@ describe('Protractor Demo App', function() {
   var chartWidgets = element.all(by.repeater('widget in widgets'));
   var rows = element.all(by.css('.ml-analytics-row'));
   var columns = element.all(by.css('.ml-analytics-column'));
-  var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'))
+  var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'));
 
+  var saveAndRun = element(by.buttonText('Save and Run'));
   var groupingStrategySelector = element(by.model('data.groupingStrategy'));
   var directorySelector = element(by.model('data.directory'));
+  var chartContainer = element(by.css('.highcharts-container'));
 
   // expectations
   function expectSelection(element, value) {
@@ -77,16 +79,17 @@ describe('Protractor Demo App', function() {
     expectSelection(directorySelector, 'data');
     expect( directorySelector.getAttribute('class') ).not.toContain('ng-invalid');
     expect( dimensionBuilder.isPresent() ).toBe(true);
+    expectGeneratedQuery().toContain('collection-query');
   });
 
   it('allows selection of compute row and creates chart', function() {
-    expect(element(by.css('.highcharts-container')).isPresent()).toBe(false);
+    expect(chartContainer.isPresent()).toBe(false);
     var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
     firstMeasure.element(by.css('a')).click();
     firstMeasure.element(by.linkText('Add count')).click();
     expect(rows.count()).toBe(1);
-    element(by.buttonText('Save and Run')).click();
-    expect(element(by.css('.highcharts-container')).isPresent()).toBe(true);
+    saveAndRun.click();
+    expect(chartContainer.isPresent()).toBe(true);
   });
 
   it('allows selection of group-by column and adds to xaxis', function() {
@@ -98,13 +101,9 @@ describe('Protractor Demo App', function() {
       .element(by.partialLinkText('Add Group By'))
       .click();
     expect(columns.count()).toBe(1);
-    element(by.buttonText('Save and Run')).click();
+    saveAndRun.click();
     expect(xAxisLabels.count()).toEqual(7);
     expect(xAxisLabels.getText()).toContain('amethyst');
-  });
-
-  it('includes query for collection-scoped data source', function() {
-    expectGeneratedQuery().toContain('collection-query');
   });
 
   it('allows creation of a query filter', function() {
@@ -113,7 +112,7 @@ describe('Protractor Demo App', function() {
     element(by.model('rule.subType')).sendKeys('Equals');
     element(by.model('rule.value')).sendKeys('amethyst');
 
-    element(by.buttonText('Save and Run')).click();
+    saveAndRun.click();
 
     expectGeneratedQuery().toContain('"value-query":{"text":"amethyst","element":{"name":"eyeColor","ns":""}}');
     expect(xAxisLabels.count()).toEqual(1);
@@ -122,6 +121,26 @@ describe('Protractor Demo App', function() {
   });
 
   xit('can refresh the page and recover a saved query', function() {
+  });
+
+  it('allows removal of compute and shows grid for groupBy-only', function() {
+    rows.first().element(by.css('.remove-row')).click();
+
+    expect(rows.count()).toBe(0);
+
+    saveAndRun.click();
+
+    expect(chartContainer.isPresent()).toBe(false);
+    expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(true);
+
+    // Readd row and ensure that grid collapses down again
+    var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
+    firstMeasure.element(by.css('a')).click();
+    firstMeasure.element(by.linkText('Add count')).click();
+    saveAndRun.click();
+
+    expect(chartContainer.isPresent()).toBe(true);
+    expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(false);
   });
 
   it('resets when the data-source-strategy is changed', function() {

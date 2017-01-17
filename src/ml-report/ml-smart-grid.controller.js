@@ -10,6 +10,7 @@
     $scope.widget.mode = 'Design';
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
+    $scope.shouldShowGrid = false;
 
     $scope.model = {
       queryError: null,
@@ -246,9 +247,11 @@
 
       if (results[0] && results[0].length === columnCount) {
         $scope.shouldShowChart = false;
+        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = false;
       } else {
         $scope.shouldShowChart = true;
+        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = true;
       }
 
