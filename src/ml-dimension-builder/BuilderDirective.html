@@ -10,7 +10,7 @@
           class="ml-analytics-dimension"
           ng-repeat="field in data.fields | filter:isColumnField">
           <a uib-dropdown-toggle>
-            <span ng-switch="highLevelType(field['scalar-type'])">
+            <span ng-switch="indexService.highLevelType(field)">
               <i class="fa fa-font" ng-switch-when="string"></i>
             </span>
             {{shortName(field)}}
@@ -43,7 +43,7 @@
           class="ml-analytics-measure"
           ng-repeat="field in data.fields | filter:isComputeField">
           <a uib-dropdown-toggle>
-            <span ng-switch="highLevelType(field['scalar-type'])">
+            <span ng-switch="indexService.highLevelType(field)">
               <i class="icon ion-pound" ng-switch-when="numeric"></i>
             </span>
             {{shortName(field)}}

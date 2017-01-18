@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="highLevelType(field[\'scalar-type\'])"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
+    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
 }]);
 })();
 
@@ -19,6 +19,54 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/dimension-popover.html',
     '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details for {{shortName(field)}}</span></div><ul class="list-unstyled panel-body"><li><b>Index type:</b> {{field[\'ref-type\']}}</li><li ng-if="field[\'namespace-uri\']"><b>Namespace:</b> {{field[\'namespace-uri\']}}</li><li ng-if="field[\'scalar-type\']"><b>Scalar type:</b> {{field[\'scalar-type\']}}</li><li ng-if="field.collation"><b>Collation:</b> {{field.collation}}</li></ul></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/BuilderDirective.html',
+    '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a></div></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/ChooserDirective.html',
+    '<div class="sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-on-remove="onRemove()"></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/GroupDirective.html',
+    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="input-sm form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/RuleDirective.html',
+    '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="shortName(field) for field in sqFields | filter:isQueryableIndex"></select><span data-sq-type="rule.field[\'scalar-type\']" data-rule="rule" data-guide="sqFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
 }]);
 })();
 
@@ -113,8 +161,8 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/BuilderDirective.html',
-    '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a></div></div></div></div>');
+  $templateCache.put('/ml-sq-builder/types/Boolean.html',
+    '<span class="boolean-rule"><select data-ng-model="rule.value" class="input-sm form-control" data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder"></select></span>');
 }]);
 })();
 
@@ -125,8 +173,8 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/ChooserDirective.html',
-    '<div class="sq-builder-chooser" data-ng-class="getGroupClassName()"><div data-ng-if="item.type === \'group\'" data-sq-builder-group="item" data-depth="{{ depth }}" data-sq-fields="sqFields" data-on-remove="onRemove()"></div><div data-ng-if="item.type !== \'group\'" data-sq-builder-rule="item" data-sq-fields="sqFields" data-on-remove="onRemove()"></div></div>');
+  $templateCache.put('/ml-sq-builder/types/Date.html',
+    '<span class="date-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Date"></optgroup></select></span>');
 }]);
 })();
 
@@ -137,8 +185,8 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/GroupDirective.html',
-    '<div class="sq-builder-group"><h5><select data-ng-model="group.subType" class="input-sm form-control"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</h5><div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div><div class="actions" data-ng-class="getGroupClassName()"><a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"><i class="fa fa-plus">Add Rule</i></a> <a class="btn btn-xs btn-primary" title="Add Sub-Group" data-ng-click="addGroup()"><i class="fa fa-list">Add Sub-Group</i></a></div><a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+  $templateCache.put('/ml-sq-builder/types/Decimal.html',
+    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -149,8 +197,32 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/RuleDirective.html',
-    '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="shortName(field) for field in sqFields"></select><span data-sq-type="rule.field[\'scalar-type\']" data-rule="rule" data-guide="sqFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+  $templateCache.put('/ml-sq-builder/types/Int.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/Long.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/String.html',
+    '<span class="string-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
@@ -221,18 +293,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/templates/widgets/qb-settings.html',
-    '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button><h3>Settings Dialog for <small>{{widget.title}}</small></h3></div><div class="modal-body"><form name="form" novalidate="" class="form-horizontal"><div class="form-group"><label for="widgetTitle" class="col-sm-3 control-label">Title</label><div class="col-sm-9"><input type="text" class="form-control" name="widgetTitle" ng-model="result.title"></div></div><div class="form-group"><label class="col-sm-3 control-label">Page Length</label><div class="col-sm-9"><input type="number" class="form-control" name="pageLength" ng-model="result.dataModelOptions.pageLength"></div></div><div class="form-group"><label class="col-sm-3 control-label">Chart Type</label><div class="col-sm-9"><select class="form-control" ng-model="result.dataModelOptions.chart"><option>column</option><option>pie</option></select></div></div><div ng-if="widget.partialSettingTemplateUrl" ng-include="widget.partialSettingTemplateUrl"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button> <button type="button" class="btn btn-primary" ng-click="ok()">OK</button></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/ml-report/chart-and-grid-results.html',
     '<div class="ml-analytics-results" ng-if="shouldShowChart || shouldShowGrid"><highchart ng-if="shouldShowChart" config="highchartConfig"></highchart><div ng-if="shouldShowGrid"><button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">Show results grid</button> <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">Hide results grid</button><div uib-collapse="isGridCollapsed"><ml-results-grid results-object="model.results" query-error="model.queryError"></ml-results-grid></div></div></div>');
 }]);
@@ -281,67 +341,7 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/Boolean.html',
-    '<span class="boolean-rule"><select data-ng-model="rule.value" class="input-sm form-control" data-ng-options="booleans.indexOf(choice) as choice for choice in booleansOrder"></select></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/Date.html',
-    '<span class="date-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Date"></optgroup></select></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/Decimal.html',
-    '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/Int.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/Long.html',
-    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Integer"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-sq-builder/types/String.html',
-    '<span class="string-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Text"><option value="word-query">Contains</option><option value="value-query">Equals</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+  $templateCache.put('/templates/widgets/qb-settings.html',
+    '<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="cancel()">&times;</button><h3>Settings Dialog for <small>{{widget.title}}</small></h3></div><div class="modal-body"><form name="form" novalidate="" class="form-horizontal"><div class="form-group"><label for="widgetTitle" class="col-sm-3 control-label">Title</label><div class="col-sm-9"><input type="text" class="form-control" name="widgetTitle" ng-model="result.title"></div></div><div class="form-group"><label class="col-sm-3 control-label">Page Length</label><div class="col-sm-9"><input type="number" class="form-control" name="pageLength" ng-model="result.dataModelOptions.pageLength"></div></div><div class="form-group"><label class="col-sm-3 control-label">Chart Type</label><div class="col-sm-9"><select class="form-control" ng-model="result.dataModelOptions.chart"><option>column</option><option>pie</option></select></div></div><div ng-if="widget.partialSettingTemplateUrl" ng-include="widget.partialSettingTemplateUrl"></div></form></div><div class="modal-footer"><button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button> <button type="button" class="btn btn-primary" ng-click="ok()">OK</button></div>');
 }]);
 })();
