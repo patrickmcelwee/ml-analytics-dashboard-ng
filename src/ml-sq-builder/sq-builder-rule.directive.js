@@ -15,9 +15,7 @@
         templateUrl: '/ml-sq-builder/RuleDirective.html',
 
         link: function(scope) {
-          scope.shortName = function(field) {
-            return field.localname || field['path-expression'];
-          };
+          scope.shortName = indexService.shortName;
           
           scope.isQueryableIndex = function(field) {
             return _.includes(

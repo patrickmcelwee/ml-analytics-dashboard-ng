@@ -36,4 +36,17 @@ describe('mlAnalyticsIndexService', function() {
     });
 
   });
+
+  describe('shortName', function() {
+
+    it('first uses localname', function() {
+      var index = {localname: 'name'};
+      expect(indexService.shortName(index)).toBe('name');
+    });
+
+    it('then uses path-expression', function() {
+      var index = {'path-expression': 'name'};
+      expect(indexService.shortName(index)).toBe('name');
+    });
+  });
 });

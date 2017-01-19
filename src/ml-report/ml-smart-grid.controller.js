@@ -4,9 +4,9 @@
   angular.module('ml.analyticsDashboard.report')
     .controller('mlSmartGridCtrl', mlSmartGridCtrl);
 
-  mlSmartGridCtrl.$inject = ['$scope', '$http', '$q'];
+  mlSmartGridCtrl.$inject = ['$scope', '$http', '$q', 'mlAnalyticsIndexService'];
 
-  function mlSmartGridCtrl($scope, $http, $q) {
+  function mlSmartGridCtrl($scope, $http, $q, indexService) {
     $scope.widget.mode = 'Design';
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
@@ -99,9 +99,7 @@
     };
     $scope.hideGroupByConfig();
 
-    $scope.shortName = function(field) {
-      return field.localname || field['path-expression'];
-    };
+    $scope.shortName = indexService.shortName;
 
     $scope.getDbConfig = function() {
       var params = {

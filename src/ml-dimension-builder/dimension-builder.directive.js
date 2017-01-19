@@ -29,9 +29,7 @@
             return indexService.highLevelType(field) === 'numeric';
           };
 
-          scope.shortName = function(field) {
-            return field.localname || field['path-expression'];
-          };
+          scope.shortName = indexService.shortName;
 
           scope.addColumn = function(field) {
             scope.data.serializedQuery.columns.push(field);
