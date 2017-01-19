@@ -2,7 +2,7 @@
   'use strict';
 
   // Report Service
-  angular.module('ml.analyticsDashboard').service('ReportService', ['$http', '$q', 'MLRest', function($http, $q, mlRest) {
+  angular.module('ml.analyticsDashboard').service('ReportService', ['$http', 'MLRest', function($http, mlRest) {
     var dashboardOptions = null;
     var store = {};
     var storage = {

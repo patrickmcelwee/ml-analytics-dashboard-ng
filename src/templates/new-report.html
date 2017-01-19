@@ -2,16 +2,11 @@
   <h1>Create New Report</h1>
 
   <div class="row" ng-if="!currentUser">
-    <div class="col-md-12">Please log in to create new report.</div>
+    <div class="col-md-12">Please log in to create a new MarkLogic analytics report.</div>
   </div>
 
   <div class="row" ng-if="currentUser">
     <div class="col-md-12">
-      <p>A report primarily consists of widgets. This view will 
-      create a blank report. You can then add widgets into the
-      report using the Report Dashboard.</p>
-      <p>The fields marked with asterisk <i class='fa fa-asterisk mandatory-field'></i> are mandatory.</p>
-
       <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
       <form name="newReportForm" ng-submit="createReport()" novalidate>
         <div class="form-group" ng-class="{ 'has-error' : newReportForm.name.$invalid && !newReportForm.name.$pristine }">
