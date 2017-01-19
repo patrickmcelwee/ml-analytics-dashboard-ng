@@ -19,13 +19,6 @@
                ng-model="report.description" />
       </div>
 
-      <div class="form-group" ng-class="{ 'has-error' : editReportForm.classification.$invalid && !editReportForm.classification.$pristine }">
-        <label class="control-label">Classification <i class="fa fa-asterisk mandatory-field"></i></label>
-        <input type="text" name="classification" class="form-control" 
-               ng-model="report.classification" required />
-        <p ng-show="editReportForm.classification.$invalid && !editReportForm.classification.$pristine" class="help-block">Classification is required.</p>
-      </div>
-
       <div class="btn-toolbar" role="toolbar" style="margin-top:10px">
         <div class="btn-group pull-right">
           <button type="submit" class="btn btn-primary" ng-disabled="editReportForm.$invalid">
