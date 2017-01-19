@@ -197,7 +197,6 @@
         $scope.model.queryError = null;
         $scope.model.loadingResults = false;
 
-        $scope.createComplexTable($scope.model.results.headers, $scope.model.results.results);
         $scope.createHighcharts(columnCount, $scope.model.results.headers, $scope.model.results.results);
 
       }, function(response) {
@@ -210,34 +209,6 @@
           };
         }
       });
-    };
-
-    $scope.createComplexTable = function(headers, results) {
-      $scope.cols = [];
-
-      headers.forEach(function(header) {
-        $scope.cols.push({
-          field: header, 
-          title: header, 
-          sortable: header, 
-          show: true
-        });
-      });
-
-      var records = [];
-      results.forEach(function(row) {
-        var record = {};
-        for (var i = 0; i < row.length; i++) {
-          record[headers[i]] = row[i];
-        }
-        records.push(record);
-      });
-
-      var initialParams = {
-        count: $scope.widget.dataModelOptions.pageLength, // count per page
-        sorting: {}
-      };
-      initialParams.sorting[headers[0]] = 'desc';
     };
 
     $scope.createHighcharts = function(columnCount, headers, results) {

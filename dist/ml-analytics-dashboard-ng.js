@@ -524,14 +524,7 @@
         dataAttrName: 'grid',
         dataModelType: SmartGridDataModel,
         dataModelOptions: {
-          database: '',
-          groupingStrategy: '',
-          directory: '',
-          columns: [],
-          computes: [],
-          query: {},
           chart: 'column',
-          pageLength: 10
         },
         style: {
           width: '100%'
@@ -544,7 +537,6 @@
         onSettingsClose: function(result, widget) {
           //jQuery.extend(true, widget, result);
           widget.title = result.title;
-          widget.dataModelOptions.pageLength = result.dataModelOptions.pageLength;
           widget.dataModelOptions.chart = result.dataModelOptions.chart;
         },
         onSettingsDismiss: function(reason, scope) {
@@ -950,20 +942,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -985,6 +963,20 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1261,7 +1253,6 @@
         $scope.model.queryError = null;
         $scope.model.loadingResults = false;
 
-        $scope.createComplexTable($scope.model.results.headers, $scope.model.results.results);
         $scope.createHighcharts(columnCount, $scope.model.results.headers, $scope.model.results.results);
 
       }, function(response) {
@@ -1274,34 +1265,6 @@
           };
         }
       });
-    };
-
-    $scope.createComplexTable = function(headers, results) {
-      $scope.cols = [];
-
-      headers.forEach(function(header) {
-        $scope.cols.push({
-          field: header, 
-          title: header, 
-          sortable: header, 
-          show: true
-        });
-      });
-
-      var records = [];
-      results.forEach(function(row) {
-        var record = {};
-        for (var i = 0; i < row.length; i++) {
-          record[headers[i]] = row[i];
-        }
-        records.push(record);
-      });
-
-      var initialParams = {
-        count: $scope.widget.dataModelOptions.pageLength, // count per page
-        sorting: {}
-      };
-      initialParams.sorting[headers[0]] = 'desc';
     };
 
     $scope.createHighcharts = function(columnCount, headers, results) {
@@ -1593,6 +1556,53 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
+    function($scope, $location, $rootScope, ReportService) {
+
+    $scope.report = {};
+
+    $scope.createReport = function() {
+      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
+        encodeURIComponent($scope.report.name) +
+        '-' +
+        Math.floor((Math.random() * 1000000) + 1) +
+        '.json';
+        
+      ReportService.createReport($scope.report).then(function(response) {
+        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
+        $location.search('ml-analytics-mode', 'design');
+        $location.search('ml-analytics-uri', $scope.report.uri);
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
+    function($scope, $location, ReportService) {
+
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    ReportService.getReport($scope.report.uri).then(function(response) {
+      angular.extend($scope.report, response.data);
+    });
+
+    $scope.updateReport = function() {
+      ReportService.updateReport($scope.report).then(function(response) {
+        $location.search('ml-analytics-mode', 'home');
+      });
+    };
+
+  }]);
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -1690,51 +1700,4 @@
 
   }
 
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
-    function($scope, $location, $rootScope, ReportService) {
-
-    $scope.report = {};
-
-    $scope.createReport = function() {
-      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        encodeURIComponent($scope.report.name) +
-        '-' +
-        Math.floor((Math.random() * 1000000) + 1) +
-        '.json';
-        
-      ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
-        $location.search('ml-analytics-mode', 'design');
-        $location.search('ml-analytics-uri', $scope.report.uri);
-      });
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
-    function($scope, $location, ReportService) {
-
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-    ReportService.getReport($scope.report.uri).then(function(response) {
-      angular.extend($scope.report, response.data);
-    });
-
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        $location.search('ml-analytics-mode', 'home');
-      });
-    };
-
-  }]);
 }());

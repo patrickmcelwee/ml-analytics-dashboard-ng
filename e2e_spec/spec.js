@@ -119,7 +119,11 @@ describe('Protractor Demo App', function() {
     expect(xAxisLabels.getText()).not.toContain('blue');
   });
 
-  xit('can refresh the page and recover a saved query', function() {
+  it('can open a saved query', function() {
+    browser.get(env.baseUrl + '/ml-analytics-dashboard');
+    element(by.cssContainingText('.report-item', reportName)).click();
+    expect(columns.count()).toBe(1);
+    expect(rows.count()).toBe(1);
   });
 
   it('allows removal of compute and shows grid for groupBy-only', function() {

@@ -105,14 +105,7 @@
         dataAttrName: 'grid',
         dataModelType: SmartGridDataModel,
         dataModelOptions: {
-          database: '',
-          groupingStrategy: '',
-          directory: '',
-          columns: [],
-          computes: [],
-          query: {},
           chart: 'column',
-          pageLength: 10
         },
         style: {
           width: '100%'
@@ -125,7 +118,6 @@
         onSettingsClose: function(result, widget) {
           //jQuery.extend(true, widget, result);
           widget.title = result.title;
-          widget.dataModelOptions.pageLength = result.dataModelOptions.pageLength;
           widget.dataModelOptions.chart = result.dataModelOptions.chart;
         },
         onSettingsDismiss: function(reason, scope) {
