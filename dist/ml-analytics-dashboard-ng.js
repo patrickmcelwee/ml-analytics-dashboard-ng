@@ -1699,15 +1699,6 @@
     function($scope, $location, $rootScope, ReportService) {
 
     $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
 
     $scope.createReport = function() {
       $scope.report.uri = '/ml-analytics-dashboard-reports/' +
@@ -1738,14 +1729,6 @@
     ReportService.getReport($scope.report.uri).then(function(response) {
       angular.extend($scope.report, response.data);
     });
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
 
     $scope.updateReport = function() {
       ReportService.updateReport($scope.report).then(function(response) {

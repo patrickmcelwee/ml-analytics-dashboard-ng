@@ -5,15 +5,6 @@
     function($scope, $location, $rootScope, ReportService) {
 
     $scope.report = {};
-    $scope.report.privacy = 'public';
-
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
 
     $scope.createReport = function() {
       $scope.report.uri = '/ml-analytics-dashboard-reports/' +

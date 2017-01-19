@@ -11,14 +11,6 @@
       angular.extend($scope.report, response.data);
     });
 
-    $scope.setOption = function(option) {
-      $scope.report.privacy = option;
-    };
-
-    $scope.isActive = function(option) {
-      return option === $scope.report.privacy;
-    };
-
     $scope.updateReport = function() {
       ReportService.updateReport($scope.report).then(function(response) {
         $location.search('ml-analytics-mode', 'home');
