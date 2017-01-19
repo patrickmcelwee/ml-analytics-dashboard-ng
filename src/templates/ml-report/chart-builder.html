@@ -40,6 +40,7 @@
       </div>
 
       <div class="col-lg-3 col-md-5">
+
         <div class="pull-right">
           <a ng-click="widget.mode = 'View'">
             <i class="fa fa-eye" title="View this chart"></i>
@@ -48,14 +49,14 @@
         </div>
 
         <div class="ml-analytics-design-form">
-          <div class="form-group">
             <button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid">
               <span class="fa fa-check"></span> Save and Run
             </button>
             <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-          </div>
         </div>
+
       </div>
+
     </div>
 
     <div class="row" style="margin-top:10px" ng-if="model.configError">
@@ -129,6 +130,12 @@
             </div>
           </div>
         </div>
+
+        <div class="ml-analytics-chart-type-selector pull-right">
+          <button uib-popover-template="'/templates/ml-report/chart-type-selector.html'" popover-placement="left" popover-trigger="outsideClick" class="btn btn-default btn-sm">
+            <i class="fa fa-bar-chart"></i> Choose Chart Type </button>
+        </div>
+
         <div ng-include="'/templates/ml-report/chart-and-grid-results.html'"></div>
       </div>
     </div>

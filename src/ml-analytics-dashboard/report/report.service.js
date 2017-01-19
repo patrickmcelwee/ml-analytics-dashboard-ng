@@ -109,19 +109,6 @@
         },
         style: {
           width: '100%'
-        },
-        settingsModalOptions: {
-          templateUrl: '/templates/widgets/qb-settings.html',
-          //controller: 'QueryBuilderWidgetSettingsCtrl',
-          backdrop: false
-        },
-        onSettingsClose: function(result, widget) {
-          //jQuery.extend(true, widget, result);
-          widget.title = result.title;
-          widget.dataModelOptions.chart = result.dataModelOptions.chart;
-        },
-        onSettingsDismiss: function(reason, scope) {
-          // Do nothing here, since the user pressed cancel
         }
       }
     ];
