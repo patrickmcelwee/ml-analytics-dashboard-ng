@@ -37,7 +37,6 @@ describe('Protractor Demo App', function() {
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
     element(by.partialButtonText('New Report')).click();
     element(by.model('report.name')).sendKeys(reportName);
-    element(by.model('report.classification')).sendKeys('automated-test');
     element(by.partialButtonText('Submit')).click();
   });
 
