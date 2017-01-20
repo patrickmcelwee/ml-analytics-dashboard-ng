@@ -234,10 +234,11 @@
     $scope.createColumnHighcharts = function(columnCount, headers, results) {
       var categories = [];
       var series = [];
+      var i;
 
       // columnCount is number of groupby fields.
       // Skip all groupby fields.
-      for (var i = columnCount; i < headers.length; i++) {
+      for (i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
           data: []

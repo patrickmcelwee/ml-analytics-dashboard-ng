@@ -318,7 +318,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/ml-report/chart-type-selector.html',
-    '<div class="ml-analytic-chart-options"><button class="btn btn-default" ng-class="{active: widget.dataModelOptions.chart === \'column\'}" ng-click="widget.dataModelOptions.chart = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default" ng-class="{active: widget.dataModelOptions.chart === \'pie\'}" ng-click="widget.dataModelOptions.chart = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
+    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: widget.dataModelOptions.chart === \'column\'}" ng-click="widget.dataModelOptions.chart = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: widget.dataModelOptions.chart === \'pie\'}" ng-click="widget.dataModelOptions.chart = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
 }]);
 })();
 

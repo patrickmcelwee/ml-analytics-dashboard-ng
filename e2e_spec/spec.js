@@ -105,15 +105,33 @@ describe('Protractor Demo App', function() {
     expect(xAxisLabels.getText()).toContain('amethyst');
   });
 
+  it('allows user to change to a pie chart and back', function() {
+    function chooseChartType(chartType) {
+      element(by.buttonText('Choose Chart Type')).click();
+      element(by.css('.ml-analytics-chart-types')).
+        element(by.css('.ml-analytics-' + chartType + '-chart-type')).
+        click();
+      saveAndRun.click();
+    }
+
+    chooseChartType('pie');
+    expect(xAxisLabels.count()).toEqual(0);
+    expect(chartContainer.isPresent()).toBe(true);
+
+    chooseChartType('bar');
+    expect(xAxisLabels.count()).toBeGreaterThan(0);
+  });
+
   it('allows creation of a query filter', function() {
     element(by.linkText('Add Rule')).click();
     element(by.model('rule.field')).sendKeys('eyeColor');
     element(by.model('rule.subType')).sendKeys('Equals');
     element(by.model('rule.value')).sendKeys('amethyst');
+    expectGeneratedQuery().toContain('"value-query":{"text":"amethyst","element":{"name":"eyeColor","ns":""}}');
 
     saveAndRun.click();
 
-    expectGeneratedQuery().toContain('"value-query":{"text":"amethyst","element":{"name":"eyeColor","ns":""}}');
+    browser.sleep(1000);
     expect(xAxisLabels.count()).toEqual(1);
     expect(xAxisLabels.getText()).toContain('amethyst');
     expect(xAxisLabels.getText()).not.toContain('blue');
