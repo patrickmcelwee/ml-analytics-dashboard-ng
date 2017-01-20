@@ -295,7 +295,6 @@
 
     // Create a pie chart
     $scope.createPieHighcharts = function(columnCount, headers, results) {
-      var colors = Highcharts.getOptions().colors;
       var measures = [];
       var series = [];
 
@@ -339,7 +338,6 @@
         for (i = columnCount; i < row.length; i++) {
           series[i-columnCount].data.push({
             name: category,
-            color: colors[i-columnCount],
             y: row[i]
           });
         }
