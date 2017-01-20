@@ -4,6 +4,7 @@
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
-      'ml-sq-builder'
+      'ml-sq-builder',
+      'ml.analyticsDashboard.chart'
     ]); 
 })();

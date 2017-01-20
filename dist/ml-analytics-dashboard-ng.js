@@ -14,6 +14,12 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.chart', []); 
+})();
+
+(function() {
+  'use strict';
+
   angular.module('ml-dimension-builder', []);
 
 }());
@@ -24,7 +30,8 @@
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
-      'ml-sq-builder'
+      'ml-sq-builder',
+      'ml.analyticsDashboard.chart'
     ]); 
 })();
 
@@ -536,6 +543,25 @@
 
 (function () {
   'use strict';
+
+  angular.module('ml.analyticsDashboard.chart').
+    directive('mlAnalyticsChart', mlAnalyticsChart);
+
+  function mlAnalyticsChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/ml-analytics-chart/chart.html',
+      scope: {
+        queryObject: '='
+      },
+      controller: 'mlAnalyticsChartCtrl'
+    };
+  }
+  
+}());
+
+(function () {
+  'use strict';
   angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDashboard', mlAnalyticsDashboard);
 
@@ -622,7 +648,6 @@
 }());
 
 (function () {
-
   'use strict';
 
   angular.module('ml.analyticsDashboard.report')
@@ -979,308 +1004,51 @@
   }
 }());
 
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard')
-    .controller('DashboardCtrl', DashboardCtrl);
-
-  DashboardCtrl.$inject = ['$scope', '$location'];
-
-  function DashboardCtrl($scope, $location) {
-
-    function establishMode() {
-      if($location.search()['ml-analytics-mode']) {
-        $scope.mode = $location.search()['ml-analytics-mode'];
-      } else {
-        $location.search('ml-analytics-mode', 'home');
-      }
-    }
-
-    establishMode();
-  }
-}());
-
 (function () {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlAnalyticsViewChartCtrl', mlAnalyticsViewChartCtrl);
+  angular.module('ml.analyticsDashboard.chart').
+    controller('mlAnalyticsChartCtrl', mlAnalyticsChartCtrl);
 
-  function mlAnalyticsViewChartCtrl($scope) {
-  }
+  mlAnalyticsChartCtrl.$inject = ['$scope', '$http', '$q'];
 
-})();
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlResultsGridCtrl', mlResultsGridCtrl);
-
-  mlResultsGridCtrl.$inject = ['$scope'];
-
-  function mlResultsGridCtrl($scope) {
-    $scope.pageLength = '10';
-    $scope.sortColumn = 0;
-    $scope.sortReverse = false;
-    $scope.gridPage = 1;
-
-    $scope.sorter = function(item) {
-      return item[$scope.sortColumn];
-    };
-
-    $scope.setSortColumn = function(column) {
-      if (column === $scope.sortColumn) {
-        $scope.sortReverse = !$scope.sortReverse;
-      } else {
-        $scope.sortColumn = column;
-      }
-    };
-  }
-
-})();
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlSmartGridCtrl', mlSmartGridCtrl);
-
-  mlSmartGridCtrl.$inject = ['$scope', '$http', '$q', 'mlAnalyticsIndexService'];
-
-  function mlSmartGridCtrl($scope, $http, $q, indexService) {
-    $scope.widget.mode = 'Design';
+  function mlAnalyticsChartCtrl($scope, $http, $q) {
     $scope.isGridCollapsed  = true;
     $scope.shouldShowChart = false;
     $scope.shouldShowGrid = false;
 
-    $scope.model = {
+    $scope.queryState = {
       queryError: null,
       configError: null,
       results: null,
-      loadingConfig: false,
       loadingResults: false
-    };
-
-    $scope.deferredAbort = null;
-
-    $scope.initializeQuery = function() {
-      $scope.data.metaConstraint = {};
-      if ($scope.data.groupingStrategy === 'collection' && $scope.data.directory) {
-        $scope.data.metaConstraint = {
-          'collection-query': {
-            'uri': [$scope.data.directory]
-          }
-        };
-      }
-      $scope.data.operation = 'and-query';
-      $scope.data.rootQuery = {};
-      $scope.data.rootQuery[$scope.data.operation] = {
-        'queries': $scope.data.query
-      };
-      $scope.data.serializedQuery = {
-        'result-type': 'group-by',
-        columns: [],
-        computes: [],
-        options: ['headers=true'],
-        query: {
-          query: {
-            queries: [$scope.data.metaConstraint, $scope.data.rootQuery],
-            qtext: ''
-          }
-        }
-      };
-    };
-
-    if ($scope.widget.dataModelOptions.data) {
-      $scope.data = $scope.widget.dataModelOptions.data;
-      // Wire up references between parts of the data structure
-      // TODO? Eliminate these and just always use in-place?
-      $scope.data.rootQuery[$scope.data.operation] = {
-        'queries': $scope.data.query
-      };
-      $scope.data.serializedQuery.query.query.queries = [
-        $scope.data.metaConstraint,
-        $scope.data.rootQuery
-      ];
-    } else {
-      $scope.data = {
-        groupingStrategy: 'collection',
-        query: [],
-        needsUpdate: true,
-        originalDocs: []
-      };
-      $scope.initializeQuery();
-    }
-
-    $scope.executor = {};
-
-    $scope.clearResults = function() {
-      $scope.model.results = null;
-    };
-
-    // TODO: move into column/row directive
-    $scope.dataManager = {
-      removeCompute: function(index) {
-        $scope.data.serializedQuery.computes.splice(index, 1);
-      },
-      removeColumn: function(index) {
-        $scope.data.serializedQuery.columns.splice(index, 1);
-      }
-    };
-
-    // TODO: move into showQuery directive?
-    $scope.renderGroupByConfig = function() {
-      return angular.toJson($scope.data.serializedQuery, true);
-    };
-    $scope.showGroupByConfig = function() {
-      $scope.groupByConfigIsHidden = false;
-    };
-    $scope.hideGroupByConfig = function() {
-      $scope.groupByConfigIsHidden = true;
-    };
-    $scope.hideGroupByConfig();
-
-    $scope.shortName = indexService.shortName;
-
-    $scope.getDbConfig = function() {
-      var params = {
-        'rs:strategy': $scope.data.groupingStrategy
-      };
-
-      $scope.model.loadingConfig = true;
-
-      if ($scope.data.targetDatabase) {
-        params['rs:database'] = $scope.data.targetDatabase;
-      }
-
-      $scope.clearResults();
-
-      $http.get('/v1/resources/index-discovery', {
-        params: params
-      }).then(function(response) {
-        $scope.model.loadingConfig = false;
-
-        if (response.data.errorResponse) {
-          $scope.model.configError = response.data.errorResponse.message;
-          return;
-        }
-
-        $scope.data.targetDatabase = response.data['current-database'];
-        $scope.data.databases = response.data.databases;
-
-        if (!_.isEmpty(response.data.docs)) {
-          $scope.model.configError = null;
-
-          var docs = response.data.docs;
-          $scope.data.originalDocs = docs;
-          $scope.data.directories = Object.keys(docs);
-          if (!_.includes($scope.data.directories, $scope.data.directory)) {
-            $scope.data.directory = undefined;
-            $scope.initializeQuery();
-          }
-          $scope.data.fields = docs[$scope.data.directory];
-
-          if ($scope.data.fields) {
-            $scope.setDocument();
-          }
-
-        } else {
-          $scope.model.configError = 'No documents with range indices in the database';
-        }
-
-        $scope.execute();
-      }, function(response) {
-        $scope.model.loadingConfig = false;
-        $scope.model.configError = response.data;
-      });
-    };
-
-    $scope.setDocument = function() {
-      $scope.data.needsUpdate = true;
-    };
-
-    $scope.save = function() {
-      $scope.widget.dataModelOptions.data = $scope.data;
-      $scope.options.saveDashboard();
     };
 
     $scope.execute = function() {
       var columns, computes;
-      if ($scope.data.serializedQuery) {
-        columns  = $scope.data.serializedQuery.columns;
-        computes = $scope.data.serializedQuery.computes;
+      if ($scope.serializedQuery) {
+        columns  = $scope.serializedQuery.columns;
+        computes = $scope.serializedQuery.computes;
       } else {
         columns  = [];
         computes = [];
       }
 
       if (columns.length + computes.length > 0) {
-        $scope.model.loadingResults = true;
-        $scope.executeComplexQuery(columns.length);
+        $scope.queryState.loadingResults = true;
+        executeComplexQuery(columns.length);
       }
-    };
-
-    $scope.executeComplexQuery = function(columnCount) {
-      var params = {};
-
-      $scope.model.loadingResults = true;
-      $scope.clearResults();
-
-      $scope.deferredAbort = $q.defer();
-      $http({
-        method: 'POST',
-        url: '/v1/resources/group-by',
-        params: params,
-        data: $scope.data.serializedQuery,
-        timeout: $scope.deferredAbort.promise
-      }).then(function(response) {
-        $scope.model.results = response.data;
-        $scope.model.queryError = null;
-        $scope.model.loadingResults = false;
-
-        $scope.createHighcharts(columnCount, $scope.model.results.headers, $scope.model.results.results);
-
-      }, function(response) {
-        $scope.model.loadingResults = false;
-
-        if (response.status !== 0) {
-          $scope.model.queryError = {
-            title: response.statusText,
-            description: response.data
-          };
-        }
-      });
-    };
-
-    $scope.createHighcharts = function(columnCount, headers, results) {
-      var chartType = $scope.widget.dataModelOptions.chart;
-
-      if (results[0] && results[0].length === columnCount) {
-        $scope.shouldShowChart = false;
-        $scope.shouldShowGrid = true;
-        $scope.isGridCollapsed = false;
-      } else {
-        $scope.shouldShowChart = true;
-        $scope.shouldShowGrid = true;
-        $scope.isGridCollapsed = true;
-      }
-
-      if (chartType === 'column')
-        $scope.createColumnHighcharts(columnCount, headers, results);
-      else
-        $scope.createPieHighcharts(columnCount, headers, results);
     };
 
     // Create a column chart
-    $scope.createColumnHighcharts = function(columnCount, headers, results) {
+    var createColumnHighcharts = function(columnCount, headers, results) {
       var categories = [];
       var series = [];
+      var i;
 
       // columnCount is number of groupby fields.
       // Skip all groupby fields.
-      for (var i = columnCount; i < headers.length; i++) {
+      for (i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
           data: []
@@ -1299,45 +1067,8 @@
         }
       });
 
-      $scope.highchartConfig = {
-        options: {
-          chart: {
-            type: 'column'
-          },
-          tooltip: {
-            shared: true,
-            useHTML: true,
-            borderWidth: 1,
-            borderRadius: 10,
-            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-            footerFormat: '</table>'
-          },
-          plotOptions: {
-            column: {
-              pointPadding: 0.2,
-              borderWidth: 0
-            }
-          }
-        },
-        title: {
-          text: ''
-        },
-        xAxis: {
-          categories: categories
-        },
-        yAxis: {
-          title: {
-            text: ''
-          }
-        },
-        series: series
-      };
-    };
-
     // Create a pie chart
-    $scope.createPieHighcharts = function(columnCount, headers, results) {
+    var createPieHighcharts = function(columnCount, headers, results) {
       var measures = [];
       var series = [];
 
@@ -1432,6 +1163,323 @@
         },
         series: series
       };
+    };
+
+      $scope.highchartConfig = {
+        options: {
+          chart: {
+            type: 'column'
+          },
+          tooltip: {
+            shared: true,
+            useHTML: true,
+            borderWidth: 1,
+            borderRadius: 10,
+            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>'
+          },
+          plotOptions: {
+            column: {
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          }
+        },
+        title: {
+          text: ''
+        },
+        xAxis: {
+          categories: categories
+        },
+        yAxis: {
+          title: {
+            text: ''
+          }
+        },
+        series: series
+      };
+    };
+
+    var createHighcharts = function(columnCount, headers, results) {
+      var chartType = $scope.queryObject.chart;
+
+      if (results[0] && results[0].length === columnCount) {
+        $scope.shouldShowChart = false;
+        $scope.shouldShowGrid = true;
+        $scope.isGridCollapsed = false;
+      } else {
+        $scope.shouldShowChart = true;
+        $scope.shouldShowGrid = true;
+        $scope.isGridCollapsed = true;
+      }
+
+      if (chartType === 'column')
+        createColumnHighcharts(columnCount, headers, results);
+      else
+        createPieHighcharts(columnCount, headers, results);
+    };
+
+    $scope.clearResults = function() {
+      $scope.queryState.results = null;
+    };
+
+    var executeComplexQuery = function(columnCount) {
+      var params = {};
+
+      $scope.queryState.loadingResults = true;
+      $scope.clearResults();
+
+      $scope.deferredAbort = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/v1/resources/group-by',
+        params: params,
+        data: $scope.serializedQuery,
+        timeout: $scope.deferredAbort.promise
+      }).then(function(response) {
+        $scope.queryState.results = response.data;
+        $scope.queryState.queryError = null;
+        $scope.queryState.loadingResults = false;
+
+        createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
+
+      }, function(response) {
+        $scope.queryState.loadingResults = false;
+
+        if (response.status !== 0) {
+          $scope.queryState.queryError = {
+            title: response.statusText,
+            description: response.data
+          };
+        }
+      });
+    };
+
+    $scope.$watch('queryObject', function(oldOptions, newOptions) {
+      // if (!_.isEqual(oldOptions.data.serializedQuery, newQuery.data.serializedQuery)) {
+      if ($scope.queryObject.data) {
+        $scope.serializedQuery = $scope.queryObject.data.serializedQuery;
+        $scope.execute();
+      }
+      // }
+    }, true);
+
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = ['$scope', '$location'];
+
+  function DashboardCtrl($scope, $location) {
+
+    function establishMode() {
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
+      } else {
+        $location.search('ml-analytics-mode', 'home');
+      }
+    }
+
+    establishMode();
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlAnalyticsViewChartCtrl', mlAnalyticsViewChartCtrl);
+
+  function mlAnalyticsViewChartCtrl($scope) {
+  }
+
+})();
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlResultsGridCtrl', mlResultsGridCtrl);
+
+  mlResultsGridCtrl.$inject = ['$scope'];
+
+  function mlResultsGridCtrl($scope) {
+    $scope.pageLength = '10';
+    $scope.sortColumn = 0;
+    $scope.sortReverse = false;
+    $scope.gridPage = 1;
+
+    $scope.sorter = function(item) {
+      return item[$scope.sortColumn];
+    };
+
+    $scope.setSortColumn = function(column) {
+      if (column === $scope.sortColumn) {
+        $scope.sortReverse = !$scope.sortReverse;
+      } else {
+        $scope.sortColumn = column;
+      }
+    };
+  }
+
+})();
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlSmartGridCtrl', mlSmartGridCtrl);
+
+  mlSmartGridCtrl.$inject = ['$scope', '$http', 'mlAnalyticsIndexService'];
+
+  function mlSmartGridCtrl($scope, $http, indexService) {
+    $scope.widget.mode = 'Design';
+
+    $scope.model = {
+      loadingResults: false
+    };
+
+    $scope.deferredAbort = null;
+
+    $scope.initializeQuery = function() {
+      $scope.data.metaConstraint = {};
+      if ($scope.data.groupingStrategy === 'collection' && $scope.data.directory) {
+        $scope.data.metaConstraint = {
+          'collection-query': {
+            'uri': [$scope.data.directory]
+          }
+        };
+      }
+      $scope.data.operation = 'and-query';
+      $scope.data.rootQuery = {};
+      $scope.data.rootQuery[$scope.data.operation] = {
+        'queries': $scope.data.query
+      };
+      $scope.data.serializedQuery = {
+        'result-type': 'group-by',
+        columns: [],
+        computes: [],
+        options: ['headers=true'],
+        query: {
+          query: {
+            queries: [$scope.data.metaConstraint, $scope.data.rootQuery],
+            qtext: ''
+          }
+        }
+      };
+    };
+
+    if ($scope.widget.dataModelOptions.data) {
+      $scope.data = $scope.widget.dataModelOptions.data;
+      // Wire up references between parts of the data structure
+      // TODO? Eliminate these and just always use in-place?
+      $scope.data.rootQuery[$scope.data.operation] = {
+        'queries': $scope.data.query
+      };
+      $scope.data.serializedQuery.query.query.queries = [
+        $scope.data.metaConstraint,
+        $scope.data.rootQuery
+      ];
+    } else {
+      $scope.data = {
+        groupingStrategy: 'collection',
+        query: [],
+        needsUpdate: true,
+        originalDocs: []
+      };
+      $scope.initializeQuery();
+    }
+
+    $scope.executor = {};
+
+    // TODO: move into column/row directive
+    $scope.dataManager = {
+      removeCompute: function(index) {
+        $scope.data.serializedQuery.computes.splice(index, 1);
+      },
+      removeColumn: function(index) {
+        $scope.data.serializedQuery.columns.splice(index, 1);
+      }
+    };
+
+    // TODO: move into showQuery directive?
+    $scope.renderGroupByConfig = function() {
+      return angular.toJson($scope.data.serializedQuery, true);
+    };
+    $scope.showGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = false;
+    };
+    $scope.hideGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = true;
+    };
+    $scope.hideGroupByConfig();
+
+    $scope.shortName = indexService.shortName;
+
+    $scope.getDbConfig = function() {
+      var params = {
+        'rs:strategy': $scope.data.groupingStrategy
+      };
+
+      $scope.model.loadingConfig = true;
+
+      if ($scope.data.targetDatabase) {
+        params['rs:database'] = $scope.data.targetDatabase;
+      }
+
+      $http.get('/v1/resources/index-discovery', {
+        params: params
+      }).then(function(response) {
+        $scope.model.loadingConfig = false;
+
+        if (response.data.errorResponse) {
+          $scope.model.configError = response.data.errorResponse.message;
+          return;
+        }
+
+        $scope.data.targetDatabase = response.data['current-database'];
+        $scope.data.databases = response.data.databases;
+
+        if (!_.isEmpty(response.data.docs)) {
+          $scope.model.configError = null;
+
+          var docs = response.data.docs;
+          $scope.data.originalDocs = docs;
+          $scope.data.directories = Object.keys(docs);
+          if (!_.includes($scope.data.directories, $scope.data.directory)) {
+            $scope.data.directory = undefined;
+            $scope.initializeQuery();
+          }
+          $scope.data.fields = docs[$scope.data.directory];
+
+          if ($scope.data.fields) {
+            $scope.setDocument();
+          }
+
+        } else {
+          $scope.model.configError = 'No documents with range indices in the database';
+        }
+
+      }, function(response) {
+        $scope.model.loadingConfig = false;
+        $scope.model.configError = response.data;
+      });
+    };
+
+    $scope.setDocument = function() {
+      $scope.data.needsUpdate = true;
+    };
+
+    $scope.save = function() {
+      $scope.widget.dataModelOptions.data = $scope.data;
+      $scope.options.saveDashboard();
     };
 
     $scope.$watch('data.directory', function() {
