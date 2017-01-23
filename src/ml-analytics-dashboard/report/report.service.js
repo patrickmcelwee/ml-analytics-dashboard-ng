@@ -104,9 +104,7 @@
         icon: 'fa fa-th',
         dataAttrName: 'grid',
         dataModelType: SmartGridDataModel,
-        dataModelOptions: {
-          chart: 'column',
-        },
+        dataModelOptions: {},
         style: {
           width: '100%'
         }

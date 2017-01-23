@@ -1,8 +1,12 @@
 <div class="ml-analytics-chart-types">
-  <button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: widget.dataModelOptions.chart === 'column'}" ng-click="widget.dataModelOptions.chart = 'column'">
+  <button class="btn btn-default ml-analytics-bar-chart-type"
+          ng-class="{active: data.chartType === 'column'}"
+          ng-click="data.chartType = 'column'">
     <i class="fa fa-3 fa-bar-chart"></i>
   </button>
-  <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: widget.dataModelOptions.chart === 'pie'}" ng-click="widget.dataModelOptions.chart = 'pie'">
+  <button class="btn btn-default ml-analytics-pie-chart-type"
+          ng-class="{active: data.chartType === 'pie'}"
+          ng-click="data.chartType = 'pie'">
     <i class="fa fa-3 fa-pie-chart"></i>
   </a>
 </div>

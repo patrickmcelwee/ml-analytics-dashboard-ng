@@ -57,6 +57,7 @@
     } else {
       $scope.data = {
         groupingStrategy: 'collection',
+        chartType: 'column',
         query: [],
         needsUpdate: true,
         originalDocs: []

@@ -9,7 +9,7 @@
       restrict: 'E',
       templateUrl: '/ml-analytics-chart/chart.html',
       scope: {
-        queryObject: '='
+        analyticsConfig: '='
       },
       controller: 'mlAnalyticsChartCtrl'
     };
