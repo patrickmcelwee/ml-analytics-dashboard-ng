@@ -57,7 +57,7 @@
     };
 
     $scope.execute = function() {
-      if ($scope.analyticsConfig.serializedQuery) {
+      if ($scope.analyticsConfig && $scope.analyticsConfig.serializedQuery) {
         var columns  = $scope.analyticsConfig.serializedQuery.columns;
         var computes = $scope.analyticsConfig.serializedQuery.computes;
 

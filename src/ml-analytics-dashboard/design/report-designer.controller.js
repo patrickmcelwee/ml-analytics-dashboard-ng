@@ -46,7 +46,6 @@
         initWithData();
     });
 
-
     function initWithData() {
       createDefaultWidgets();
       ReportService.loadWidgets(defaultWidgets);
