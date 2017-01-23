@@ -44,7 +44,7 @@
     };
 
     if ($scope.widget.dataModelOptions.data) {
-      $scope.data = $scope.widget.dataModelOptions.data;
+      $scope.data = angular.copy($scope.widget.dataModelOptions.data);
       // Wire up references between parts of the data structure
       // TODO? Eliminate these and just always use in-place?
       $scope.data.rootQuery[$scope.data.operation] = {
@@ -145,7 +145,7 @@
     };
 
     $scope.save = function() {
-      $scope.widget.dataModelOptions.data = $scope.data;
+      $scope.widget.dataModelOptions.data = angular.copy($scope.data);
       $scope.options.saveDashboard();
     };
 
