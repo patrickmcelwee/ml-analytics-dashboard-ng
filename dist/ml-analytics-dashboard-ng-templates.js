@@ -17,30 +17,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/dimension-popover.html',
-    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details for {{shortName(field)}}</span></div><ul class="list-unstyled panel-body"><li><b>Index type:</b> {{field[\'ref-type\']}}</li><li ng-if="field[\'namespace-uri\']"><b>Namespace:</b> {{field[\'namespace-uri\']}}</li><li ng-if="field[\'scalar-type\']"><b>Scalar type:</b> {{field[\'scalar-type\']}}</li><li ng-if="field.collation"><b>Collation:</b> {{field.collation}}</li></ul></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/BuilderDirective.html',
     '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="data.fields" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a></div></div></div></div>');
 }]);
@@ -79,6 +55,30 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/RuleDirective.html',
     '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="shortName(field) for field in sqFields | filter:isQueryableIndex"></select><span data-sq-type="rule.field[\'scalar-type\']" data-rule="rule" data-guide="sqFields[rule.field]"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
+    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in data.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in data.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{shortName(field)}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-dimension-builder/dimension-popover.html',
+    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details for {{shortName(field)}}</span></div><ul class="list-unstyled panel-body"><li><b>Index type:</b> {{field[\'ref-type\']}}</li><li ng-if="field[\'namespace-uri\']"><b>Namespace:</b> {{field[\'namespace-uri\']}}</li><li ng-if="field[\'scalar-type\']"><b>Scalar type:</b> {{field[\'scalar-type\']}}</li><li ng-if="field.collation"><b>Collation:</b> {{field.collation}}</li></ul></div>');
 }]);
 })();
 
@@ -330,7 +330,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/ml-report/ml-analytics-view-chart.html',
-    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="data.serializedQuery.query.query.qtext"></div><button class="btn btn-primary" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><ml-analytics-chart queryobject="widget.dataModelOptions.data"></ml-analytics-chart></div>');
+    '<div><form name="viewForm" class="form-inline" style="margin-bottom:10px;margin-bottom:10px"><div class="form-group"><label class="control-label">Search:</label> <input type="text" name="name" class="form-control" ng-model="data.serializedQuery.query.query.qtext"></div><button class="btn btn-primary" ng-click="execute()"><span class="fa fa-eye"></span> Filter Results with Search</button> <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></form><ml-analytics-chart query-object="widget.dataModelOptions"></ml-analytics-chart></div>');
 }]);
 })();
 
