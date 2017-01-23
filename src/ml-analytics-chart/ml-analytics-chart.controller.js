@@ -19,6 +19,8 @@
     };
 
     var clearResults = function() {
+      $scope.shouldShowChart = false;
+      $scope.shouldShowGrid = false;
       $scope.queryState.results = {};
     };
 
@@ -65,6 +67,8 @@
         } else {
           clearResults();
         }
+      } else {
+        clearResults();
       }
     };
 

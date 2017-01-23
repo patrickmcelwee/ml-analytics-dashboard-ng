@@ -27,6 +27,16 @@
 (function() {
   'use strict';
 
+  angular.module('ml-sq-builder', [
+    'RecursionHelper',
+  ]);
+
+})();
+
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -34,16 +44,6 @@
       'ml.analyticsDashboard.chart'
     ]); 
 })();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-sq-builder', [
-    'RecursionHelper',
-  ]);
-
-})();
-
 
 (function() {
   'use strict';
@@ -93,32 +93,6 @@
       shortName: shortName
     };
   }
-})();
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
-      function(WidgetDataModel, $http) {
-        function SmartGridDataModel() {
-        }
-
-        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
-
-        SmartGridDataModel.prototype.init = function() {
-          WidgetDataModel.prototype.init.call(this);
-          this.load();
-        };
-
-        SmartGridDataModel.prototype.load = function() {
-          //console.log(this);
-        };
-
-        return SmartGridDataModel;
-      }
-    ]);
-
 })();
 
 (function() {
@@ -427,6 +401,32 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.report')
+    .factory('SmartGridDataModel', ['WidgetDataModel', '$http',
+      function(WidgetDataModel, $http) {
+        function SmartGridDataModel() {
+        }
+
+        SmartGridDataModel.prototype = Object.create(WidgetDataModel.prototype);
+
+        SmartGridDataModel.prototype.init = function() {
+          WidgetDataModel.prototype.init.call(this);
+          this.load();
+        };
+
+        SmartGridDataModel.prototype.load = function() {
+          //console.log(this);
+        };
+
+        return SmartGridDataModel;
+      }
+    ]);
+
+})();
+
+(function() {
+  'use strict';
+
   // Report Service
   angular.module('ml.analyticsDashboard').service('ReportService', ['$http', 'MLRest', function($http, mlRest) {
     var dashboardOptions = null;
@@ -628,66 +628,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-        });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -923,15 +863,61 @@
 })();
 
 (function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
-  function mlAnalyticsDesign() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        $scope.$watch('widget.mode', function(mode) {
+          $scope.data.needsUpdate = true;
+        });
+      }
     };
   }
 }());
@@ -959,6 +945,20 @@
       restrict: 'E',
       templateUrl: '/templates/manage.html',
       controller: 'ManageCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
     };
   }
 }());
@@ -1023,6 +1023,8 @@
     };
 
     var clearResults = function() {
+      $scope.shouldShowChart = false;
+      $scope.shouldShowGrid = false;
       $scope.queryState.results = {};
     };
 
@@ -1069,6 +1071,8 @@
         } else {
           clearResults();
         }
+      } else {
+        clearResults();
       }
     };
 
@@ -1500,92 +1504,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$location', 'ReportService', 'WidgetDefinitions',
-    function($scope, $location, ReportService, WidgetDefinitions) {
-     
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-
-    var defaultWidgets;
-    createDefaultWidgets();
-
-    var store = {};
-    var storage = {
-      getItem : function(key) {
-        return store[key];
-      },
-      setItem : function(key, value) {
-        store[key] = value;
-
-        $scope.report.widgets = value.widgets;
-        $scope.saveWidgets();
-      },
-      removeItem : function(key) {
-        delete store[key];
-      }
-    };
-
-    $scope.reportDashboardOptions = {
-      widgetButtons: true,
-      widgetDefinitions: WidgetDefinitions,
-      defaultWidgets: defaultWidgets,
-      hideToolbar: false,
-      hideWidgetName: true,
-      explicitSave: false,
-      stringifyStorage: false,
-      storage: storage,
-      storageId: $scope.report.uri
-    };
-
-    ReportService.setDashboardOptions($scope.reportDashboardOptions);
-
-    ReportService.getReport($scope.report.uri)
-      .then(function(resp) {
-        angular.extend($scope.report, resp.data);
-        initWithData();
-    });
-
-
-    function initWithData() {
-      createDefaultWidgets();
-      ReportService.loadWidgets(defaultWidgets);
-    }
-
-    function createDefaultWidgets() {
-      if ($scope.report.widgets) {
-        defaultWidgets = _.map($scope.report.widgets, function(widget) {
-          return {
-            name: widget.name,
-            title: widget.title,
-            attrs: widget.attrs,
-            style: widget.size,
-            dataModelOptions: widget.dataModelOptions
-          };
-        });
-      } else {
-        defaultWidgets = [];
-      }
-    }
-
-    $scope.returnHome = function() {
-      $location.search('ml-analytics-mode', 'home');
-      $location.search('ml-analytics-uri', null);
-    };
-
-    $scope.$on('widgetAdded', function(event, widget) {
-      event.stopPropagation();
-    });
-
-    $scope.saveWidgets = function() {
-      ReportService.updateReport($scope.report);
-    };
-
-  }]);
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -1683,6 +1601,92 @@
 
   }
 
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').controller('ReportDesignerCtrl', ['$scope', '$location', 'ReportService', 'WidgetDefinitions',
+    function($scope, $location, ReportService, WidgetDefinitions) {
+     
+    $scope.report = {};
+    $scope.report.uri = $location.search()['ml-analytics-uri'];
+
+    var defaultWidgets;
+    createDefaultWidgets();
+
+    var store = {};
+    var storage = {
+      getItem : function(key) {
+        return store[key];
+      },
+      setItem : function(key, value) {
+        store[key] = value;
+
+        $scope.report.widgets = value.widgets;
+        $scope.saveWidgets();
+      },
+      removeItem : function(key) {
+        delete store[key];
+      }
+    };
+
+    $scope.reportDashboardOptions = {
+      widgetButtons: true,
+      widgetDefinitions: WidgetDefinitions,
+      defaultWidgets: defaultWidgets,
+      hideToolbar: false,
+      hideWidgetName: true,
+      explicitSave: false,
+      stringifyStorage: false,
+      storage: storage,
+      storageId: $scope.report.uri
+    };
+
+    ReportService.setDashboardOptions($scope.reportDashboardOptions);
+
+    ReportService.getReport($scope.report.uri)
+      .then(function(resp) {
+        angular.extend($scope.report, resp.data);
+        initWithData();
+    });
+
+
+    function initWithData() {
+      createDefaultWidgets();
+      ReportService.loadWidgets(defaultWidgets);
+    }
+
+    function createDefaultWidgets() {
+      if ($scope.report.widgets) {
+        defaultWidgets = _.map($scope.report.widgets, function(widget) {
+          return {
+            name: widget.name,
+            title: widget.title,
+            attrs: widget.attrs,
+            style: widget.size,
+            dataModelOptions: widget.dataModelOptions
+          };
+        });
+      } else {
+        defaultWidgets = [];
+      }
+    }
+
+    $scope.returnHome = function() {
+      $location.search('ml-analytics-mode', 'home');
+      $location.search('ml-analytics-uri', null);
+    };
+
+    $scope.$on('widgetAdded', function(event, widget) {
+      event.stopPropagation();
+    });
+
+    $scope.saveWidgets = function() {
+      ReportService.updateReport($scope.report);
+    };
+
+  }]);
 }());
 
 (function() {
