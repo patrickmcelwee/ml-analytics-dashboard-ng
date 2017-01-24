@@ -49,8 +49,11 @@
         </div>
 
         <div class="ml-analytics-design-form">
-            <button class="btn btn-success" ng-click="save(); execute()" ng-disabled="designForm.$invalid">
-              <span class="fa fa-check"></span> Save and Run
+            <button class="btn btn-success" ng-click="save()" ng-disabled="designForm.$invalid">
+              <span class="fa fa-check"></span> Save
+            </button>
+            <button class="btn btn-danger" ng-click="revert()" ng-disabled="designForm.$invalid">
+              <span class="fa fa-times"></span> Revert
             </button>
             <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
         </div>
@@ -146,7 +149,7 @@
           </button>
         </div>
 
-        <ml-analytics-chart analytics-config="widget.dataModelOptions.data"></ml-analytics-chart>
+        <ml-analytics-chart analytics-config="data"></ml-analytics-chart>
 
       </div>
     </div>
@@ -162,7 +165,7 @@
       </a>
     </div>
 
-    <ml-analytics-view-chart></ml-analytics-view-chart>
+    <ml-analytics-chart analytics-config="data"></ml-analytics-chart>
   </div>
 
 </div>

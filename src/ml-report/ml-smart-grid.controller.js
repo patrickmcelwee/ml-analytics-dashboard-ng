@@ -36,34 +36,36 @@
         options: ['headers=true'],
         query: {
           query: {
-            queries: [$scope.data.metaConstraint, $scope.data.rootQuery],
-            qtext: ''
+            queries: [$scope.data.metaConstraint, $scope.data.rootQuery]
           }
         }
       };
     };
 
-    if ($scope.widget.dataModelOptions.data) {
-      $scope.data = angular.copy($scope.widget.dataModelOptions.data);
-      // Wire up references between parts of the data structure
-      // TODO? Eliminate these and just always use in-place?
-      $scope.data.rootQuery[$scope.data.operation] = {
-        'queries': $scope.data.query
-      };
-      $scope.data.serializedQuery.query.query.queries = [
-        $scope.data.metaConstraint,
-        $scope.data.rootQuery
-      ];
-    } else {
-      $scope.data = {
-        groupingStrategy: 'collection',
-        chartType: 'column',
-        query: [],
-        needsUpdate: true,
-        originalDocs: []
-      };
-      $scope.initializeQuery();
-    }
+    var initializeFromSavedState = function() {
+      if ($scope.widget.dataModelOptions.data) {
+        $scope.data = angular.copy($scope.widget.dataModelOptions.data);
+        // Wire up references between parts of the data structure
+        // TODO? Eliminate these and just always use in-place?
+        $scope.data.rootQuery[$scope.data.operation] = {
+          'queries': $scope.data.query
+        };
+        $scope.data.serializedQuery.query.query.queries = [
+          $scope.data.metaConstraint,
+          $scope.data.rootQuery
+        ];
+      } else {
+        $scope.data = {
+          groupingStrategy: 'collection',
+          chartType: 'column',
+          query: [],
+          needsUpdate: true,
+          originalDocs: []
+        };
+        $scope.initializeQuery();
+      }
+    };
+    initializeFromSavedState();
 
     $scope.executor = {};
 
@@ -148,6 +150,10 @@
     $scope.save = function() {
       $scope.widget.dataModelOptions.data = angular.copy($scope.data);
       $scope.options.saveDashboard();
+    };
+
+    $scope.revert = function() {
+      initializeFromSavedState();
     };
 
     $scope.$watch('data.directory', function() {

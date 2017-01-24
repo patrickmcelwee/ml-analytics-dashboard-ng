@@ -8,7 +8,6 @@ describe('Protractor Demo App', function() {
   var columns = element.all(by.css('.ml-analytics-column'));
   var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'));
 
-  var saveAndRun = element(by.buttonText('Save and Run'));
   var groupingStrategySelector = element(by.model('data.groupingStrategy'));
   var directorySelector = element(by.model('data.directory'));
   var chartContainer = element(by.css('.highcharts-container'));
@@ -87,7 +86,6 @@ describe('Protractor Demo App', function() {
     firstMeasure.element(by.css('a')).click();
     firstMeasure.element(by.linkText('Add count')).click();
     expect(rows.count()).toBe(1);
-    saveAndRun.click();
     expect(chartContainer.isPresent()).toBe(true);
   });
 
@@ -100,18 +98,21 @@ describe('Protractor Demo App', function() {
       .element(by.partialLinkText('Add Group By'))
       .click();
     expect(columns.count()).toBe(1);
-    saveAndRun.click();
     expect(xAxisLabels.count()).toEqual(7);
     expect(xAxisLabels.getText()).toContain('amethyst');
   });
 
   it('allows user to change to a pie chart and back', function() {
     function chooseChartType(chartType) {
-      element(by.buttonText('Choose Chart Type')).click();
-      element(by.css('.ml-analytics-chart-types')).
-        element(by.css('.ml-analytics-' + chartType + '-chart-type')).
-        click();
-      saveAndRun.click();
+      var typesSelection = element(by.css('.ml-analytics-chart-types'));
+      typesSelection.isPresent().then(function(typesAreDisplayed) {
+        if (!typesAreDisplayed) {
+          element(by.buttonText('Choose Chart Type')).click();
+        }
+        typesSelection.
+          element(by.css('.ml-analytics-' + chartType + '-chart-type')).
+          click();
+      });
     }
 
     chooseChartType('pie');
@@ -126,30 +127,30 @@ describe('Protractor Demo App', function() {
     element(by.linkText('Add Rule')).click();
     element(by.model('rule.field')).sendKeys('eyeColor');
     element(by.model('rule.subType')).sendKeys('Equals');
-    element(by.model('rule.value')).sendKeys('amethyst');
-    expectGeneratedQuery().toContain('"value-query":{"text":"amethyst","element":{"name":"eyeColor","ns":""}}');
+    element(by.model('rule.value')).sendKeys('blue');
+    expectGeneratedQuery().toContain('"value-query":{"text":"blue","element":{"name":"eyeColor","ns":""}}');
 
-    saveAndRun.click();
-
-    browser.sleep(1000);
     expect(xAxisLabels.count()).toEqual(1);
-    expect(xAxisLabels.getText()).toContain('amethyst');
-    expect(xAxisLabels.getText()).not.toContain('blue');
+    expect(xAxisLabels.getText()).toContain('blue');
+    expect(xAxisLabels.getText()).not.toContain('amethyst');
   });
 
-  it('can open a saved query', function() {
+  it('can open a saved report', function() {
+    element(by.buttonText('Save')).click();
+
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
     element(by.cssContainingText('.report-item', reportName)).click();
     expect(columns.count()).toBe(1);
     expect(rows.count()).toBe(1);
   });
 
+  xit('can revert to the saved state', function() {
+  });
+
   it('allows removal of compute and shows grid for groupBy-only', function() {
     rows.first().element(by.css('.remove-row')).click();
 
     expect(rows.count()).toBe(0);
-
-    saveAndRun.click();
 
     expect(chartContainer.isPresent()).toBe(false);
     expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(true);
@@ -158,7 +159,6 @@ describe('Protractor Demo App', function() {
     var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
     firstMeasure.element(by.css('a')).click();
     firstMeasure.element(by.linkText('Add count')).click();
-    saveAndRun.click();
 
     expect(chartContainer.isPresent()).toBe(true);
     expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(false);
@@ -174,15 +174,6 @@ describe('Protractor Demo App', function() {
 
     expect( directorySelector.getAttribute('class') ).not.toContain('ng-invalid');
     expectGeneratedQuery().not.toContain('collection-query');
-  });
-
-  xit('includes root-name query for root-scoped data source', function() {
-    showQueryButton.click();
-    // This is potentially quite difficult, because we
-    //   are attempting to turn a structured query into a cts:query in the
-    //   group-by library. I'm not sure you can just pass options through the
-    //   workaround we are currently using there. It needs testing });
-    //   In particular: look at grpj:cts-query-parser
   });
 
 });
