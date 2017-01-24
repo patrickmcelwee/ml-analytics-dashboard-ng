@@ -131,9 +131,19 @@
           </div>
         </div>
 
-        <div class="ml-analytics-chart-type-selector pull-right">
-          <button uib-popover-template="'/templates/ml-report/chart-type-selector.html'" popover-placement="left" popover-trigger="outsideClick" class="btn btn-default btn-sm">
-            <i class="fa fa-bar-chart"></i> Choose Chart Type </button>
+        <div class="pull-right">
+          <button uib-popover-template="'/ml-report/chart-type-selector.html'"
+                  popover-placement="left"
+                  popover-trigger="outsideClick"
+                  class="ml-analytics-chart-type-selector btn btn-default btn-sm">
+            <i class="fa fa-bar-chart"></i> Choose Chart Type
+          </button>
+          <button uib-popover-template="'/ml-report/embed-code.html'"
+                  popover-placement = "bottom-right"
+                  popover-trigger="outsideClick"
+                  class="ml-analytics-show-embed-code btn btn-primary btn-sm">
+            Embed Code <i class="fa fa-caret-down"></i>
+          </button>
         </div>
 
         <ml-analytics-chart analytics-config="widget.dataModelOptions.data"></ml-analytics-chart>
