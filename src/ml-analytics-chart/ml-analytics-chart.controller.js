@@ -258,8 +258,10 @@
       }
     };
 
-    $scope.$watch('analyticsConfig', function() {
-      $scope.execute();
+    $scope.$watch('analyticsConfig', function(newConfig, oldConfig) {
+      if (newConfig) {
+        $scope.execute();
+      }
     }, true);
 
   }

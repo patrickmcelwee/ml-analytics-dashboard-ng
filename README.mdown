@@ -99,7 +99,11 @@ You can embed a chart outside the editor using the mlAnalyticsEmbed directive:
 <ml-analytics-embed report-uri="'/ml-analytics-dashboard-reports/example-12345.json'"></ml-analytics-embed>
 ```
 
-For the moment, you can't add an outside searchConstraint.
+Even better, in slush-marklogic-node-generated application, you can embed a chart into a scope with an mlSearchContext, and it will respond to your searches. Simply add the search constraint to your directive call's `ml-search` attribute:
+
+```html
+<ml-analytics-embed report-uri="'/ml-analytics-dashboard-reports/example-12345.json'" ml-search="ctrl.mlSearch"></ml-analytics-embed>
+```
 
 # Troubleshooting
 
