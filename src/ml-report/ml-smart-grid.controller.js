@@ -64,8 +64,8 @@
         };
         $scope.initializeQuery();
       }
+      $scope.getDbConfig();
     };
-    initializeFromSavedState();
 
     $scope.executor = {};
 
@@ -170,6 +170,6 @@
     });
 
     // Kick off
-    $scope.getDbConfig();
+    initializeFromSavedState();
   }
 })();
