@@ -20,7 +20,7 @@
     "highcharts": "^4.0.4",
     "jquery-ui": "^1.11.0",
     "malhar-angular-dashboard": "~2.0.0",
-    "highcharts-ng": "^0.0.11",
+    "highcharts-ng": "~0.0.13",
     "ml-common-ng": "^1.0.1"
   },
   "moduleType": [
