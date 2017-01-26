@@ -44,6 +44,11 @@ describe('mlAnalyticsIndexService', function() {
       expect(indexService.shortName(index)).toBe('name');
     });
 
+    it('includes the element for attribute indexes', function() {
+      var index = {localname: 'attr', 'parent-localname': 'element'};
+      expect(indexService.shortName(index)).toBe('element/@attr');
+    });
+
     it('then uses path-expression', function() {
       var index = {'path-expression': 'name'};
       expect(indexService.shortName(index)).toBe('name');

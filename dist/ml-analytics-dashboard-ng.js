@@ -92,7 +92,15 @@
     }
      
     function shortName(index) {
-      return index.localname || index['path-expression'];
+      if (index.localname) {
+        if (index['parent-localname']) {
+          return index['parent-localname'] + '/@' + index.localname;
+        } else {
+          return index.localname;
+        }
+      } else {
+        return index['path-expression'];
+      }
     }
 
     return {
