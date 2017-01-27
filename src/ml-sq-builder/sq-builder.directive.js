@@ -42,10 +42,10 @@
             });
           };
 
-          scope.$watch('data.needsUpdate', function(curr) {
+          scope.$watch('report.needsUpdate', function(curr) {
             if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.data.fields);
-            scope.data.needsUpdate = false;
+            scope.filters = sqBuilderService.toFilters(data.query, scope.report.fields);
+            scope.report.needsUpdate = false;
           });
 
           scope.$watch('filters', function(newValue, oldValue) {
@@ -53,7 +53,7 @@
               scope.data.query.length = 0;
               angular.extend(
                 scope.data.query,
-                sqBuilderService.toQuery(scope.filters, scope.data.fields)
+                sqBuilderService.toQuery(scope.filters, scope.report.fields)
               );
             }
 

@@ -15,9 +15,9 @@
       link: function($scope, element, attrs) {
         $scope.element = element;
 
-        $scope.$watch('widget.mode', function(mode) {
-          $scope.data.needsUpdate = true;
-        });
+        // $scope.$watch('widget.mode', function(mode) {
+        //   $scope.report.needsUpdate = true;
+        // });
       }
     };
   }

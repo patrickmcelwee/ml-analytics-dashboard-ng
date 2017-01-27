@@ -8,7 +8,7 @@
         <li
           uib-dropdown
           class="ml-analytics-dimension"
-          ng-repeat="field in data.fields | filter:isColumnField">
+          ng-repeat="field in report.fields | filter:isColumnField">
           <a uib-dropdown-toggle>
             <span ng-switch="indexService.highLevelType(field)">
               <i class="fa fa-font" ng-switch-when="string"></i>
@@ -23,6 +23,8 @@
                 Add {{fn}}
               </a>
             </li>
+            <li role="separator" class="divider"></li>
+            <li><a ng-click="createAlias(field, 'test-alias')">Create Alias</a></li>
           </ul>
           <a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="'/ml-dimension-builder/dimension-popover.html'">
             <i class="pull-right fa fa-info-circle"></i>
@@ -41,7 +43,7 @@
         <li
           uib-dropdown
           class="ml-analytics-measure"
-          ng-repeat="field in data.fields | filter:isComputeField">
+          ng-repeat="field in report.fields | filter:isComputeField">
           <a uib-dropdown-toggle>
             <span ng-switch="indexService.highLevelType(field)">
               <i class="icon ion-pound" ng-switch-when="numeric"></i>

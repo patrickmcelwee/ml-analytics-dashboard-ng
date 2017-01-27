@@ -94,8 +94,8 @@
     };
   }]);
 
-  angular.module('ml.analyticsDashboard').factory('WidgetDefinitions', ['SmartGridDataModel',  
-    function(SmartGridDataModel) {
+  angular.module('ml.analyticsDashboard').factory('WidgetDefinitions', ['WidgetDataModel',  
+    function(WidgetDataModel) {
     return [
       {
         name: 'Chart Builder',
@@ -103,7 +103,7 @@
         title: 'Chart Builder',
         icon: 'fa fa-th',
         dataAttrName: 'grid',
-        dataModelType: SmartGridDataModel,
+        dataModelType: WidgetDataModel,
         dataModelOptions: {},
         style: {
           width: '100%'

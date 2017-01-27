@@ -16,11 +16,16 @@
     $scope.deferredAbort = null;
 
     $scope.initializeQuery = function() {
+      $scope.data = $scope.data || {
+        chartType: 'column',
+        query: [],
+        needsUpdate: true
+      };
       $scope.data.metaConstraint = {};
-      if ($scope.data.groupingStrategy === 'collection' && $scope.data.directory) {
+      if ($scope.report.groupingStrategy === 'collection' && $scope.report.directory) {
         $scope.data.metaConstraint = {
           'collection-query': {
-            'uri': [$scope.data.directory]
+            'uri': [$scope.report.directory]
           }
         };
       }
@@ -29,6 +34,7 @@
       $scope.data.rootQuery[$scope.data.operation] = {
         'queries': $scope.data.query
       };
+
       $scope.data.serializedQuery = {
         'result-type': 'group-by',
         columns: [],
@@ -43,6 +49,7 @@
     };
 
     var initializeFromSavedState = function() {
+      $scope.initializeQuery();
       if ($scope.widget.dataModelOptions.data) {
         $scope.data = angular.copy($scope.widget.dataModelOptions.data);
         // Wire up references between parts of the data structure
@@ -54,17 +61,7 @@
           $scope.data.metaConstraint,
           $scope.data.rootQuery
         ];
-      } else {
-        $scope.data = {
-          groupingStrategy: 'collection',
-          chartType: 'column',
-          query: [],
-          needsUpdate: true,
-          originalDocs: []
-        };
-        $scope.initializeQuery();
       }
-      $scope.getDbConfig();
     };
 
     $scope.executor = {};
@@ -93,60 +90,6 @@
 
     $scope.shortName = indexService.shortName;
 
-    $scope.getDbConfig = function() {
-      var params = {
-        'rs:strategy': $scope.data.groupingStrategy
-      };
-
-      $scope.model.loadingConfig = true;
-
-      if ($scope.data.targetDatabase) {
-        params['rs:database'] = $scope.data.targetDatabase;
-      }
-
-      $http.get('/v1/resources/index-discovery', {
-        params: params
-      }).then(function(response) {
-        $scope.model.loadingConfig = false;
-
-        if (response.data.errorResponse) {
-          $scope.model.configError = response.data.errorResponse.message;
-          return;
-        }
-
-        $scope.data.targetDatabase = response.data['current-database'];
-        $scope.data.databases = response.data.databases;
-
-        if (!_.isEmpty(response.data.docs)) {
-          $scope.model.configError = null;
-
-          var docs = response.data.docs;
-          $scope.data.originalDocs = docs;
-          $scope.data.directories = Object.keys(docs);
-          if (!_.includes($scope.data.directories, $scope.data.directory)) {
-            $scope.data.directory = undefined;
-            $scope.initializeQuery();
-          }
-          $scope.data.fields = docs[$scope.data.directory];
-
-          if ($scope.data.fields) {
-            $scope.setDocument();
-          }
-
-        } else {
-          $scope.model.configError = 'No documents with range indices in the database';
-        }
-
-      }, function(response) {
-        $scope.model.loadingConfig = false;
-        $scope.model.configError = response.data;
-      });
-    };
-
-    $scope.setDocument = function() {
-      $scope.data.needsUpdate = true;
-    };
-
     $scope.save = function() {
       $scope.widget.dataModelOptions.data = angular.copy($scope.data);
       $scope.options.saveDashboard();
@@ -155,10 +98,6 @@
     $scope.revert = function() {
       initializeFromSavedState();
     };
-
-    $scope.$watch('data.directory', function() {
-      $scope.data.fields = $scope.data.originalDocs[$scope.data.directory];
-    });
 
     $scope.$watch('data.operation', function(newOperation, oldOperation) {
       if (newOperation !== oldOperation) {
