@@ -43,6 +43,12 @@
           };
 
           scope.recordAlias = function(field) {
+            var existingAliases = Object.keys(scope.report.aliases);
+            existingAliases.forEach(function(existing) {
+              if (angular.equals(scope.report.aliases[existing], field.ref)) {
+                delete scope.report.aliases[existing];
+              }
+            });
             scope.report.aliases[field.alias] = field.ref;
           };
 
