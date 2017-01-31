@@ -45,10 +45,12 @@
           class="ml-analytics-measure"
           ng-repeat="field in report.fields | filter:isComputeField">
           <a uib-dropdown-toggle>
-            <span ng-switch="indexService.highLevelType(field)">
-              <i class="icon ion-pound" ng-switch-when="numeric"></i>
+            <span class="ml-analytics-field-name">
+              <span ng-switch="indexService.highLevelType(field)">
+                <i class="icon ion-pound" ng-switch-when="numeric"></i>
+              </span>
+              {{field.alias}}
             </span>
-            {{field.alias}}
           </a>
           <ul class="dropdown-menu">
             <li ng-repeat="fn in availableFns(field) | orderBy:'toString()'">

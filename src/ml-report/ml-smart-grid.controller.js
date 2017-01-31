@@ -106,9 +106,13 @@
       }
     });
 
-    var matchColumnToChangedField = function(field, column) {
-      if (angular.equals(column.ref, field.ref)) {
-        column.alias = field.alias;
+    var matchColumnToChangedField = function(field, columnOrCompute) {
+      if (angular.equals(columnOrCompute.ref, field.ref)) {
+        if (columnOrCompute.fn) {
+          columnOrCompute.alias = columnOrCompute.fn + '(' + field.alias +  ')';
+        } else {
+          columnOrCompute.alias = field.alias;
+        }
       }
     };
 
@@ -119,6 +123,10 @@
           if (!angular.equals(newFields[i], oldFields[i])) {
             _.map(
               $scope.data.serializedQuery.columns,
+              matchColumnToChangedField.bind(null, newFields[i])
+            );
+            _.map(
+              $scope.data.serializedQuery.computes,
               matchColumnToChangedField.bind(null, newFields[i])
             );
           }
