@@ -41,7 +41,7 @@
   width: 370px;
 }
 .ml-analytics-field-name {
-  float: left;
+  display: inline-block;
   width: 89%;
   overflow: hidden;
   white-space: nowrap;
