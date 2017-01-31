@@ -42,9 +42,8 @@
             scope.data.serializedQuery.computes.push(compute);
           };
 
-          scope.createAlias = function(field, alias) {
-            field.alias = alias;
-            scope.report.aliases[alias] = field.ref;
+          scope.recordAlias = function(field) {
+            scope.report.aliases[field.alias] = field.ref;
           };
 
         }

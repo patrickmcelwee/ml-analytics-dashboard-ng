@@ -17,8 +17,32 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-report/chart-type-selector.html',
+    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-report/embed-code.html',
+    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li><li role="separator" class="divider"></li><li><a ng-click="createAlias(field, \'test-alias\')">Create Alias</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
+    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
 }]);
 })();
 
@@ -30,7 +54,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/dimension-popover.html',
-    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details for {{field.alias}}</span></div><ul class="list-unstyled panel-body"><li ng-repeat="(key, value) in field"><b>{{key}}:</b> {{value}}</li></ul></div>');
+    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details for {{field.alias}}</span></div><ul class="list-unstyled panel-body"><li><b>alias:</b> <input type="text" ng-model="field.alias" ng-change="recordAlias(field)"></li><li ng-repeat="(key, value) in field.ref"><b>{{key}}:</b> {{value}}</li></ul></div>');
 }]);
 })();
 
@@ -79,30 +103,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/RuleDirective.html',
     '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="field.alias for field in sqFields | filter:isQueryableIndex"></select><span data-sq-type="rule.field.ref[\'scalar-type\']" data-rule="rule"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/chart-type-selector.html',
-    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/embed-code.html',
-    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre></div>');
 }]);
 })();
 

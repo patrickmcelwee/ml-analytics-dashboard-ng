@@ -57,8 +57,6 @@
         var aliases = Object.keys(aliasObject);
         aliases.forEach(function(alias) {
           if (angular.equals(aliasObject[alias], index)) {
-            console.log('aliasObject[alias]:', aliasObject[alias]);
-            console.log('index:', index);
             name = alias;
           }
         });

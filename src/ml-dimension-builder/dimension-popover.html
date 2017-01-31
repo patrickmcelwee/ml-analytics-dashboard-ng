@@ -3,6 +3,7 @@
     <span>Range Index Details for {{field.alias}}</span>
   </div>
   <ul class="list-unstyled panel-body">
-    <li ng-repeat="(key, value) in field"><b>{{key}}:</b> {{value}}</li>
+    <li><b>alias:</b> <input type="text" ng-model="field.alias" ng-change="recordAlias(field)"></li>
+    <li ng-repeat="(key, value) in field.ref"><b>{{key}}:</b> {{value}}</li>
   </ul>
 </div>
