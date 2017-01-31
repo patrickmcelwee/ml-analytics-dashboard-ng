@@ -34,7 +34,7 @@
             <div class="panel-heading">
               <span class="panel-title">Document Query Filters</span>
             </div>
-            <div class="panel-body" sq-builder="data"></div>
+            <div class="panel-body" sq-builder></div>
           </div>
         </div>
 
@@ -66,7 +66,7 @@
             <div class="panel-body">
               <div class="btn-group ml-analytics-column" ng-repeat="column in data.serializedQuery.columns">
                 <button type="button" class="btn btn-xs btn-info">
-                  {{shortName(column)}}
+                  {{column.alias}}
                 </button>
                 <button type="button" class="btn btn-xs btn-info" ng-click="dataManager.removeColumn($index)">
                   <i class="fa fa-remove"></i>
@@ -81,7 +81,7 @@
             <div class="panel-body">
               <div class="btn-group ml-analytics-row" ng-repeat="compute in data.serializedQuery.computes">
                 <button type="button" class="btn btn-xs btn-success">
-                  {{compute.fn}}({{shortName(compute.ref)}})
+                  {{compute.alias}}
                 </button>
                 <button type="button" class="btn btn-xs btn-success remove-row" ng-click="dataManager.removeCompute($index)">
                   <i class="fa fa-remove"></i>

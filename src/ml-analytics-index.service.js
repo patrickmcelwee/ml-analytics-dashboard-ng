@@ -5,7 +5,9 @@
     .factory('mlAnalyticsIndexService', indexServiceFactory);
 
   function indexServiceFactory() {
+
     function highLevelType(index) {
+      if (index.ref) { index = index.ref; }
       var type = index['scalar-type'];
       switch (type) {
         case 'string':
@@ -37,17 +39,20 @@
       }
     }
      
-    function shortName(index) {
+    function shortName(index, aliases) {
+      var name;
+      if (index.alias) { return index.alias; }
+      if (index.ref) { index = index.ref; }
       if (index.localname) {
         if (index['parent-localname']) {
-          return index['parent-localname'] + '/@' + index.localname;
+          name = index['parent-localname'] + '/@' + index.localname;
         } else {
-          return index.localname;
+          name = index.localname;
         }
       } else {
-        return index['path-expression'];
+        name = index['path-expression'];
       }
-    }
+      return (aliases && aliases[name]) || name; }
 
     return {
       highLevelType: highLevelType,

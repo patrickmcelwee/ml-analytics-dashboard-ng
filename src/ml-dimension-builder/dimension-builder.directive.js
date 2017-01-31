@@ -31,22 +31,22 @@
           };
 
           scope.availableFns = function(field) {
-            return aggregates['by-type'][ field['scalar-type'] ].filter(function(fn) {
+            return aggregates['by-type'][ field.ref['scalar-type'] ].filter(function(fn) {
               //TODO: support arity=2
               return aggregates.info[ fn ]['reference-arity'] === 1;
             });
           };
 
           scope.addCompute = function(field, operation) {
-            scope.data.serializedQuery.computes.push({
-              fn: operation,
-              ref: field
-            });
+            var compute = angular.copy(field);
+            compute.fn = operation;
+            compute.alias = operation + '(' + compute.alias +  ')';
+            scope.data.serializedQuery.computes.push(compute);
           };
 
           scope.createAlias = function(field, alias) {
-            scope.report.aliases = scope.report.aliases || {};
-            scope.report.aliases[field] = alias;
+            field.alias = alias;
+            scope.report.aliases[scope.shortName(field)] = alias;
           };
 
         }

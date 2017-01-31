@@ -13,7 +13,7 @@
             <span ng-switch="indexService.highLevelType(field)">
               <i class="fa fa-font" ng-switch-when="string"></i>
             </span>
-            {{shortName(field)}}
+            {{field.alias}}
           </a>
           <ul class="dropdown-menu">
             <!--<li><a ng-click="addRow(field)">Add Row</a></li>-->
@@ -48,7 +48,7 @@
             <span ng-switch="indexService.highLevelType(field)">
               <i class="icon ion-pound" ng-switch-when="numeric"></i>
             </span>
-            {{shortName(field)}}
+            {{field.alias}}
           </a>
           <ul class="dropdown-menu">
             <li ng-repeat="fn in availableFns(field) | orderBy:'toString()'">

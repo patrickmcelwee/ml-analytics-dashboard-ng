@@ -7,8 +7,7 @@
       return {
         scope: {
           type: '=sqType',
-          rule: '=',
-          guide: '='
+          rule: '='
         },
 
         template: '<ng-include src="getTemplateUrl()" />',

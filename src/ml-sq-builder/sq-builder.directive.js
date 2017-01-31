@@ -6,10 +6,6 @@
 
     function EB(sqBuilderService) {
       return {
-        scope: {
-          data: '=sqBuilder',
-        },
-
         templateUrl: '/ml-sq-builder/BuilderDirective.html',
 
         link: function(scope) {

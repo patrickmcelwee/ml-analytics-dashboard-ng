@@ -5,13 +5,17 @@
     controller('ReportDesignerCtrl', ReportDesignerCtrl);
 
   ReportDesignerCtrl.$inject = [
-    '$scope', '$location', '$http', 'ReportService', 'WidgetDefinitions'
+    '$scope', '$location', '$http',
+    'ReportService', 'WidgetDefinitions', 'mlAnalyticsIndexService'
   ];
 
-  function ReportDesignerCtrl($scope, $location, $http, ReportService, WidgetDefinitions) {
+  function ReportDesignerCtrl($scope, $location, $http,
+      ReportService, WidgetDefinitions, indexService) {
      
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
+    $scope.report = {
+      uri: $location.search()['ml-analytics-uri'],
+      aliases: {}
+    };
 
     $scope.reportModel = {};
 
@@ -80,6 +84,15 @@
       }
     }
 
+    var createFields = function(indexes) {
+      return _.map(indexes, function(index) {
+        return {
+          alias: indexService.shortName(index, $scope.report.aliases),
+          ref: index
+        };
+      });
+    }; 
+
     $scope.getDbConfig = function() {
       var params = {
         'rs:strategy': $scope.report.groupingStrategy
@@ -113,7 +126,7 @@
           if (!_.includes($scope.report.directories, $scope.report.directory)) {
             $scope.report.directory = undefined;
           }
-          $scope.report.fields = docs[$scope.report.directory];
+          $scope.report.fields = createFields(docs[$scope.report.directory]);
 
           if ($scope.report.fields) {
             // communicating with sq-builder
@@ -145,7 +158,9 @@
 
     $scope.$watch('report.directory', function() {
       if ($scope.report.directory) {
-        $scope.report.fields = $scope.report.originalDocs[$scope.report.directory];
+        $scope.report.fields = createFields(
+          $scope.report.originalDocs[$scope.report.directory]
+        );
       }
     });
 

@@ -25,7 +25,7 @@
 
     function findField(fields, query) {
       return _.find(fields, function(field) {
-        return indexService.shortName(field) === getConstraintName(query);
+        return field.alias === getConstraintName(query);
       });
     }
 
@@ -135,6 +135,7 @@
     }
 
     function parseFilterGroup(fields, group) {
+      var value, dataType;
       var obj = {};
 
       if (group.type === 'group') {
@@ -155,24 +156,22 @@
         return queryObj;
       }
 
-      var fieldName = group.field;
-
       if (!group.field) return;
 
-      switch (group.field['scalar-type']) {
+      switch (group.field.ref['scalar-type']) {
         case 'string':
           // A query for a string field is translated 
           // to value-query or word-query or range-query.
 
-          if (group.field['ref-type'] === 'path-reference') {
+          if (group.field.ref['ref-type'] === 'path-reference') {
             // Convert path rule to range-query
-            var dataType = 'xs:' + group.field['scalar-type'];
+            dataType = 'xs:' + group.field.ref['scalar-type'];
             obj['range-query'] = {
               'path-index': {
-                'text': group.field['path-expression'],
+                'text': group.field.ref['path-expression'],
                 'namespaces': {}
               },
-              'collation': group.field.collation,
+              'collation': group.field.ref.collation,
               'type': dataType,
               'range-operator': 'EQ',
               'value': group.value
@@ -184,11 +183,11 @@
               group.subType = 'value-query';
             }
 
-            var value = {
+            value = {
               'text': group.value
             };
 
-            setConstraint(value, group.field);
+            setConstraint(value, group.field.ref);
 
             obj[group.subType] = value;
           }
@@ -206,19 +205,19 @@
             group.subType = 'EQ';
           }
 
-          var dataType = 'xs:' + group.field['scalar-type'];
+          dataType = 'xs:' + group.field.ref['scalar-type'];
 
-          var value = {
+          value = {
             'type': dataType,
             'range-operator': group.subType,
             'value': group.value
           };
 
-          setConstraint(value, group.field);
+          setConstraint(value, group.field.ref);
 
-          if (group.field['ref-type'] === 'path-reference') {
+          if (group.field.ref['ref-type'] === 'path-reference') {
             value['path-index'] = {
-              text: group.field['path-expression'],
+              text: group.field.ref['path-expression'],
               namespaces: {}
             };
           }
@@ -235,7 +234,7 @@
           if (group.value === undefined)
             group.value = 1;
 
-          var value = {
+          value = {
             'text': group.value ? true : false
           };
 
@@ -243,7 +242,7 @@
             value.type = 'boolean';
           }
 
-          setConstraint(value, group.field);
+          setConstraint(value, group.field.ref);
 
           obj['value-query'] = value;
 

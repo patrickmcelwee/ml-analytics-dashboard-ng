@@ -108,6 +108,26 @@
       }
     });
 
+    var matchColumnToChangedField = function(field, column) {
+      if (angular.equals(column.ref, field.ref)) {
+        column.alias = field.alias;
+      }
+    };
+
+    $scope.$watch('report.fields', function(newFields, oldFields) {
+      if (newFields && oldFields.length > 0) {
+        var i;
+        for (i=0; i<newFields.length; i++) {
+          if (!angular.equals(newFields[i], oldFields[i])) {
+            _.map(
+              $scope.data.serializedQuery.columns,
+              matchColumnToChangedField.bind(null, newFields[i])
+            );
+          }
+        }
+      }
+    }, true);
+
     // Kick off
     initializeFromSavedState();
   }

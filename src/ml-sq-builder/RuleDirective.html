@@ -1,6 +1,6 @@
 <div class="sq-builder-rule"> 
-  <select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="shortName(field) for field in sqFields | filter:isQueryableIndex"></select> 
-  <span data-sq-type="rule.field['scalar-type']" data-rule="rule" data-guide="sqFields[rule.field]"></span> 
+  <select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="field.alias for field in sqFields | filter:isQueryableIndex"></select> 
+  <span data-sq-type="rule.field.ref['scalar-type']" data-rule="rule"></span> 
   <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"> 
     <i class="fa fa-minus"></i> 
   </a> 
