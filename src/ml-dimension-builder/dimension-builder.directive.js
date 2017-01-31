@@ -46,7 +46,7 @@
 
           scope.createAlias = function(field, alias) {
             field.alias = alias;
-            scope.report.aliases[scope.shortName(field)] = alias;
+            scope.report.aliases[alias] = field.ref;
           };
 
         }

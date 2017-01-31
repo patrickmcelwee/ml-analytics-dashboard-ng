@@ -77,14 +77,9 @@ describe('mlAnalyticsIndexService', function() {
       expect(indexService.shortName(index)).toBe('name');
     });
 
-    it('will use an alias if available', function() {
-      var index = {alias: 'alias', ref: {localname: 'name'}};
-      expect(indexService.shortName(index)).toBe('alias');
-    });
-
     it('will use an external alias object if available', function() {
-      var index = {localname: 'name'};
-      var aliases = {'name': 'alias'};
+      var index = {alias: 'some-old-alias', ref: {localname: 'name'}};
+      var aliases = {'alias': {localname: 'name'}};
       expect(indexService.shortName(index, aliases)).toBe('alias');
     });
   });

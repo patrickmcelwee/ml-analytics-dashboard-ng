@@ -39,10 +39,10 @@
       }
     }
      
-    function shortName(index, aliases) {
+    function shortName(index, aliasObject) {
       var name;
-      if (index.alias) { return index.alias; }
       if (index.ref) { index = index.ref; }
+
       if (index.localname) {
         if (index['parent-localname']) {
           name = index['parent-localname'] + '/@' + index.localname;
@@ -52,7 +52,20 @@
       } else {
         name = index['path-expression'];
       }
-      return (aliases && aliases[name]) || name; }
+
+      if (aliasObject) {
+        var aliases = Object.keys(aliasObject);
+        aliases.forEach(function(alias) {
+          if (angular.equals(aliasObject[alias], index)) {
+            console.log('aliasObject[alias]:', aliasObject[alias]);
+            console.log('index:', index);
+            name = alias;
+          }
+        });
+      }
+
+      return name;
+    }
 
     return {
       highLevelType: highLevelType,
