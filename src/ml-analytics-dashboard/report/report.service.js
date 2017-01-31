@@ -100,11 +100,14 @@
       {
         name: 'Chart Builder',
         directive: 'ml-smart-grid',
-        title: 'Chart Builder',
         icon: 'fa fa-th',
         dataAttrName: 'grid',
         dataModelType: WidgetDataModel,
-        dataModelOptions: {},
+        dataModelOptions: {
+          data: {
+            title: 'Chart'
+          }
+        },
         style: {
           width: '100%'
         }

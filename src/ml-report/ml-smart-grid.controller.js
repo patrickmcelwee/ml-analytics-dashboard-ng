@@ -50,7 +50,7 @@
 
     var initializeFromSavedState = function() {
       $scope.initializeQuery();
-      if ($scope.widget.dataModelOptions.data) {
+      if ($scope.widget.dataModelOptions.data.rootQuery) {
         $scope.data = angular.copy($scope.widget.dataModelOptions.data);
         // Wire up references between parts of the data structure
         // TODO? Eliminate these and just always use in-place?

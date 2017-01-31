@@ -73,7 +73,6 @@
         defaultWidgets = _.map($scope.report.widgets, function(widget) {
           return {
             name: widget.name,
-            title: widget.title,
             attrs: widget.attrs,
             style: widget.size,
             dataModelOptions: widget.dataModelOptions

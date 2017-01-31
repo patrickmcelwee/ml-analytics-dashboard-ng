@@ -27,6 +27,13 @@
 (function() {
   'use strict';
 
+  angular.module('ml-dimension-builder', []);
+
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -34,13 +41,6 @@
       'ml.analyticsDashboard.chart'
     ]); 
 })();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-dimension-builder', []);
-
-}());
 
 (function() {
   'use strict';
@@ -530,11 +530,14 @@
       {
         name: 'Chart Builder',
         directive: 'ml-smart-grid',
-        title: 'Chart Builder',
         icon: 'fa fa-th',
         dataAttrName: 'grid',
         dataModelType: WidgetDataModel,
-        dataModelOptions: {},
+        dataModelOptions: {
+          data: {
+            title: 'Chart'
+          }
+        },
         style: {
           width: '100%'
         }
@@ -645,66 +648,6 @@
 
 }());
 
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        // $scope.$watch('widget.mode', function(mode) {
-        //   $scope.report.needsUpdate = true;
-        // });
-      }
-    };
-  }
-}());
-
 (function() {
   'use strict';
 
@@ -764,6 +707,66 @@
     }
   ]);
 })();
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        // $scope.$watch('widget.mode', function(mode) {
+        //   $scope.report.needsUpdate = true;
+        // });
+      }
+    };
+  }
+}());
 
 (function() {
   'use strict';
@@ -1195,7 +1198,7 @@
           }
         },
         title: {
-          text: ''
+          text: $scope.analyticsConfig.title
         },
         xAxis: {
           categories: categories
@@ -1259,8 +1262,6 @@
         }
       });
 
-      var title = 'Measures: ' + measures;
-
       $scope.highchartConfig = {
         options: {
           chart: {
@@ -1296,7 +1297,7 @@
           enabled: false
         },
         title: {
-          text: title
+          text: $scope.analyticsConfig.title
         },
         yAxis: {
           title: {
@@ -1454,7 +1455,7 @@
 
     var initializeFromSavedState = function() {
       $scope.initializeQuery();
-      if ($scope.widget.dataModelOptions.data) {
+      if ($scope.widget.dataModelOptions.data.rootQuery) {
         $scope.data = angular.copy($scope.widget.dataModelOptions.data);
         // Wire up references between parts of the data structure
         // TODO? Eliminate these and just always use in-place?
@@ -1618,7 +1619,6 @@
         defaultWidgets = _.map($scope.report.widgets, function(widget) {
           return {
             name: widget.name,
-            title: widget.title,
             attrs: widget.attrs,
             style: widget.size,
             dataModelOptions: widget.dataModelOptions

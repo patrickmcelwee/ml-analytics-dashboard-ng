@@ -17,6 +17,30 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
+    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-dimension-builder/dimension-popover.html',
+    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details</span></div><ul class="list-unstyled panel-body"><li><b>alias:</b> <input type="text" ng-model="field.alias" ng-change="recordAlias(field)"></li><li ng-repeat="(key, value) in field.ref"><b>{{key}}:</b> {{value}}</li></ul></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-report/chart-type-selector.html',
     '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
 }]);
@@ -89,32 +113,8 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-dimension-builder/dimension-popover.html',
-    '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details</span></div><ul class="list-unstyled panel-body"><li><b>alias:</b> <input type="text" ng-model="field.alias" ng-change="recordAlias(field)"></li><li ng-repeat="(key, value) in field.ref"><b>{{key}}:</b> {{value}}</li></ul></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/dashboard-content.html',
-    '<div><div class="btn-toolbar" ng-if="!options.hideToolbar"><div class="btn-group" ng-if="!options.widgetButtons"><span class="dropdown" on-toggle="toggled(open)"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Button dropdown <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li ng-repeat="widget in widgetDefs"><a href="#" ng-click="addWidgetInternal($event, widget);" class="dropdown-toggle"><span class="label label-primary">{{widget.name}}</span></a></li></ul></span></div><div class="btn-group" ng-if="options.widgetButtons"><button ng-repeat="widget in widgetDefs" ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary"><span ng-if="widget.name === \'Chart Builder\'">Add Chart</span> <span ng-if="widget.name !== \'Chart Builder\'">{{widget.name}}</span></button></div><button ng-if="options.storage && options.explicitSave" ng-click="options.saveDashboard()" class="btn btn-success" ng-disabled="!options.unsavedChangeCount">{{ !options.unsavedChangeCount ? "all saved" : "save changes (" + options.unsavedChangeCount + ")" }}</button></div><div ui-sortable="sortableOptions" ng-model="widgets" class="dashboard-widget-area"><div ng-repeat="widget in widgets" ng-style="widget.containerStyle" class="widget-container" widget=""><div class="widget panel panel-default"><div class="widget-header panel-heading"><h4><span class="widget-title" ng-dblclick="editTitle(widget)" ng-hide="widget.editingTitle">{{widget.title}}</span><form action="" class="widget-title" ng-show="widget.editingTitle" ng-submit="saveTitleEdit(widget)"><input type="text" ng-model="widget.title" class="form-control"></form><span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span> <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span> <span ng-click="widget.contentStyle.display = widget.contentStyle.display === \'none\' ? \'block\' : \'none\'" class="glyphicon" ng-class="{\'glyphicon-plus\': widget.contentStyle.display === \'none\', \'glyphicon-minus\': widget.contentStyle.display !== \'none\' }"></span></h4></div><div class="panel-body widget-content" ng-style="widget.contentStyle"></div><div class="widget-ew-resizer" ng-mousedown="grabResizer($event)"></div><div ng-if="widget.enableVerticalResize" class="widget-s-resizer" ng-mousedown="grabSouthResizer($event)"></div></div></div></div></div>');
+    '<div><div class="btn-toolbar" ng-if="!options.hideToolbar"><div class="btn-group" ng-if="!options.widgetButtons"><span class="dropdown" on-toggle="toggled(open)"><button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Button dropdown <span class="caret"></span></button><ul class="dropdown-menu" role="menu"><li ng-repeat="widget in widgetDefs"><a href="#" ng-click="addWidgetInternal($event, widget);" class="dropdown-toggle"><span class="label label-primary">{{widget.name}}</span></a></li></ul></span></div><div class="btn-group" ng-if="options.widgetButtons"><button ng-repeat="widget in widgetDefs" ng-click="addWidgetInternal($event, widget);" type="button" class="btn btn-primary"><span ng-if="widget.name === \'Chart Builder\'">Add Chart</span> <span ng-if="widget.name !== \'Chart Builder\'">{{widget.name}}</span></button></div><button ng-if="options.storage && options.explicitSave" ng-click="options.saveDashboard()" class="btn btn-success" ng-disabled="!options.unsavedChangeCount">{{ !options.unsavedChangeCount ? "all saved" : "save changes (" + options.unsavedChangeCount + ")" }}</button></div><div ui-sortable="sortableOptions" ng-model="widgets" class="dashboard-widget-area"><div ng-repeat="widget in widgets" ng-style="widget.containerStyle" class="widget-container" widget=""><div class="widget panel panel-default"><div class="widget-header panel-heading"><h4><span class="widget-title" ng-dblclick="editTitle(widget)" ng-hide="widget.editingTitle">{{widget.dataModelOptions.data.title}}</span><form action="" class="widget-title" ng-show="widget.editingTitle" ng-submit="saveTitleEdit(widget)"><input type="text" ng-model="widget.dataModelOptions.data.title" class="form-control"></form><span class="label label-primary" ng-if="!options.hideWidgetName">{{widget.name}}</span> <span ng-click="removeWidget(widget);" class="glyphicon glyphicon-remove" ng-if="!options.hideWidgetClose"></span> <span ng-click="widget.contentStyle.display = widget.contentStyle.display === \'none\' ? \'block\' : \'none\'" class="glyphicon" ng-class="{\'glyphicon-plus\': widget.contentStyle.display === \'none\', \'glyphicon-minus\': widget.contentStyle.display !== \'none\' }"></span></h4></div><div class="panel-body widget-content" ng-style="widget.contentStyle"></div><div class="widget-ew-resizer" ng-mousedown="grabResizer($event)"></div><div ng-if="widget.enableVerticalResize" class="widget-s-resizer" ng-mousedown="grabSouthResizer($event)"></div></div></div></div></div>');
 }]);
 })();
 

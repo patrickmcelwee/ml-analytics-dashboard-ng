@@ -122,7 +122,7 @@
           }
         },
         title: {
-          text: ''
+          text: $scope.analyticsConfig.title
         },
         xAxis: {
           categories: categories
@@ -186,8 +186,6 @@
         }
       });
 
-      var title = 'Measures: ' + measures;
-
       $scope.highchartConfig = {
         options: {
           chart: {
@@ -223,7 +221,7 @@
           enabled: false
         },
         title: {
-          text: title
+          text: $scope.analyticsConfig.title
         },
         yAxis: {
           title: {
