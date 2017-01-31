@@ -10,10 +10,12 @@
           class="ml-analytics-dimension"
           ng-repeat="field in report.fields | filter:isColumnField">
           <a uib-dropdown-toggle>
-            <span ng-switch="indexService.highLevelType(field)">
-              <i class="fa fa-font" ng-switch-when="string"></i>
+            <span class="ml-analytics-field-name">
+              <span ng-switch="indexService.highLevelType(field)">
+                <i class="fa fa-font" ng-switch-when="string"></i>
+              </span>
+              {{field.alias}}
             </span>
-            {{field.alias}}
           </a>
           <ul class="dropdown-menu">
             <!--<li><a ng-click="addRow(field)">Add Row</a></li>-->
