@@ -24,8 +24,6 @@
             return indexService.highLevelType(field) === 'numeric';
           };
 
-          scope.shortName = indexService.shortName;
-
           scope.addColumn = function(field) {
             scope.data.serializedQuery.columns.push(field);
           };

@@ -4,9 +4,9 @@
   angular.module('ml.analyticsDashboard.report')
     .controller('mlSmartGridCtrl', mlSmartGridCtrl);
 
-  mlSmartGridCtrl.$inject = ['$scope', '$http', 'mlAnalyticsIndexService'];
+  mlSmartGridCtrl.$inject = ['$scope'];
 
-  function mlSmartGridCtrl($scope, $http, indexService) {
+  function mlSmartGridCtrl($scope) {
     $scope.widget.mode = 'Design';
 
     $scope.model = {
@@ -87,8 +87,6 @@
       $scope.groupByConfigIsHidden = true;
     };
     $scope.hideGroupByConfig();
-
-    $scope.shortName = indexService.shortName;
 
     $scope.save = function() {
       $scope.widget.dataModelOptions.data = angular.copy($scope.data);

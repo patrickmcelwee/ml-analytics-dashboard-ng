@@ -41,30 +41,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/chart-type-selector.html',
-    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/embed-code.html',
-    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/BuilderDirective.html',
     '<div class="sq-builder"><div class="form-inline"><p>If<select class="input-sm form-control" data-ng-model="data.operation"><option value="and-query">All</option><option value="or-query">Any</option></select>of these conditions are met</p></div><div class="filter-panels"><div class="form-inline"><div data-ng-repeat="filter in filters" data-sq-builder-chooser="filter" data-sq-fields="report.fields" data-on-remove="removeChild($index)" data-depth="0"></div><div class="actions"><a class="btn btn-xs btn-primary" title="Add Rule" data-ng-click="addRule()"><i class="fa fa-plus"></i> Add Rule</a> <a class="btn btn-xs btn-primary" title="Add Group" data-ng-click="addGroup()"><i class="fa fa-list"></i> Add Group</a></div></div></div></div>');
 }]);
@@ -103,6 +79,30 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/RuleDirective.html',
     '<div class="sq-builder-rule"><select class="input-sm form-control" data-ng-model="rule.field" data-ng-options="field.alias for field in sqFields | filter:isQueryableIndex"></select><span data-sq-type="rule.field.ref[\'scalar-type\']" data-rule="rule"></span> <a class="btn btn-xs btn-danger remover" data-ng-click="onRemove()"><i class="fa fa-minus"></i></a></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-report/chart-type-selector.html',
+    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-report/embed-code.html',
+    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre></div>');
 }]);
 })();
 
