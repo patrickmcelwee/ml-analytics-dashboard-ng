@@ -1,20 +1,5 @@
 <div class="table-responsive" ng-if="resultsObject.results"> 
   <div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div>
-  <div>
-    <uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.results.length" items-per-page="pageLength"></uib-pagination>
-    <div class="pull-right">
-      <span class="metrics">
-        <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
-      </span> |
-      <span>Results per page: </span>
-      <select ng-model="pageLength">
-        <option value="10">10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-      </select>
-    </div>
-  </div>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
@@ -35,4 +20,19 @@
       </tr>
     </tbody>
   </table>
+  <div>
+    <uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.results.length" items-per-page="pageLength"></uib-pagination>
+    <div class="pull-right">
+      <span class="metrics">
+        <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
+      </span> |
+      <span>Results per page: </span>
+      <select ng-model="pageLength">
+        <option value="10">10</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
+    </div>
+  </div>
 </div>

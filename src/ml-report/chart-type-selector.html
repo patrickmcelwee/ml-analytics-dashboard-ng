@@ -8,5 +8,10 @@
           ng-class="{active: data.chartType === 'pie'}"
           ng-click="data.chartType = 'pie'">
     <i class="fa fa-3 fa-pie-chart"></i>
-  </a>
+  </button>
+  <button class="btn btn-default ml-analytics-table-chart-type"
+          ng-class="{active: data.chartType === 'table'}"
+          ng-click="data.chartType = 'table'">
+    <i class="fa fa-3 fa-table"></i>
+  </button>
 </div>

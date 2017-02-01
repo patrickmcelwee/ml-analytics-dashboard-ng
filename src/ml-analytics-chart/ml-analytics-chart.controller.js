@@ -8,6 +8,7 @@
 
   function mlAnalyticsChartCtrl($scope, $http, $q) {
     $scope.isGridCollapsed  = true;
+    $scope.showGridCollapseButton  = true;
     $scope.shouldShowChart = false;
     $scope.shouldShowGrid = false;
 
@@ -236,20 +237,30 @@
 
       if (results[0] && results[0].length === columnCount) {
         $scope.shouldShowChart = false;
-        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = false;
       } else {
         $scope.shouldShowChart = true;
-        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = true;
       }
 
+      $scope.shouldShowGrid = true;
+      $scope.showGridCollapseButton = true;
+
       switch ($scope.analyticsConfig.chartType) {
         case 'column':
+          $scope.shouldShowTitle = false;
           createColumnHighcharts(columnCount, headers, results);
           break;
         case 'pie':
+          $scope.shouldShowTitle = false;
           createPieHighcharts(columnCount, headers, results); 
+          break;
+        case 'table':
+          $scope.shouldShowChart = false;
+          $scope.shouldShowGrid = true;
+          $scope.isGridCollapsed = false;
+          $scope.showGridCollapseButton = false;
+          $scope.shouldShowTitle = true;
           break;
         default:
           createColumnHighcharts(columnCount, headers, results);

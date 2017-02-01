@@ -1,10 +1,11 @@
 <div class="ml-analytics-results" ng-if="shouldShowChart || shouldShowGrid">
+  <h3 ng-if="shouldShowTitle" class="text-center">{{analyticsConfig.title}}</h3>
   <highchart ng-if="shouldShowChart" config="highchartConfig"></highchart> 
   <div ng-if="shouldShowGrid">
-    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed">
+    <button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed && showGridCollapseButton">
       Show results grid
     </button>
-    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed">
+    <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed && showGridCollapseButton">
       Hide results grid
     </button>
 

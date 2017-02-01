@@ -27,6 +27,13 @@
 (function() {
   'use strict';
 
+  angular.module('ml-dimension-builder', []);
+
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -34,13 +41,6 @@
       'ml.analyticsDashboard.chart'
     ]); 
 })();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-dimension-builder', []);
-
-}());
 
 (function() {
   'use strict';
@@ -658,66 +658,6 @@
 
 }());
 
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        // $scope.$watch('widget.mode', function(mode) {
-        //   $scope.report.needsUpdate = true;
-        // });
-      }
-    };
-  }
-}());
-
 (function() {
   'use strict';
 
@@ -777,6 +717,66 @@
     }
   ]);
 })();
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        // $scope.$watch('widget.mode', function(mode) {
+        //   $scope.report.needsUpdate = true;
+        // });
+      }
+    };
+  }
+}());
 
 (function() {
   'use strict';
@@ -1094,6 +1094,7 @@
 
   function mlAnalyticsChartCtrl($scope, $http, $q) {
     $scope.isGridCollapsed  = true;
+    $scope.showGridCollapseButton  = true;
     $scope.shouldShowChart = false;
     $scope.shouldShowGrid = false;
 
@@ -1322,20 +1323,30 @@
 
       if (results[0] && results[0].length === columnCount) {
         $scope.shouldShowChart = false;
-        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = false;
       } else {
         $scope.shouldShowChart = true;
-        $scope.shouldShowGrid = true;
         $scope.isGridCollapsed = true;
       }
 
+      $scope.shouldShowGrid = true;
+      $scope.showGridCollapseButton = true;
+
       switch ($scope.analyticsConfig.chartType) {
         case 'column':
+          $scope.shouldShowTitle = false;
           createColumnHighcharts(columnCount, headers, results);
           break;
         case 'pie':
+          $scope.shouldShowTitle = false;
           createPieHighcharts(columnCount, headers, results); 
+          break;
+        case 'table':
+          $scope.shouldShowChart = false;
+          $scope.shouldShowGrid = true;
+          $scope.isGridCollapsed = false;
+          $scope.showGridCollapseButton = false;
+          $scope.shouldShowTitle = true;
           break;
         default:
           createColumnHighcharts(columnCount, headers, results);
