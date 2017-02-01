@@ -1,6 +1,14 @@
 <div class="ml-analytics-embed-code">
   <p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p>
-  <pre>&lt;ml-analytics-embed report-uri=&quot;'{{report.uri}}'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre>
+  <pre>&lt;ml-analytics-embed report-uri=&quot;'{{report.uri}}'&quot; chart-id=&quot;'{{chartMetadata.chartId}}'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre>
   <p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p>
-  <pre>&lt;ml-analytics-embed report-uri=&quot;'{{report.uri}}'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre>
+  <pre>&lt;ml-analytics-embed report-uri=&quot;'{{report.uri}}'&quot; chart-id=&quot;'{{chartMetadata.chartId}}'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre>
+  <form class="form-horizontal">
+    <div class="form-group form-group-sm">
+      <label class="col-sm-4" for="ml-analytics-chart-id-input">Chart ID:</label>
+      <div class="col-sm-1">
+        <input type="text" ng-model="chartMetadata.chartId">
+      </div>
+    </div>
+  </form>
 </div>

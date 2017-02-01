@@ -27,13 +27,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml-dimension-builder', []);
-
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -41,6 +34,13 @@
       'ml.analyticsDashboard.chart'
     ]); 
 })();
+
+(function() {
+  'use strict';
+
+  angular.module('ml-dimension-builder', []);
+
+}());
 
 (function() {
   'use strict';
@@ -593,16 +593,26 @@
       template: '<ml-analytics-chart analytics-config="config"></ml-analytics-chart>',
       scope: {
         reportUri: '=',
+        chartId: '=',
         mlSearch: '='
       },
       link: function(scope) {
-        var originalConfig, queryOptionsXML;
+        var widget, originalConfig, queryOptionsXML;
 
         reportService.getReport(scope.reportUri).then(function(response) {
-          originalConfig = response.data.widgets[0].dataModelOptions.data;
-          if (!scope.mlSearch) {
-            scope.config = originalConfig;
-          }
+          widget = _.find(response.data.widgets, function(widget) {
+            return widget.dataModelOptions.chartMetadata.chartId === 
+              scope.chartId;
+          }) || response.data.widgets[0];
+          originalConfig = widget.dataModelOptions.data;
+
+          // TODO: right now, this could generate too many group-bys because it
+          // runs twice, but this check sets up a race condition where the
+          // chart fails to load if the search results return before all this
+          // widget checking is finished 
+          // if (!scope.mlSearch) {
+          scope.config = originalConfig;
+          // }
         });
 
         var setSearchContext = function() {
@@ -646,6 +656,66 @@
     };
   }
 
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        // $scope.$watch('widget.mode', function(mode) {
+        //   $scope.report.needsUpdate = true;
+        // });
+      }
+    };
+  }
 }());
 
 (function() {
@@ -707,66 +777,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        // $scope.$watch('widget.mode', function(mode) {
-        //   $scope.report.needsUpdate = true;
-        // });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -1011,13 +1021,12 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
 
-  function manageMlAnalyticsDashboard() {
+  function mlAnalyticsDashboardHome() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
+      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1025,12 +1034,13 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
 
-  function mlAnalyticsDashboardHome() {
+  function manageMlAnalyticsDashboard() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/home.html'
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
     };
   }
 }());
@@ -1421,6 +1431,9 @@
     $scope.deferredAbort = null;
 
     $scope.initializeQuery = function() {
+      $scope.chartMetadata = $scope.chartMetadata || {
+        chartId: $scope.report.widgets.length
+      };
       $scope.data = $scope.data || {
         chartType: 'column',
         query: [],
@@ -1455,6 +1468,9 @@
 
     var initializeFromSavedState = function() {
       $scope.initializeQuery();
+      if ($scope.widget.dataModelOptions.chartMetadata) {
+        $scope.chartMetadata = $scope.widget.dataModelOptions.chartMetadata;
+      }
       if ($scope.widget.dataModelOptions.data.rootQuery) {
         $scope.data = angular.copy($scope.widget.dataModelOptions.data);
         // Wire up references between parts of the data structure
@@ -1495,6 +1511,8 @@
 
     $scope.save = function() {
       $scope.widget.dataModelOptions.data = angular.copy($scope.data);
+      $scope.widget.dataModelOptions.chartMetadata =
+        angular.copy($scope.chartMetadata);
       $scope.options.saveDashboard();
     };
 

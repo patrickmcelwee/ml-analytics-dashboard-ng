@@ -16,6 +16,9 @@
     $scope.deferredAbort = null;
 
     $scope.initializeQuery = function() {
+      $scope.chartMetadata = $scope.chartMetadata || {
+        chartId: $scope.report.widgets.length
+      };
       $scope.data = $scope.data || {
         chartType: 'column',
         query: [],
@@ -50,6 +53,9 @@
 
     var initializeFromSavedState = function() {
       $scope.initializeQuery();
+      if ($scope.widget.dataModelOptions.chartMetadata) {
+        $scope.chartMetadata = $scope.widget.dataModelOptions.chartMetadata;
+      }
       if ($scope.widget.dataModelOptions.data.rootQuery) {
         $scope.data = angular.copy($scope.widget.dataModelOptions.data);
         // Wire up references between parts of the data structure
@@ -90,6 +96,8 @@
 
     $scope.save = function() {
       $scope.widget.dataModelOptions.data = angular.copy($scope.data);
+      $scope.widget.dataModelOptions.chartMetadata =
+        angular.copy($scope.chartMetadata);
       $scope.options.saveDashboard();
     };
 
