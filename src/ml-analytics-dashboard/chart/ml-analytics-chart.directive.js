@@ -7,7 +7,7 @@
   function mlAnalyticsChart() {
     return {
       restrict: 'E',
-      templateUrl: '/ml-analytics-chart/chart.html',
+      templateUrl: '/ml-analytics-dashboard/chart/chart.html',
       scope: {
         analyticsConfig: '='
       },

@@ -25,7 +25,7 @@
         needsUpdate: true
       };
       $scope.data.metaConstraint = {};
-      if ($scope.report.groupingStrategy === 'collection' && $scope.report.directory) {
+      if ($scope.report.dataSource.groupingStrategy === 'collection' && $scope.report.directory) {
         $scope.data.metaConstraint = {
           'collection-query': {
             'uri': [$scope.report.directory]

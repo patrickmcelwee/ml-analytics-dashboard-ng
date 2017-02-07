@@ -15,6 +15,23 @@
 (function() {
   'use strict';
 
+  angular.module('ml-dimension-builder', []);
+
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml-sq-builder', [
+    'RecursionHelper',
+  ]);
+
+})();
+
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard.chart', []); 
 }());
 
@@ -27,13 +44,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml-dimension-builder', []);
-
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -41,16 +51,6 @@
       'ml.analyticsDashboard.chart'
     ]); 
 })();
-
-(function() {
-  'use strict';
-
-  angular.module('ml-sq-builder', [
-    'RecursionHelper',
-  ]);
-
-})();
-
 
 (function() {
   'use strict';
@@ -548,25 +548,6 @@
 
 (function () {
   'use strict';
-
-  angular.module('ml.analyticsDashboard.chart').
-    directive('mlAnalyticsChart', mlAnalyticsChart);
-
-  function mlAnalyticsChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/ml-analytics-chart/chart.html',
-      scope: {
-        analyticsConfig: '='
-      },
-      controller: 'mlAnalyticsChartCtrl'
-    };
-  }
-  
-}());
-
-(function () {
-  'use strict';
   angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDashboard', mlAnalyticsDashboard);
 
@@ -577,85 +558,6 @@
       controller: 'DashboardCtrl'
     };
   }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.embed').
-    directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
-
-  mlAnalyticsEmbed.$inject = ['ReportService', '$http'];
-
-  function mlAnalyticsEmbed(reportService, $http) {
-    return {
-      restrict: 'E',
-      template: '<ml-analytics-chart analytics-config="config"></ml-analytics-chart>',
-      scope: {
-        reportUri: '=',
-        chartId: '=',
-        mlSearch: '='
-      },
-      link: function(scope) {
-        var widget, originalConfig, queryOptionsXML;
-
-        reportService.getReport(scope.reportUri).then(function(response) {
-          widget = _.find(response.data.widgets, function(widget) {
-            return widget.dataModelOptions.chartMetadata.chartId === 
-              scope.chartId;
-          }) || response.data.widgets[0];
-          originalConfig = widget.dataModelOptions.data;
-
-          // TODO: right now, this could generate too many group-bys because it
-          // runs twice, but this check sets up a race condition where the
-          // chart fails to load if the search results return before all this
-          // widget checking is finished 
-          // if (!scope.mlSearch) {
-          scope.config = originalConfig;
-          // }
-        });
-
-        var setSearchContext = function() {
-          if (originalConfig) {
-            scope.config = angular.copy(originalConfig);
-            scope.config.serializedQuery.queryOptions = queryOptionsXML;
-            scope.config.serializedQuery.query.query.queries =
-              originalConfig.serializedQuery.query.query.queries.concat(
-                scope.mlSearch.getQuery().query.queries
-              );
-            scope.config.serializedQuery.query.query.qtext = 
-              scope.mlSearch.qtext;
-          }
-        };
-
-        var getQueryOptions = function() {
-          var queryOptionsName = scope.mlSearch.getQueryOptions();
-          return $http({
-            method: 'GET',
-            url: '/v1/config/query/' + queryOptionsName,
-            headers: {
-              'Accept': 'application/xml'
-            }
-          });
-        };
-
-        scope.$watch('mlSearch.results', function(newResults, oldResults) {
-          if (newResults && !angular.equals({}, newResults)) {
-            if (queryOptionsXML) {
-              setSearchContext();
-            } else {
-              getQueryOptions().then(function(response) {
-                queryOptionsXML = response.data;
-                setSearchContext();
-              });
-            }
-          }
-        });
-
-      }
-    };
-  }
-
 }());
 
 (function() {
@@ -717,66 +619,6 @@
     }
   ]);
 })();
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
-
-  function mlAnalyticsViewChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
-      controller: 'mlAnalyticsViewChartCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlResultsGrid', mlResultsGrid);
-
-  function mlResultsGrid() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/ml-report/ml-results-grid.html',
-      scope: {
-        resultsObject: '=',
-        queryError: '='
-      },
-      controller: 'mlResultsGridCtrl'
-    };
-  }
-}());
-
-(function () {
-
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .directive('mlSmartGrid', mlSmartGrid);
-
-  function mlSmartGrid() {
-    return {
-      restrict: 'A',
-      replace: false,
-      templateUrl: '/templates/ml-report/chart-builder.html',
-      controller:  'mlSmartGridCtrl',
-
-      link: function($scope, element, attrs) {
-        $scope.element = element;
-
-        // $scope.$watch('widget.mode', function(mode) {
-        //   $scope.report.needsUpdate = true;
-        // });
-      }
-    };
-  }
-}());
 
 (function() {
   'use strict';
@@ -1006,16 +848,100 @@
 
 (function () {
   'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
-  function mlAnalyticsDesign() {
+  angular.module('ml.analyticsDashboard.chart').
+    directive('mlAnalyticsChart', mlAnalyticsChart);
+
+  function mlAnalyticsChart() {
     return {
       restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
+      templateUrl: '/ml-analytics-dashboard/chart/chart.html',
+      scope: {
+        analyticsConfig: '='
+      },
+      controller: 'mlAnalyticsChartCtrl'
     };
   }
+  
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.embed').
+    directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
+
+  mlAnalyticsEmbed.$inject = ['ReportService', '$http'];
+
+  function mlAnalyticsEmbed(reportService, $http) {
+    return {
+      restrict: 'E',
+      template: '<ml-analytics-chart analytics-config="config"></ml-analytics-chart>',
+      scope: {
+        reportUri: '=',
+        chartId: '=',
+        mlSearch: '='
+      },
+      link: function(scope) {
+        var widget, originalConfig, queryOptionsXML;
+
+        reportService.getReport(scope.reportUri).then(function(response) {
+          widget = _.find(response.data.widgets, function(widget) {
+            return widget.dataModelOptions.chartMetadata.chartId === 
+              scope.chartId;
+          }) || response.data.widgets[0];
+          originalConfig = widget.dataModelOptions.data;
+
+          // TODO: right now, this could generate too many group-bys because it
+          // runs twice, but this check sets up a race condition where the
+          // chart fails to load if the search results return before all this
+          // widget checking is finished 
+          // if (!scope.mlSearch) {
+          scope.config = originalConfig;
+          // }
+        });
+
+        var setSearchContext = function() {
+          if (originalConfig) {
+            scope.config = angular.copy(originalConfig);
+            scope.config.serializedQuery.queryOptions = queryOptionsXML;
+            scope.config.serializedQuery.query.query.queries =
+              originalConfig.serializedQuery.query.query.queries.concat(
+                scope.mlSearch.getQuery().query.queries
+              );
+            scope.config.serializedQuery.query.query.qtext = 
+              scope.mlSearch.qtext;
+          }
+        };
+
+        var getQueryOptions = function() {
+          var queryOptionsName = scope.mlSearch.getQueryOptions();
+          return $http({
+            method: 'GET',
+            url: '/v1/config/query/' + queryOptionsName,
+            headers: {
+              'Accept': 'application/xml'
+            }
+          });
+        };
+
+        scope.$watch('mlSearch.results', function(newResults, oldResults) {
+          if (newResults && !angular.equals({}, newResults)) {
+            if (queryOptionsXML) {
+              setSearchContext();
+            } else {
+              getQueryOptions().then(function(response) {
+                queryOptionsXML = response.data;
+                setSearchContext();
+              });
+            }
+          }
+        });
+
+      }
+    };
+  }
+
 }());
 
 (function () {
@@ -1027,6 +953,20 @@
     return {
       restrict: 'E',
       templateUrl: '/templates/home.html'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
     };
   }
 }());
@@ -1048,6 +988,20 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDataSource', mlAnalyticsDataSource);
+
+  function mlAnalyticsDataSource() {
+    return {
+      restrict: 'E',
+      templateUrl: '/ml-analytics-dashboard/report/ml-analytics-data-source.html',
+      controller: 'mlAnalyticsDataSourceController'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -1055,6 +1009,66 @@
       restrict: 'E',
       templateUrl: '/templates/editor.html',
       controller: 'ReportEditorCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlAnalyticsViewChart', mlAnalyticsViewChart);
+
+  function mlAnalyticsViewChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-analytics-view-chart.html',
+      controller: 'mlAnalyticsViewChartCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlResultsGrid', mlResultsGrid);
+
+  function mlResultsGrid() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/ml-report/ml-results-grid.html',
+      scope: {
+        resultsObject: '=',
+        queryError: '='
+      },
+      controller: 'mlResultsGridCtrl'
+    };
+  }
+}());
+
+(function () {
+
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .directive('mlSmartGrid', mlSmartGrid);
+
+  function mlSmartGrid() {
+    return {
+      restrict: 'A',
+      replace: false,
+      templateUrl: '/templates/ml-report/chart-builder.html',
+      controller:  'mlSmartGridCtrl',
+
+      link: function($scope, element, attrs) {
+        $scope.element = element;
+
+        // $scope.$watch('widget.mode', function(mode) {
+        //   $scope.report.needsUpdate = true;
+        // });
+      }
     };
   }
 }());
@@ -1081,6 +1095,28 @@
   HomeCtrl.$inject = [];
 
   function HomeCtrl() {
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard')
+    .controller('DashboardCtrl', DashboardCtrl);
+
+  DashboardCtrl.$inject = ['$scope', '$location'];
+
+  function DashboardCtrl($scope, $location) {
+
+    function establishMode() {
+      if($location.search()['ml-analytics-mode']) {
+        $scope.mode = $location.search()['ml-analytics-mode'];
+      } else {
+        $location.search('ml-analytics-mode', 'home');
+      }
+    }
+
+    establishMode();
   }
 }());
 
@@ -1365,217 +1401,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard')
-    .controller('DashboardCtrl', DashboardCtrl);
-
-  DashboardCtrl.$inject = ['$scope', '$location'];
-
-  function DashboardCtrl($scope, $location) {
-
-    function establishMode() {
-      if($location.search()['ml-analytics-mode']) {
-        $scope.mode = $location.search()['ml-analytics-mode'];
-      } else {
-        $location.search('ml-analytics-mode', 'home');
-      }
-    }
-
-    establishMode();
-  }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlAnalyticsViewChartCtrl', mlAnalyticsViewChartCtrl);
-
-  function mlAnalyticsViewChartCtrl($scope) {
-  }
-
-})();
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlResultsGridCtrl', mlResultsGridCtrl);
-
-  mlResultsGridCtrl.$inject = ['$scope'];
-
-  function mlResultsGridCtrl($scope) {
-    $scope.pageLength = '10';
-    $scope.sortColumn = 0;
-    $scope.sortReverse = false;
-    $scope.gridPage = 1;
-
-    $scope.sorter = function(item) {
-      return item[$scope.sortColumn];
-    };
-
-    $scope.setSortColumn = function(column) {
-      if (column === $scope.sortColumn) {
-        $scope.sortReverse = !$scope.sortReverse;
-      } else {
-        $scope.sortColumn = column;
-      }
-    };
-  }
-
-})();
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.report')
-    .controller('mlSmartGridCtrl', mlSmartGridCtrl);
-
-  mlSmartGridCtrl.$inject = ['$scope'];
-
-  function mlSmartGridCtrl($scope) {
-    $scope.widget.mode = 'Design';
-
-    $scope.model = {
-      loadingResults: false
-    };
-
-    $scope.deferredAbort = null;
-
-    $scope.initializeQuery = function() {
-      $scope.chartMetadata = $scope.chartMetadata || {
-        chartId: $scope.report.widgets.length
-      };
-      $scope.data = $scope.data || {
-        chartType: 'column',
-        query: [],
-        needsUpdate: true
-      };
-      $scope.data.metaConstraint = {};
-      if ($scope.report.groupingStrategy === 'collection' && $scope.report.directory) {
-        $scope.data.metaConstraint = {
-          'collection-query': {
-            'uri': [$scope.report.directory]
-          }
-        };
-      }
-      $scope.data.operation = 'and-query';
-      $scope.data.rootQuery = {};
-      $scope.data.rootQuery[$scope.data.operation] = {
-        'queries': $scope.data.query
-      };
-
-      $scope.data.serializedQuery = {
-        'result-type': 'group-by',
-        columns: [],
-        computes: [],
-        options: ['headers=true'],
-        query: {
-          query: {
-            queries: [$scope.data.metaConstraint, $scope.data.rootQuery]
-          }
-        }
-      };
-    };
-
-    var initializeFromSavedState = function() {
-      $scope.initializeQuery();
-      if ($scope.widget.dataModelOptions.chartMetadata) {
-        $scope.chartMetadata = $scope.widget.dataModelOptions.chartMetadata;
-      }
-      if ($scope.widget.dataModelOptions.data.rootQuery) {
-        $scope.data = angular.copy($scope.widget.dataModelOptions.data);
-        // Wire up references between parts of the data structure
-        // TODO? Eliminate these and just always use in-place?
-        $scope.data.rootQuery[$scope.data.operation] = {
-          'queries': $scope.data.query
-        };
-        $scope.data.serializedQuery.query.query.queries = [
-          $scope.data.metaConstraint,
-          $scope.data.rootQuery
-        ];
-      }
-    };
-
-    $scope.executor = {};
-
-    // TODO: move into column/row directive
-    $scope.dataManager = {
-      removeCompute: function(index) {
-        $scope.data.serializedQuery.computes.splice(index, 1);
-      },
-      removeColumn: function(index) {
-        $scope.data.serializedQuery.columns.splice(index, 1);
-      }
-    };
-
-    // TODO: move into showQuery directive?
-    $scope.renderGroupByConfig = function() {
-      return angular.toJson($scope.data.serializedQuery, true);
-    };
-    $scope.showGroupByConfig = function() {
-      $scope.groupByConfigIsHidden = false;
-    };
-    $scope.hideGroupByConfig = function() {
-      $scope.groupByConfigIsHidden = true;
-    };
-    $scope.hideGroupByConfig();
-
-    $scope.save = function() {
-      $scope.widget.dataModelOptions.data = angular.copy($scope.data);
-      $scope.widget.dataModelOptions.chartMetadata =
-        angular.copy($scope.chartMetadata);
-      $scope.options.saveDashboard();
-    };
-
-    $scope.revert = function() {
-      initializeFromSavedState();
-    };
-
-    $scope.$watch('data.operation', function(newOperation, oldOperation) {
-      if (newOperation !== oldOperation) {
-        delete $scope.data.rootQuery[oldOperation];
-        $scope.data.rootQuery[newOperation] = {
-          'queries': $scope.data.query
-        };
-      }
-    });
-
-    var matchColumnToChangedField = function(field, columnOrCompute) {
-      if (angular.equals(columnOrCompute.ref, field.ref)) {
-        if (columnOrCompute.fn) {
-          columnOrCompute.alias = columnOrCompute.fn + '(' + field.alias +  ')';
-        } else {
-          columnOrCompute.alias = field.alias;
-        }
-      }
-    };
-
-    $scope.$watch('report.fields', function(newFields, oldFields) {
-      if (newFields && oldFields.length > 0) {
-        var i;
-        for (i=0; i<newFields.length; i++) {
-          if (!angular.equals(newFields[i], oldFields[i])) {
-            _.map(
-              $scope.data.serializedQuery.columns,
-              matchColumnToChangedField.bind(null, newFields[i])
-            );
-            _.map(
-              $scope.data.serializedQuery.computes,
-              matchColumnToChangedField.bind(null, newFields[i])
-            );
-          }
-        }
-      }
-    }, true);
-
-    // Kick off
-    initializeFromSavedState();
-  }
-})();
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard').
     controller('ReportDesignerCtrl', ReportDesignerCtrl);
 
@@ -1842,6 +1667,195 @@
   }
 
 }());
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlAnalyticsViewChartCtrl', mlAnalyticsViewChartCtrl);
+
+  function mlAnalyticsViewChartCtrl($scope) {
+  }
+
+})();
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlResultsGridCtrl', mlResultsGridCtrl);
+
+  mlResultsGridCtrl.$inject = ['$scope'];
+
+  function mlResultsGridCtrl($scope) {
+    $scope.pageLength = '10';
+    $scope.sortColumn = 0;
+    $scope.sortReverse = false;
+    $scope.gridPage = 1;
+
+    $scope.sorter = function(item) {
+      return item[$scope.sortColumn];
+    };
+
+    $scope.setSortColumn = function(column) {
+      if (column === $scope.sortColumn) {
+        $scope.sortReverse = !$scope.sortReverse;
+      } else {
+        $scope.sortColumn = column;
+      }
+    };
+  }
+
+})();
+
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.report')
+    .controller('mlSmartGridCtrl', mlSmartGridCtrl);
+
+  mlSmartGridCtrl.$inject = ['$scope'];
+
+  function mlSmartGridCtrl($scope) {
+    $scope.widget.mode = 'Design';
+
+    $scope.model = {
+      loadingResults: false
+    };
+
+    $scope.deferredAbort = null;
+
+    $scope.initializeQuery = function() {
+      $scope.chartMetadata = $scope.chartMetadata || {
+        chartId: $scope.report.widgets.length
+      };
+      $scope.data = $scope.data || {
+        chartType: 'column',
+        query: [],
+        needsUpdate: true
+      };
+      $scope.data.metaConstraint = {};
+      if ($scope.report.dataSource.groupingStrategy === 'collection' && $scope.report.directory) {
+        $scope.data.metaConstraint = {
+          'collection-query': {
+            'uri': [$scope.report.directory]
+          }
+        };
+      }
+      $scope.data.operation = 'and-query';
+      $scope.data.rootQuery = {};
+      $scope.data.rootQuery[$scope.data.operation] = {
+        'queries': $scope.data.query
+      };
+
+      $scope.data.serializedQuery = {
+        'result-type': 'group-by',
+        columns: [],
+        computes: [],
+        options: ['headers=true'],
+        query: {
+          query: {
+            queries: [$scope.data.metaConstraint, $scope.data.rootQuery]
+          }
+        }
+      };
+    };
+
+    var initializeFromSavedState = function() {
+      $scope.initializeQuery();
+      if ($scope.widget.dataModelOptions.chartMetadata) {
+        $scope.chartMetadata = $scope.widget.dataModelOptions.chartMetadata;
+      }
+      if ($scope.widget.dataModelOptions.data.rootQuery) {
+        $scope.data = angular.copy($scope.widget.dataModelOptions.data);
+        // Wire up references between parts of the data structure
+        // TODO? Eliminate these and just always use in-place?
+        $scope.data.rootQuery[$scope.data.operation] = {
+          'queries': $scope.data.query
+        };
+        $scope.data.serializedQuery.query.query.queries = [
+          $scope.data.metaConstraint,
+          $scope.data.rootQuery
+        ];
+      }
+    };
+
+    $scope.executor = {};
+
+    // TODO: move into column/row directive
+    $scope.dataManager = {
+      removeCompute: function(index) {
+        $scope.data.serializedQuery.computes.splice(index, 1);
+      },
+      removeColumn: function(index) {
+        $scope.data.serializedQuery.columns.splice(index, 1);
+      }
+    };
+
+    // TODO: move into showQuery directive?
+    $scope.renderGroupByConfig = function() {
+      return angular.toJson($scope.data.serializedQuery, true);
+    };
+    $scope.showGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = false;
+    };
+    $scope.hideGroupByConfig = function() {
+      $scope.groupByConfigIsHidden = true;
+    };
+    $scope.hideGroupByConfig();
+
+    $scope.save = function() {
+      $scope.widget.dataModelOptions.data = angular.copy($scope.data);
+      $scope.widget.dataModelOptions.chartMetadata =
+        angular.copy($scope.chartMetadata);
+      $scope.options.saveDashboard();
+    };
+
+    $scope.revert = function() {
+      initializeFromSavedState();
+    };
+
+    $scope.$watch('data.operation', function(newOperation, oldOperation) {
+      if (newOperation !== oldOperation) {
+        delete $scope.data.rootQuery[oldOperation];
+        $scope.data.rootQuery[newOperation] = {
+          'queries': $scope.data.query
+        };
+      }
+    });
+
+    var matchColumnToChangedField = function(field, columnOrCompute) {
+      if (angular.equals(columnOrCompute.ref, field.ref)) {
+        if (columnOrCompute.fn) {
+          columnOrCompute.alias = columnOrCompute.fn + '(' + field.alias +  ')';
+        } else {
+          columnOrCompute.alias = field.alias;
+        }
+      }
+    };
+
+    $scope.$watch('report.fields', function(newFields, oldFields) {
+      if (newFields && oldFields.length > 0) {
+        var i;
+        for (i=0; i<newFields.length; i++) {
+          if (!angular.equals(newFields[i], oldFields[i])) {
+            _.map(
+              $scope.data.serializedQuery.columns,
+              matchColumnToChangedField.bind(null, newFields[i])
+            );
+            _.map(
+              $scope.data.serializedQuery.computes,
+              matchColumnToChangedField.bind(null, newFields[i])
+            );
+          }
+        }
+      }
+    }, true);
+
+    // Kick off
+    initializeFromSavedState();
+  }
+})();
 
 (function() {
   'use strict';

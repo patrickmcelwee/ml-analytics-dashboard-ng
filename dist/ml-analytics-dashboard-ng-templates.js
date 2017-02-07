@@ -5,18 +5,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-analytics-chart/chart.html',
-    '<div class="ml-analytics-results" ng-if="shouldShowChart || shouldShowGrid"><h3 ng-if="shouldShowTitle" class="text-center">{{analyticsConfig.title}}</h3><highchart ng-if="shouldShowChart" config="highchartConfig"></highchart><div ng-if="shouldShowGrid"><button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed && showGridCollapseButton">Show results grid</button> <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed && showGridCollapseButton">Hide results grid</button><div uib-collapse="isGridCollapsed"><ml-results-grid results-object="queryState.results" query-error="queryState.queryError"></ml-results-grid></div></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
     '<div class="dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
 }]);
@@ -31,30 +19,6 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/dimension-popover.html',
     '<div class="panel panel-default panel-sm"><div class="panel-heading"><span>Range Index Details</span></div><ul class="list-unstyled panel-body"><li><b>alias:</b> <input type="text" ng-model="field.alias" ng-change="recordAlias(field)"></li><li ng-repeat="(key, value) in field.ref"><b>{{key}}:</b> {{value}}</li></ul></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/chart-type-selector.html',
-    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button> <button class="btn btn-default ml-analytics-table-chart-type" ng-class="{active: data.chartType === \'table\'}" ng-click="data.chartType = \'table\'"><i class="fa fa-3 fa-table"></i></button></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-report/embed-code.html',
-    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><form class="form-horizontal"><div class="form-group form-group-sm"><label class="col-sm-4" for="ml-analytics-chart-id-input">Chart ID:</label><div class="col-sm-1"><input type="text" ng-model="chartMetadata.chartId"></div></div></form></div>');
 }]);
 })();
 
@@ -187,6 +151,54 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/templates/new-report.html',
     '<div><h1>Create New Report</h1><div class="row" ng-if="!currentUser"><div class="col-md-12">Please log in to create a new MarkLogic analytics report.</div></div><div class="row" ng-if="currentUser"><div class="col-md-12"><form name="newReportForm" ng-submit="createReport()" novalidate=""><div class="form-group" ng-class="{ \'has-error\' : newReportForm.name.$invalid && !newReportForm.name.$pristine }"><label class="control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label> <input type="text" name="name" class="form-control" ng-model="report.name" required=""><p ng-show="newReportForm.name.$invalid && !newReportForm.name.$pristine" class="help-block">Name is required.</p></div><div class="form-group"><label class="control-label">Description</label> <input type="text" name="description" class="form-control" ng-model="report.description"></div><div class="btn-toolbar" role="toolbar" style="margin-top:10px"><div class="btn-group pull-right"><button type="submit" class="btn btn-primary" ng-disabled="newReportForm.$invalid"><span class="fa fa-check"></span> Submit</button></div></div></form><p>{{error_message}}</p></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-analytics-dashboard/chart/chart.html',
+    '<div class="ml-analytics-results" ng-if="shouldShowChart || shouldShowGrid"><h3 ng-if="shouldShowTitle" class="text-center">{{analyticsConfig.title}}</h3><highchart ng-if="shouldShowChart" config="highchartConfig"></highchart><div ng-if="shouldShowGrid"><button class="btn btn-default" ng-click="isGridCollapsed = false" ng-show="isGridCollapsed && showGridCollapseButton">Show results grid</button> <button class="btn btn-default" ng-click="isGridCollapsed = true" ng-show="!isGridCollapsed && showGridCollapseButton">Hide results grid</button><div uib-collapse="isGridCollapsed"><ml-results-grid results-object="queryState.results" query-error="queryState.queryError"></ml-results-grid></div></div></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-analytics-dashboard/report/chart-type-selector.html',
+    '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button> <button class="btn btn-default ml-analytics-table-chart-type" ng-class="{active: data.chartType === \'table\'}" ng-click="data.chartType = \'table\'"><i class="fa fa-3 fa-table"></i></button></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-analytics-dashboard/report/embed-code.html',
+    '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><form class="form-horizontal"><div class="form-group form-group-sm"><label class="col-sm-4" for="ml-analytics-chart-id-input">Chart ID:</label><div class="col-sm-1"><input type="text" ng-model="chartMetadata.chartId"></div></div></form></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-analytics-dashboard/report/ml-analytics-data-source.html',
+    '<div class="row ml-analytics-gutter-10"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in dataSource.databases" ng-model="dataSource.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="dataSource.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option value="root">root element name</option></select><span ng-show="bookkeeping.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="dataSource.directory" ng-change="initializeQuery()" required=""><option value="">Choose...</option><option ng-repeat="dir in dataSource.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div></div>');
 }]);
 })();
 
