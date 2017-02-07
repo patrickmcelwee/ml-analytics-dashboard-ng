@@ -25,7 +25,7 @@
 
     </div>
 
-    <div class="row ml-analytics-gutter-10 ml-analytics-fading" ng-if="report.directory">
+    <div class="row ml-analytics-gutter-10 ml-analytics-fading" ng-if="report.dataSource.directory">
       <div class="col-md-4">
         <dimension-builder></dimension-builder>
 
@@ -92,13 +92,13 @@
         </div>
 
         <div class="pull-right">
-          <button uib-popover-template="'/ml-report/chart-type-selector.html'"
+          <button uib-popover-template="'/ml-analytics-dashboard/report/chart-type-selector.html'"
                   popover-placement="left"
                   popover-trigger="outsideClick"
                   class="ml-analytics-chart-type-selector btn btn-default btn-sm">
             <i class="fa fa-bar-chart"></i> Choose Chart Type
           </button>
-          <button uib-popover-template="'/ml-report/embed-code.html'"
+          <button uib-popover-template="'/ml-analytics-dashboard/report/embed-code.html'"
                   popover-placement = "bottom-right"
                   popover-trigger="outsideClick"
                   class="ml-analytics-show-embed-code btn btn-primary btn-sm">

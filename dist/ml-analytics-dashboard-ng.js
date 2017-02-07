@@ -5,6 +5,7 @@
     'highcharts-ng',
     'ml.analyticsDashboard.embed',
     'ml.analyticsDashboard.report',
+    'ml.analyticsDashboard.source',
     'ml.common',
     'ngAnimate',
     'ui.dashboard'
@@ -50,6 +51,12 @@
       'ml-sq-builder',
       'ml.analyticsDashboard.chart'
     ]); 
+})();
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.source', []); 
 })();
 
 (function() {
@@ -774,7 +781,7 @@
 
           scope.$watch('report.needsUpdate', function(curr) {
             if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.report.fields);
+            scope.filters = sqBuilderService.toFilters(data.query, scope.report.dataSource.fields);
             scope.report.needsUpdate = false;
           });
 
@@ -863,6 +870,20 @@
     };
   }
   
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
+    };
+  }
 }());
 
 (function () {
@@ -960,20 +981,6 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
-
-  function mlAnalyticsDesign() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
     .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
 
   function manageMlAnalyticsDashboard() {
@@ -981,20 +988,6 @@
       restrict: 'E',
       templateUrl: '/templates/manage.html',
       controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDataSource', mlAnalyticsDataSource);
-
-  function mlAnalyticsDataSource() {
-    return {
-      restrict: 'E',
-      templateUrl: '/ml-analytics-dashboard/report/ml-analytics-data-source.html',
-      controller: 'mlAnalyticsDataSourceController'
     };
   }
 }());
@@ -1083,6 +1076,20 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard.source')
+    .directive('mlAnalyticsDataSource', mlAnalyticsDataSource);
+
+  function mlAnalyticsDataSource() {
+    return {
+      restrict: 'E',
+      templateUrl: '/ml-analytics-dashboard/source/source.html',
+      controller: 'mlAnalyticsDataSourceCtrl'
     };
   }
 }());
@@ -1405,12 +1412,11 @@
     controller('ReportDesignerCtrl', ReportDesignerCtrl);
 
   ReportDesignerCtrl.$inject = [
-    '$scope', '$location', '$http',
-    'ReportService', 'WidgetDefinitions', 'mlAnalyticsIndexService'
+    '$scope', '$location', 'ReportService', 'WidgetDefinitions'
   ];
 
-  function ReportDesignerCtrl($scope, $location, $http,
-      ReportService, WidgetDefinitions, indexService) {
+  function ReportDesignerCtrl($scope, $location,
+      ReportService, WidgetDefinitions) {
      
     $scope.report = {
       uri: $location.search()['ml-analytics-uri'],
@@ -1460,12 +1466,8 @@
 
     function initWithData(savedReport) {
       //defaults
-      $scope.report.groupingStrategy = 'collection';
-      $scope.report.originalDocs = [];
-
       createDefaultWidgets();
       ReportService.loadWidgets(defaultWidgets);
-      $scope.getDbConfig(); 
     }
 
     function createDefaultWidgets() {
@@ -1483,65 +1485,6 @@
       }
     }
 
-    var createFields = function(indexes) {
-      return _.map(indexes, function(index) {
-        return {
-          alias: indexService.shortName(index, $scope.report.aliases),
-          ref: index
-        };
-      });
-    }; 
-
-    $scope.getDbConfig = function() {
-      var params = {
-        'rs:strategy': $scope.report.groupingStrategy
-      };
-
-      $scope.reportModel.loadingConfig = true;
-
-      if ($scope.report.targetDatabase) {
-        params['rs:database'] = $scope.report.targetDatabase;
-      }
-
-      $http.get('/v1/resources/index-discovery', {
-        params: params
-      }).then(function(response) {
-        $scope.reportModel.loadingConfig = false;
-
-        if (response.data.errorResponse) {
-          $scope.reportModel.configError = response.data.errorResponse.message;
-          return;
-        }
-
-        $scope.report.targetDatabase = response.data['current-database'];
-        $scope.report.databases = response.data.databases;
-
-        if (!_.isEmpty(response.data.docs)) {
-          $scope.reportModel.configError = null;
-
-          var docs = response.data.docs;
-          $scope.report.originalDocs = docs;
-          $scope.report.directories = Object.keys(docs);
-          if (!_.includes($scope.report.directories, $scope.report.directory)) {
-            $scope.report.directory = undefined;
-          }
-          $scope.report.fields = createFields(docs[$scope.report.directory]);
-
-          if ($scope.report.fields) {
-            // communicating with sq-builder
-            $scope.report.needsUpdate = true;
-          }
-
-        } else {
-          $scope.reportModel.configError = 'No documents with range indices in the database';
-        }
-
-      }, function(response) {
-        $scope.reportModel.loadingConfig = false;
-        $scope.reportModel.configError = response.data;
-      });
-    };
-
     $scope.returnHome = function() {
       $location.search('ml-analytics-mode', 'home');
       $location.search('ml-analytics-uri', null);
@@ -1554,14 +1497,6 @@
     $scope.saveWidgets = function() {
       ReportService.updateReport($scope.report);
     };
-
-    $scope.$watch('report.directory', function() {
-      if ($scope.report.directory) {
-        $scope.report.fields = createFields(
-          $scope.report.originalDocs[$scope.report.directory]
-        );
-      }
-    });
 
   }
 }());
@@ -1734,14 +1669,6 @@
         query: [],
         needsUpdate: true
       };
-      $scope.data.metaConstraint = {};
-      if ($scope.report.dataSource.groupingStrategy === 'collection' && $scope.report.directory) {
-        $scope.data.metaConstraint = {
-          'collection-query': {
-            'uri': [$scope.report.directory]
-          }
-        };
-      }
       $scope.data.operation = 'and-query';
       $scope.data.rootQuery = {};
       $scope.data.rootQuery[$scope.data.operation] = {
@@ -1755,7 +1682,7 @@
         options: ['headers=true'],
         query: {
           query: {
-            queries: [$scope.data.metaConstraint, $scope.data.rootQuery]
+            queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
           }
         }
       };
@@ -1774,7 +1701,7 @@
           'queries': $scope.data.query
         };
         $scope.data.serializedQuery.query.query.queries = [
-          $scope.data.metaConstraint,
+          $scope.report.dataSource.constraint,
           $scope.data.rootQuery
         ];
       }
@@ -1834,7 +1761,14 @@
       }
     };
 
-    $scope.$watch('report.fields', function(newFields, oldFields) {
+    $scope.$watch('report.dataSource.constraint', function(newC, oldC) {
+      $scope.data.serializedQuery.query.query.queries = [
+        $scope.report.dataSource.constraint,
+        $scope.data.rootQuery
+      ];
+    }, true);
+
+    $scope.$watch('report.dataSource.fields', function(newFields, oldFields) {
       if (newFields && oldFields.length > 0) {
         var i;
         for (i=0; i<newFields.length; i++) {
@@ -1902,4 +1836,115 @@
     };
 
   }]);
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.source').
+    controller('mlAnalyticsDataSourceCtrl', mlAnalyticsDataSourceCtrl);
+
+  mlAnalyticsDataSourceCtrl.$inject = [
+    '$scope', '$http', 'mlAnalyticsIndexService'
+  ];
+
+  function mlAnalyticsDataSourceCtrl($scope, $http, indexService) {
+    var originalDocs = {};
+    $scope.discovery = {};
+
+    if (!$scope.report.dataSource) {
+      $scope.report.dataSource = {
+        groupingStrategy: 'collection',
+        constraint: {}
+      };
+    }
+    $scope.source = $scope.report.dataSource;
+
+    var createFields = function(indexes) {
+      return _.map(indexes, function(index) {
+        return {
+          alias: indexService.shortName(index, $scope.report.aliases),
+          ref: index
+        };
+      });
+    }; 
+
+    $scope.getDbConfig = function() {
+      var params = {
+        'rs:strategy': $scope.source.groupingStrategy
+      };
+
+      $scope.reportModel.loadingConfig = true;
+
+      if ($scope.source.targetDatabase) {
+        params['rs:database'] = $scope.source.targetDatabase;
+      }
+
+      $http.get('/v1/resources/index-discovery', {
+        params: params
+      }).then(function(response) {
+        $scope.reportModel.loadingConfig = false;
+
+        if (response.data.errorResponse) {
+          $scope.reportModel.configError = response.data.errorResponse.message;
+          return;
+        }
+
+        $scope.source.targetDatabase = response.data['current-database'];
+        $scope.discovery.databases = response.data.databases;
+
+        if (!_.isEmpty(response.data.docs)) {
+          $scope.reportModel.configError = null;
+
+          var docs = response.data.docs;
+          originalDocs = docs;
+          $scope.discovery.directories = Object.keys(docs);
+          if (!_.includes($scope.discovery.directories, $scope.source.directory)) {
+            $scope.source.directory = undefined;
+          }
+          $scope.source.fields = createFields(docs[$scope.source.directory]);
+
+          if ($scope.source.fields) {
+            // communicating with sq-builder
+            $scope.report.needsUpdate = true;
+          }
+
+        } else {
+          $scope.reportModel.configError = 'No documents with range indices in the database';
+        }
+
+      }, function(response) {
+        $scope.reportModel.loadingConfig = false;
+        $scope.reportModel.configError = response.data;
+      });
+    };
+    $scope.getDbConfig(); 
+
+    $scope.$watch('source.directory', function() {
+      if ($scope.source.directory) {
+        if ($scope.source.groupingStrategy === 'collection') {
+          $scope.source.constraint = {
+            'collection-query': {
+              'uri': [$scope.source.directory]
+            }
+          };
+        } else {
+          $scope.source.constraint = {};
+        }
+
+        $scope.source.fields = createFields(
+          originalDocs[$scope.source.directory]
+        );
+      } else {
+        $scope.source.constraint = {};
+      }
+    }, true);
+
+    $scope.$watch('report.dataSource', function(newSource, oldSource) {
+      if (newSource) {
+        $scope.source = $scope.report.dataSource;
+      }
+    });
+
+  }
 }());

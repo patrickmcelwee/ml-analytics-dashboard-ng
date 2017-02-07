@@ -24,14 +24,6 @@
         query: [],
         needsUpdate: true
       };
-      $scope.data.metaConstraint = {};
-      if ($scope.report.dataSource.groupingStrategy === 'collection' && $scope.report.directory) {
-        $scope.data.metaConstraint = {
-          'collection-query': {
-            'uri': [$scope.report.directory]
-          }
-        };
-      }
       $scope.data.operation = 'and-query';
       $scope.data.rootQuery = {};
       $scope.data.rootQuery[$scope.data.operation] = {
@@ -45,7 +37,7 @@
         options: ['headers=true'],
         query: {
           query: {
-            queries: [$scope.data.metaConstraint, $scope.data.rootQuery]
+            queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
           }
         }
       };
@@ -64,7 +56,7 @@
           'queries': $scope.data.query
         };
         $scope.data.serializedQuery.query.query.queries = [
-          $scope.data.metaConstraint,
+          $scope.report.dataSource.constraint,
           $scope.data.rootQuery
         ];
       }
@@ -124,7 +116,14 @@
       }
     };
 
-    $scope.$watch('report.fields', function(newFields, oldFields) {
+    $scope.$watch('report.dataSource.constraint', function(newC, oldC) {
+      $scope.data.serializedQuery.query.query.queries = [
+        $scope.report.dataSource.constraint,
+        $scope.data.rootQuery
+      ];
+    }, true);
+
+    $scope.$watch('report.dataSource.fields', function(newFields, oldFields) {
       if (newFields && oldFields.length > 0) {
         var i;
         for (i=0; i<newFields.length; i++) {

@@ -5,6 +5,7 @@
     'highcharts-ng',
     'ml.analyticsDashboard.embed',
     'ml.analyticsDashboard.report',
+    'ml.analyticsDashboard.source',
     'ml.common',
     'ngAnimate',
     'ui.dashboard'

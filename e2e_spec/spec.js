@@ -8,8 +8,8 @@ describe('Protractor Demo App', function() {
   var columns = element.all(by.css('.ml-analytics-column'));
   var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'));
 
-  var groupingStrategySelector = element(by.model('data.groupingStrategy'));
-  var directorySelector = element(by.model('data.directory'));
+  var groupingStrategySelector = element(by.model('source.groupingStrategy'));
+  var directorySelector = element(by.model('source.directory'));
   var chartContainer = element(by.css('.highcharts-container'));
 
   // expectations
@@ -52,30 +52,28 @@ describe('Protractor Demo App', function() {
     expect( element(by.css('.view-title')).getText() ).toContain(reportName);
   });
 
-  it('should create a new chart with no results', function() {
-    expect(chartWidgets.count()).toEqual(0);
-    element(by.buttonText('Add Chart')).click();
-    expect(chartWidgets.count()).toEqual(1);
-
-    expect(element(by.css('.ml-analytics-results')).isPresent()).toBe(false);
-  });
-
   it('defaults to current database and collection strategy', function() {
     expectSelection(
-      element(by.model('data.targetDatabase')),
+      element(by.model('source.targetDatabase')),
       'developing-analytics-dashboard-content'
     );
     expectSelection(groupingStrategySelector, 'collection');
   });
 
   it('forces data source to be selected', function() {
-    var dimensionBuilder = element(by.css('.dimension-builder'));
     expect( directorySelector.getAttribute('class') ).toContain('ng-invalid');
-    expect( dimensionBuilder.isPresent() ).toBe(false);
-
     directorySelector.sendKeys('data');
     expectSelection(directorySelector, 'data');
     expect( directorySelector.getAttribute('class') ).not.toContain('ng-invalid');
+  });
+
+  it('should create a new chart with no results', function() {
+    expect(chartWidgets.count()).toEqual(0);
+    element(by.buttonText('Add Chart')).click();
+    expect(chartWidgets.count()).toEqual(1);
+
+    expect(element(by.css('.ml-analytics-results')).isPresent()).toBe(false);
+    var dimensionBuilder = element(by.css('.dimension-builder'));
     expect( dimensionBuilder.isPresent() ).toBe(true);
     expectGeneratedQuery().toContain('collection-query');
   });

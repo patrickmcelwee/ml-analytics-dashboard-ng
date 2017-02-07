@@ -40,7 +40,7 @@
 
           scope.$watch('report.needsUpdate', function(curr) {
             if (! curr) return; 
-            scope.filters = sqBuilderService.toFilters(data.query, scope.report.fields);
+            scope.filters = sqBuilderService.toFilters(data.query, scope.report.dataSource.fields);
             scope.report.needsUpdate = false;
           });
 

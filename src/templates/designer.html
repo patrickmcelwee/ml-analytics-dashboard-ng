@@ -3,45 +3,8 @@
     <a ng-click="returnHome()" class="text-muted"><< All Reports</a>
     <h2 class="view-title">{{report.name}}</h2>
    	<p>{{report.description}}</p>
-    <div class="row ml-analytics-gutter-10">
-      <div class="col-lg-9 col-md-7">
-        <form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate>
-          <div class="form-group">
-            <label class="control-label">Database</label>
-            <select class="input-sm form-control" 
-                    ng-options="database for database in report.databases"
-                    ng-model="report.targetDatabase"
-                    ng-change="getDbConfig()"></select>
-          </div>
 
-          <div class="form-group well well-sm">
-            <div class="form-group">
-              <label class="control-label">Limited By</label>
-              <select class="input-sm form-control" 
-                      ng-model="report.groupingStrategy"
-                      ng-change="getDbConfig()">
-                <option>collection</option>
-                <option value="root">root element name</option>
-              </select>
-              <span ng-show="reportModel.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
-            </div>
-
-            <div class="form-group">
-              <label class="control-label">Name</label>
-              <select class="input-sm form-control" 
-                      ng-model="report.directory" 
-                      ng-change="initializeQuery()" required>
-                <option value="">Choose...</option>
-                <option ng-repeat="dir in report.directories" value="{{dir}}">
-                {{dir}}
-                </option>
-              </select>
-            </div>
-          </div>
-
-        </form>
-      </div>
-    </div>
+    <ml-analytics-data-source></ml-analytics-data-source>
 
     <div class="row" style="margin-top:10px" ng-if="reportModel.configError">
       <div class="col-md-12">
