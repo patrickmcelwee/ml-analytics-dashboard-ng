@@ -13,8 +13,6 @@
       loadingResults: false
     };
 
-    $scope.deferredAbort = null;
-
     $scope.initializeQuery = function() {
       $scope.chartMetadata = $scope.chartMetadata || {
         chartId: $scope.report.widgets.length

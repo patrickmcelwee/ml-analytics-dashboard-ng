@@ -1133,9 +1133,9 @@
   angular.module('ml.analyticsDashboard.chart').
     controller('mlAnalyticsChartCtrl', mlAnalyticsChartCtrl);
 
-  mlAnalyticsChartCtrl.$inject = ['$scope', '$http', '$q'];
+  mlAnalyticsChartCtrl.$inject = ['$scope', '$http'];
 
-  function mlAnalyticsChartCtrl($scope, $http, $q) {
+  function mlAnalyticsChartCtrl($scope, $http) {
     $scope.isGridCollapsed  = true;
     $scope.showGridCollapseButton  = true;
     $scope.shouldShowChart = false;
@@ -1160,13 +1160,11 @@
       $scope.queryState.loadingResults = true;
       clearResults();
 
-      $scope.deferredAbort = $q.defer();
       $http({
         method: 'POST',
         url: '/v1/resources/group-by',
         params: params,
-        data: $scope.analyticsConfig.serializedQuery,
-        timeout: $scope.deferredAbort.promise
+        data: $scope.analyticsConfig.serializedQuery
       }).then(function(response) {
         $scope.queryState.results = response.data;
         $scope.queryState.queryError = null;
@@ -1657,8 +1655,6 @@
     $scope.model = {
       loadingResults: false
     };
-
-    $scope.deferredAbort = null;
 
     $scope.initializeQuery = function() {
       $scope.chartMetadata = $scope.chartMetadata || {
