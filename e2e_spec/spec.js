@@ -4,13 +4,13 @@ describe('Protractor Demo App', function() {
   var reportName = 'automated-test-' + rand;
 
   var chartWidgets = element.all(by.repeater('widget in widgets'));
-  var rows = element.all(by.css('.ml-analytics-row'));
-  var columns = element.all(by.css('.ml-analytics-column'));
-  var xAxisLabels = element.all(by.css('.highcharts-xaxis-labels text'));
+  var rows = $$('.ml-analytics-row');
+  var columns = $$('.ml-analytics-column');
+  var xAxisLabels = $$('.highcharts-xaxis-labels text');
 
   var groupingStrategySelector = element(by.model('source.groupingStrategy'));
   var directorySelector = element(by.model('source.directory'));
-  var chartContainer = element(by.css('.highcharts-container'));
+  var chartContainer = $('.highcharts-container');
 
   // expectations
   function expectSelection(element, value) {
@@ -43,13 +43,13 @@ describe('Protractor Demo App', function() {
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
     var trash = element(by.cssContainingText('span', reportName))
       .element(by.xpath('..'))
-      .element(by.css('[ng-click="deleteReport(report); $event.stopPropagation();"]'))
+      .$('[ng-click="deleteReport(report); $event.stopPropagation();"]')
       .click();
     browser.switchTo().alert().accept();
   });
 
   it('should create a blank report', function() {
-    expect( element(by.css('.view-title')).getText() ).toContain(reportName);
+    expect( $('.view-title').getText() ).toContain(reportName);
   });
 
   it('defaults to current database and collection strategy', function() {
@@ -72,43 +72,60 @@ describe('Protractor Demo App', function() {
     element(by.buttonText('Add Chart')).click();
     expect(chartWidgets.count()).toEqual(1);
 
-    expect(element(by.css('.ml-analytics-results')).isPresent()).toBe(false);
-    var dimensionBuilder = element(by.css('.dimension-builder'));
+    expect($('.ml-analytics-results').isPresent()).toBe(false);
+    var dimensionBuilder = $('.dimension-builder');
     expect( dimensionBuilder.isPresent() ).toBe(true);
     expectGeneratedQuery().toContain('collection-query');
   });
 
   it('allows selection of compute row and creates chart', function() {
     expect(chartContainer.isPresent()).toBe(false);
-    var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
-    firstMeasure.element(by.css('a')).click();
+    var firstMeasure = $$('.ml-analytics-measure').first();
+    firstMeasure.$('a').click();
     firstMeasure.element(by.linkText('Add count')).click();
     expect(rows.count()).toBe(1);
     expect(chartContainer.isPresent()).toBe(true);
   });
 
   it('allows selection of group-by column and adds to xaxis', function() {
-    var eyeColorDimension = element(by.css('.ml-analytics-dimensions'))
-      .element(by.partialLinkText('eyeColor'));
-    eyeColorDimension.click();
-    eyeColorDimension
-      .element(by.xpath('..'))
-      .element(by.partialLinkText('Add Group By'))
-      .click();
+    var dimensions = $('.ml-analytics-dimensions');
+    dimensions.element(by.linkText('eyeColor')).click();
+    dimensions.element(by.partialLinkText('Add Group By')).click();
     expect(columns.count()).toBe(1);
+    expect(columns.first().getText()).toContain('eyeColor');
     expect(xAxisLabels.count()).toEqual(7);
     expect(xAxisLabels.getText()).toContain('amethyst');
+    element(by.buttonText('Show results grid')).click();
+    expect($('ml-results-grid').getText()).toContain('eyeColor');
+  });
+
+  it('allows creation of an alias', function() {
+    var dimensions = $('.ml-analytics-dimensions');
+    var eyeColorDimension = dimensions.element(by.cssContainingText('li', 'eyeColor'));
+    // Open popover
+    eyeColorDimension.$('.mlad-dimension-info').click();
+    var alias = eyeColorDimension.element(by.model('field.alias'));
+    expect(alias.getAttribute('value')).toBe('eyeColor');
+
+    // Enter new alias
+    alias.sendKeys('Eye Color');
+    expect(
+      dimensions.element(by.cssContainingText('li', 'Eye Color')).isPresent()
+    ).toBe(true);
+    expect(columns.first().getText()).toContain('Eye Color');
+    element(by.buttonText('Show results grid')).click();
+    expect($('ml-results-grid').getText()).toContain('Eye Color');
   });
 
   it('allows user to change to a pie chart and back', function() {
     function chooseChartType(chartType) {
-      var typesSelection = element(by.css('.ml-analytics-chart-types'));
+      var typesSelection = $('.ml-analytics-chart-types');
       typesSelection.isPresent().then(function(typesAreDisplayed) {
         if (!typesAreDisplayed) {
           element(by.buttonText('Choose Chart Type')).click();
         }
         typesSelection.
-          element(by.css('.ml-analytics-' + chartType + '-chart-type')).
+          $('.ml-analytics-' + chartType + '-chart-type').
           click();
       });
     }
@@ -137,7 +154,7 @@ describe('Protractor Demo App', function() {
     element(by.buttonText('Save')).click();
 
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
-    element(by.cssContainingText('.report-item', reportName)).click();
+    $('.report-item', reportName).click();
     expect(columns.count()).toBe(1);
     expect(rows.count()).toBe(1);
   });
@@ -146,20 +163,20 @@ describe('Protractor Demo App', function() {
   });
 
   it('allows removal of compute and shows grid for groupBy-only', function() {
-    rows.first().element(by.css('.remove-row')).click();
+    rows.first().$('.remove-row').click();
 
     expect(rows.count()).toBe(0);
 
     expect(chartContainer.isPresent()).toBe(false);
-    expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(true);
+    expect($('ml-results-grid').isDisplayed()).toBe(true);
 
     // Readd row and ensure that grid collapses down again
-    var firstMeasure = element.all(by.css('.ml-analytics-measure')).first();
-    firstMeasure.element(by.css('a')).click();
+    var firstMeasure = $$('.ml-analytics-measure').first();
+    firstMeasure.$('a').click();
     firstMeasure.element(by.linkText('Add count')).click();
 
     expect(chartContainer.isPresent()).toBe(true);
-    expect(element(by.css('ml-results-grid')).isDisplayed()).toBe(false);
+    expect($('ml-results-grid').isDisplayed()).toBe(false);
   });
 
   it('resets when the data-source-strategy is changed', function() {
