@@ -4,9 +4,9 @@
   angular.module('ml.analyticsDashboard.chart').
     controller('mlAnalyticsChartCtrl', mlAnalyticsChartCtrl);
 
-  mlAnalyticsChartCtrl.$inject = ['$scope', '$http'];
+  mlAnalyticsChartCtrl.$inject = ['$scope', 'mlAnalyticsQueryService'];
 
-  function mlAnalyticsChartCtrl($scope, $http) {
+  function mlAnalyticsChartCtrl($scope, queryService) {
     $scope.isGridCollapsed  = true;
     $scope.showGridCollapseButton  = true;
     $scope.shouldShowChart = false;
@@ -26,33 +26,28 @@
     };
 
     var executeComplexQuery = function(columnCount) {
-      var params = {};
-
       $scope.queryState.loadingResults = true;
       clearResults();
 
-      $http({
-        method: 'POST',
-        url: '/v1/resources/group-by',
-        params: params,
-        data: $scope.analyticsConfig.serializedQuery
-      }).then(function(response) {
-        $scope.queryState.results = response.data;
-        $scope.queryState.queryError = null;
-        $scope.queryState.loadingResults = false;
+      queryService.execute($scope.analyticsConfig.serializedQuery).
+        then(function(response) {
+          $scope.queryState.results = response.data;
+          $scope.queryState.queryError = null;
+          $scope.queryState.loadingResults = false;
 
-        createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
+          createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
 
-      }, function(response) {
-        $scope.queryState.loadingResults = false;
+        }, function(response) {
+          $scope.queryState.loadingResults = false;
 
-        if (response.status !== 0) {
-          $scope.queryState.queryError = {
-            title: response.statusText,
-            description: response.data
-          };
-        }
-      });
+          if (response.status !== 0) {
+            $scope.queryState.queryError = {
+              title: response.statusText,
+              description: response.data
+            };
+          }
+        });
+
     };
 
     $scope.execute = function() {

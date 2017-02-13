@@ -108,7 +108,7 @@ describe('Protractor Demo App', function() {
     expect(alias.getAttribute('value')).toBe('eyeColor');
 
     // Enter new alias
-    alias.sendKeys('Eye Color');
+    alias.clear().sendKeys('Eye Color');
     expect(
       dimensions.element(by.cssContainingText('li', 'Eye Color')).isPresent()
     ).toBe(true);
