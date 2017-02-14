@@ -1,7 +1,6 @@
-/*jshint node: true */
+/* eslint-env node */
 
 'use strict';
-/*global module*/
 // Karma configuration
 // http://karma-runner.github.io/0.10/config/configuration-file.html
 
@@ -48,7 +47,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress', 'coverage'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    // reporters: ['progress', 'coverage', 'notify'],
+    reporters: ['progress', 'jasmine-diff'],
 
     // coverageReporter: {
       // dir: gulpConfig.karma.coverage.dir,
