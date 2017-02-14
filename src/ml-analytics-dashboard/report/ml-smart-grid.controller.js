@@ -31,7 +31,6 @@
       $scope.data.serializedQuery = {
         columns: [],
         computes: [],
-        options: ['headers=true'],
         query: {
           query: {
             queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
@@ -113,7 +112,7 @@
       }
     };
 
-    $scope.$watch('report.dataSource.constraint', function(newC, oldC) {
+    $scope.$watch('report.dataSource.constraint', function() {
       $scope.data.serializedQuery.query.query.queries = [
         $scope.report.dataSource.constraint,
         $scope.data.rootQuery
