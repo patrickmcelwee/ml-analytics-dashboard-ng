@@ -10,39 +10,30 @@
   function queryServiceFactory($http) {
     function convert(queryConfig) {
       var references = {};
-      _.each(queryConfig.columns, function(column) {
+      var addToReferences = function(field) {
         var reference;
         var referenceDetails = {
-          namespaceURI: column.ref['namespace-uri'],
-          localname: column.ref.localname,
-          scalarType: column.ref['scalar-type'],
-          collation: column.ref.collation,
+          namespaceURI: field.ref['namespace-uri'],
+          localname: field.ref.localname,
+          pathExpression: field.ref['path-expression'],
+          scalarType: field.ref['scalar-type'],
+          collation: field.ref.collation,
           nullable: false
         };
-        switch(column.ref['ref-type']) {
+        switch(field.ref['ref-type']) {
           case 'element-reference':
             reference = { elementReference: referenceDetails };
             break;
-        }
-        references[column.alias] = reference;
-      });
-      _.each(queryConfig.computes, function(column) {
-        var reference;
-        switch(column.ref['ref-type']) {
-          case 'element-reference':
-            reference = {
-              elementReference: {
-                namespaceURI: column.ref['namespace-uri'],
-                localname: column.ref.localname,
-                scalarType: column.ref['scalar-type'],
-                collation: column.ref.collation,
-                nullable: false
-              }
-            };
+          case 'path-reference':
+            reference = {pathReference: referenceDetails};
             break;
+          default:
+            throw 'Unexpected ref-type: ' + field.ref['ref-type'];
         }
-        references[column.fieldAlias || column.alias] = reference;
-      });
+        references[field.fieldAlias || field.alias] = reference;
+      };
+      _.each(queryConfig.columns, addToReferences);
+      _.each(queryConfig.computes, addToReferences);
 
       return {
         '$optic': {
@@ -58,13 +49,13 @@
               'ns': 'op',
               'fn': 'group-by',
               'args': [
-                [
-                  {
-                    'ns': 'op',
-                    'fn': 'col',
-                    'args': _.map(queryConfig.columns, 'alias')
-                  }
-                ],
+                _.map(queryConfig.columns, function(column) {
+                  return {
+                    ns: 'op',
+                    fn: 'col',
+                    args: [column.alias]
+                  };
+                }),
                 _.map(queryConfig.computes, function(compute) {
                   return {
                     ns: 'op',

@@ -1,4 +1,8 @@
+/* eslint-env jasmine */
+/* global module, inject */
 describe('mlAnalyticsIndexService', function() {
+  'use strict';
+
   var indexService;
 
   beforeEach(module('ml.analyticsDashboard'));

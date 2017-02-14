@@ -62,8 +62,7 @@ describe('mlAnalyticsQueryService', function() {
                 {
                   'ns': 'op', 
                   'fn': 'col', 
-                  'args': [
-                    'eyeColor' ]
+                  'args': [ 'eyeColor' ]
                 }
               ], 
               []
@@ -86,6 +85,16 @@ describe('mlAnalyticsQueryService', function() {
       }
     };
 
+    var docFormatConfig = {
+      alias: 'docFormat',
+      ref: {
+        'path-expression': 'docFormat',
+        'scalar-type': 'string',
+        'collation': 'http://marklogic.com/collation/codepoint',
+        'ref-type': 'path-reference'
+      }
+    };
+
     var avgAgeConfig = {
       alias: 'avg(age)',
       fieldAlias: 'age',
@@ -101,7 +110,27 @@ describe('mlAnalyticsQueryService', function() {
 
     it('converts single column to optic query', function() {
       config.columns = [eyeColorConfig];
-      expect(queryService.convert(config)).toEqual(expected);
+      var result = queryService.convert(config);
+      expect( JSON.stringify(result) ).toEqual( JSON.stringify(expected) );
+    });
+
+    it('converts two columns', function() {
+      config.columns = [eyeColorConfig, docFormatConfig];
+      expected.$optic.args[0].args[0].docFormat = {
+        pathReference: {
+          pathExpression: 'docFormat', 
+          scalarType: 'string', 
+          collation: 'http://marklogic.com/collation/codepoint', 
+          nullable: false
+        }
+      };
+      expected.$optic.args[1].args[0].push({
+        ns: 'op',
+        fn: 'col',
+        args: ['docFormat']
+      });
+      var result = queryService.convert(config);
+      expect( JSON.stringify(result) ).toEqual( JSON.stringify(expected) );
     });
 
     it('converts 1-column, 1-row', function() {

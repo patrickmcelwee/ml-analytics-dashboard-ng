@@ -173,18 +173,6 @@ try {
   module = angular.module('ml.analyticsDashboard', []);
 }
 module.run(['$templateCache', function($templateCache) {
-  $templateCache.put('/ml-analytics-dashboard/source/source.html',
-    '<div class="row ml-analytics-gutter-10"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in discovery.databases" ng-model="source.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="source.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option value="root">root element name</option></select><span ng-show="bookkeeping.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="source.directory" ng-change="initializeQuery()" required=""><option value="">Choose...</option><option ng-repeat="dir in discovery.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div></div>');
-}]);
-})();
-
-(function(module) {
-try {
-  module = angular.module('ml.analyticsDashboard');
-} catch (e) {
-  module = angular.module('ml.analyticsDashboard', []);
-}
-module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-analytics-dashboard/report/chart-type-selector.html',
     '<div class="ml-analytics-chart-types"><button class="btn btn-default ml-analytics-bar-chart-type" ng-class="{active: data.chartType === \'column\'}" ng-click="data.chartType = \'column\'"><i class="fa fa-3 fa-bar-chart"></i></button> <button class="btn btn-default ml-analytics-pie-chart-type" ng-class="{active: data.chartType === \'pie\'}" ng-click="data.chartType = \'pie\'"><i class="fa fa-3 fa-pie-chart"></i></button> <button class="btn btn-default ml-analytics-table-chart-type" ng-class="{active: data.chartType === \'table\'}" ng-click="data.chartType = \'table\'"><i class="fa fa-3 fa-table"></i></button></div>');
 }]);
@@ -199,6 +187,18 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-analytics-dashboard/report/embed-code.html',
     '<div class="ml-analytics-embed-code"><p>You can embed this chart as-is elsewhere on this site, in an Angular view, with this code:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><p>The embedded chart can also respond dynamically to searches if you pass it the searchContext:</p><pre>&lt;ml-analytics-embed report-uri=&quot;\'{{report.uri}}\'&quot; chart-id=&quot;\'{{chartMetadata.chartId}}\'&quot; ml-search=&quot;ctrl.mlSearch&quot;&gt;&lt;/ml-analytics-embed&gt;</pre><form class="form-horizontal"><div class="form-group form-group-sm"><label class="col-sm-4" for="ml-analytics-chart-id-input">Chart ID:</label><div class="col-sm-1"><input type="text" ng-model="chartMetadata.chartId"></div></div></form></div>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-analytics-dashboard/source/source.html',
+    '<div class="row ml-analytics-gutter-10"><div class="col-lg-9 col-md-7"><form name="designForm" class="form-inline ml-analytics-design-form well well-sm" novalidate=""><div class="form-group"><label class="control-label">Database</label><select class="input-sm form-control" ng-options="database for database in discovery.databases" ng-model="source.targetDatabase" ng-change="getDbConfig()"></select></div><div class="form-group well well-sm"><div class="form-group"><label class="control-label">Limited By</label><select class="input-sm form-control" ng-model="source.groupingStrategy" ng-change="getDbConfig()"><option>collection</option><option value="root">root element name</option></select><span ng-show="bookkeeping.loadingConfig">&nbsp;<i class="fa fa-spinner fa-spin"></i></span></div><div class="form-group"><label class="control-label">Name</label><select class="input-sm form-control" ng-model="source.directory" ng-change="initializeQuery()" required=""><option value="">Choose...</option><option ng-repeat="dir in discovery.directories" value="{{dir}}">{{dir}}</option></select></div></div></form></div></div>');
 }]);
 })();
 
