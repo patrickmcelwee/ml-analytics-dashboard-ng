@@ -133,6 +133,7 @@
   }
 })();
 
+/* global _ */
 (function() {
   'use strict';
 
@@ -142,12 +143,62 @@
   queryServiceFactory.$inject = ['$http'];
 
   function queryServiceFactory($http) {
+    function parse(queryRepresentation) {
+      var references = {};
+      _.each(queryRepresentation.columns, function(column) {
+        var reference;
+        switch(column.ref['ref-type']) {
+          case 'element-reference':
+            reference = {
+              elementReference: {
+                namespaceURI: column.ref['namespace-uri'],
+                localname: column.ref.localname,
+                scalarType: column.ref['scalar-type'],
+                collation: column.ref.collation,
+                nullable: false
+              }
+            };
+            break;
+        }
+        references[column.alias] = reference;
+      });
+
+      return {
+        '$optic': {
+          'ns': 'op',
+          'fn': 'operators',
+          'args': [
+            {
+              'ns': 'op',
+              'fn': 'from-lexicons',
+              'args': [references, null, null]
+            },
+            {
+              'ns': 'op',
+              'fn': 'group-by',
+              'args': [
+                [
+                  {
+                    'ns': 'op',
+                    'fn': 'col',
+                    'args': _.map(queryRepresentation.columns, 'alias')
+                  }
+                ],
+                null
+              ]
+            }
+          ]
+        }
+      };
+    }
+
     return {
+      parse: parse,
       execute: function(query) {
         return $http({
           method: 'POST',
-          url: '/v1/resources/group-by',
-          data: query
+          url: '/v1/rows',
+          data: parse(query)
         });
       }
     };
@@ -876,6 +927,20 @@
 
 (function () {
   'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
 
   angular.module('ml.analyticsDashboard.chart').
     directive('mlAnalyticsChart', mlAnalyticsChart);
@@ -891,20 +956,6 @@
     };
   }
   
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
-
-  function mlAnalyticsDesign() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
-    };
-  }
 }());
 
 (function () {
@@ -1145,6 +1196,102 @@
     }
 
     establishMode();
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').
+    controller('ReportDesignerCtrl', ReportDesignerCtrl);
+
+  ReportDesignerCtrl.$inject = [
+    '$scope', '$location', 'ReportService', 'WidgetDefinitions'
+  ];
+
+  function ReportDesignerCtrl($scope, $location,
+      ReportService, WidgetDefinitions) {
+     
+    $scope.report = {
+      uri: $location.search()['ml-analytics-uri'],
+      aliases: {}
+    };
+
+    $scope.reportModel = {};
+
+    var defaultWidgets;
+    createDefaultWidgets();
+
+    var store = {};
+    var storage = {
+      getItem : function(key) {
+        return store[key];
+      },
+      setItem : function(key, value) {
+        store[key] = value;
+
+        $scope.report.widgets = value.widgets;
+        $scope.saveWidgets();
+      },
+      removeItem : function(key) {
+        delete store[key];
+      }
+    };
+
+    $scope.reportDashboardOptions = {
+      widgetButtons: true,
+      widgetDefinitions: WidgetDefinitions,
+      defaultWidgets: defaultWidgets,
+      hideToolbar: false,
+      hideWidgetName: true,
+      explicitSave: false,
+      stringifyStorage: false,
+      storage: storage,
+      storageId: $scope.report.uri
+    };
+
+    ReportService.setDashboardOptions($scope.reportDashboardOptions);
+
+    ReportService.getReport($scope.report.uri)
+      .then(function(resp) {
+        angular.extend($scope.report, resp.data);
+        initWithData(resp.data);
+    });
+
+    function initWithData(savedReport) {
+      //defaults
+      createDefaultWidgets();
+      ReportService.loadWidgets(defaultWidgets);
+    }
+
+    function createDefaultWidgets() {
+      if ($scope.report.widgets) {
+        defaultWidgets = _.map($scope.report.widgets, function(widget) {
+          return {
+            name: widget.name,
+            attrs: widget.attrs,
+            style: widget.size,
+            dataModelOptions: widget.dataModelOptions
+          };
+        });
+      } else {
+        defaultWidgets = [];
+      }
+    }
+
+    $scope.returnHome = function() {
+      $location.search('ml-analytics-mode', 'home');
+      $location.search('ml-analytics-uri', null);
+    };
+
+    $scope.$on('widgetAdded', function(event, widget) {
+      event.stopPropagation();
+    });
+
+    $scope.saveWidgets = function() {
+      ReportService.updateReport($scope.report);
+    };
+
   }
 }());
 
@@ -1422,102 +1569,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').
-    controller('ReportDesignerCtrl', ReportDesignerCtrl);
-
-  ReportDesignerCtrl.$inject = [
-    '$scope', '$location', 'ReportService', 'WidgetDefinitions'
-  ];
-
-  function ReportDesignerCtrl($scope, $location,
-      ReportService, WidgetDefinitions) {
-     
-    $scope.report = {
-      uri: $location.search()['ml-analytics-uri'],
-      aliases: {}
-    };
-
-    $scope.reportModel = {};
-
-    var defaultWidgets;
-    createDefaultWidgets();
-
-    var store = {};
-    var storage = {
-      getItem : function(key) {
-        return store[key];
-      },
-      setItem : function(key, value) {
-        store[key] = value;
-
-        $scope.report.widgets = value.widgets;
-        $scope.saveWidgets();
-      },
-      removeItem : function(key) {
-        delete store[key];
-      }
-    };
-
-    $scope.reportDashboardOptions = {
-      widgetButtons: true,
-      widgetDefinitions: WidgetDefinitions,
-      defaultWidgets: defaultWidgets,
-      hideToolbar: false,
-      hideWidgetName: true,
-      explicitSave: false,
-      stringifyStorage: false,
-      storage: storage,
-      storageId: $scope.report.uri
-    };
-
-    ReportService.setDashboardOptions($scope.reportDashboardOptions);
-
-    ReportService.getReport($scope.report.uri)
-      .then(function(resp) {
-        angular.extend($scope.report, resp.data);
-        initWithData(resp.data);
-    });
-
-    function initWithData(savedReport) {
-      //defaults
-      createDefaultWidgets();
-      ReportService.loadWidgets(defaultWidgets);
-    }
-
-    function createDefaultWidgets() {
-      if ($scope.report.widgets) {
-        defaultWidgets = _.map($scope.report.widgets, function(widget) {
-          return {
-            name: widget.name,
-            attrs: widget.attrs,
-            style: widget.size,
-            dataModelOptions: widget.dataModelOptions
-          };
-        });
-      } else {
-        defaultWidgets = [];
-      }
-    }
-
-    $scope.returnHome = function() {
-      $location.search('ml-analytics-mode', 'home');
-      $location.search('ml-analytics-uri', null);
-    };
-
-    $scope.$on('widgetAdded', function(event, widget) {
-      event.stopPropagation();
-    });
-
-    $scope.saveWidgets = function() {
-      ReportService.updateReport($scope.report);
-    };
-
-  }
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard')
     .controller('ManageCtrl', ManageCtrl);
 
@@ -1688,7 +1739,6 @@
       };
 
       $scope.data.serializedQuery = {
-        'result-type': 'group-by',
         columns: [],
         computes: [],
         options: ['headers=true'],

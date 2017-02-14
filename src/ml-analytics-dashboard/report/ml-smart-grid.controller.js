@@ -29,7 +29,6 @@
       };
 
       $scope.data.serializedQuery = {
-        'result-type': 'group-by',
         columns: [],
         computes: [],
         options: ['headers=true'],
