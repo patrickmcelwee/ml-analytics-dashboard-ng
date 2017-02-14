@@ -1,11 +1,11 @@
-<div class="table-responsive" ng-if="resultsObject.results"> 
+<div class="table-responsive" ng-if="resultsObject.columns"> 
   <div ng-if="queryError" class="alert alert-danger">{{ queryError }}</div>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
-        <th ng-repeat="header in resultsObject.headers track by $index">
+        <th ng-repeat="header in resultsObject.columns track by $index">
           <a href="#" ng-click="setSortColumn($index)">
-            {{header}}
+            {{header.name}}
             <span ng-show="sortColumn == $index && !sortReverse" class="fa fa-caret-down"></span>
             <span ng-show="sortColumn == $index && sortReverse" class="fa fa-caret-up"></span>
           </a>
@@ -13,18 +13,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="result in resultsObject.results | orderBy:sorter:sortReverse | limitTo:pageLength:(pageLength*(gridPage - 1))">
+      <tr ng-repeat="result in resultsObject.rows | orderBy:sorter:sortReverse | limitTo:pageLength:(pageLength*(gridPage - 1))">
         <td ng-repeat="val in result track by $index">
-          <span>{{ val }}</span>
+          <span>{{ val.value }}</span>
         </td>
       </tr>
     </tbody>
   </table>
   <div>
-    <uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.results.length" items-per-page="pageLength"></uib-pagination>
+    <uib-pagination class="pull-left" ng-model="gridPage" max-size="10" boundary-links="true" total-items="resultsObject.rows.length" items-per-page="pageLength"></uib-pagination>
     <div class="pull-right">
       <span class="metrics">
-        <em>{{ resultsObject.results.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
+        <em>{{ resultsObject.rows.length }} results in {{ resultsObject.metrics['total-time'] }}</em>
       </span> |
       <span>Results per page: </span>
       <select ng-model="pageLength">

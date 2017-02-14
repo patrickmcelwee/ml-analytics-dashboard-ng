@@ -8,9 +8,25 @@
   queryServiceFactory.$inject = ['$http'];
 
   function queryServiceFactory($http) {
-    function parse(queryRepresentation) {
+    function convert(queryConfig) {
       var references = {};
-      _.each(queryRepresentation.columns, function(column) {
+      _.each(queryConfig.columns, function(column) {
+        var reference;
+        var referenceDetails = {
+          namespaceURI: column.ref['namespace-uri'],
+          localname: column.ref.localname,
+          scalarType: column.ref['scalar-type'],
+          collation: column.ref.collation,
+          nullable: false
+        };
+        switch(column.ref['ref-type']) {
+          case 'element-reference':
+            reference = { elementReference: referenceDetails };
+            break;
+        }
+        references[column.alias] = reference;
+      });
+      _.each(queryConfig.computes, function(column) {
         var reference;
         switch(column.ref['ref-type']) {
           case 'element-reference':
@@ -25,7 +41,7 @@
             };
             break;
         }
-        references[column.alias] = reference;
+        references[column.fieldAlias || column.alias] = reference;
       });
 
       return {
@@ -46,10 +62,28 @@
                   {
                     'ns': 'op',
                     'fn': 'col',
-                    'args': _.map(queryRepresentation.columns, 'alias')
+                    'args': _.map(queryConfig.columns, 'alias')
                   }
                 ],
-                null
+                _.map(queryConfig.computes, function(compute) {
+                  return {
+                    ns: 'op',
+                    fn: compute.fn,
+                    args: [
+                      {
+                        ns: 'op',
+                        fn: 'col',
+                        args: [compute.alias]
+                      },
+                      {
+                        ns: 'op',
+                        fn: 'col',
+                        args: [compute.fieldAlias]
+                      },
+                      null
+                    ]
+                  };
+                })
               ]
             }
           ]
@@ -58,12 +92,12 @@
     }
 
     return {
-      parse: parse,
+      convert: convert,
       execute: function(query) {
         return $http({
           method: 'POST',
           url: '/v1/rows',
-          data: parse(query)
+          data: convert(query)
         });
       }
     };

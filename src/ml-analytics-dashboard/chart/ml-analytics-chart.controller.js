@@ -1,3 +1,4 @@
+/* global Highcharts */
 (function () {
   'use strict';
 
@@ -35,7 +36,7 @@
           $scope.queryState.queryError = null;
           $scope.queryState.loadingResults = false;
 
-          createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
+          createHighcharts(columnCount, $scope.queryState.results);
 
         }, function(response) {
           $scope.queryState.loadingResults = false;
@@ -67,7 +68,8 @@
     };
 
     // Create a column chart
-    var createColumnHighcharts = function(columnCount, headers, results) {
+    var createColumnHighcharts = function(columnCount, results) {
+      var headers = _.map(results.columns, 'name');
       var categories = [];
       var series = [];
       var i;
@@ -77,20 +79,18 @@
       for (i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
-          data: []
+          data: _.map(results.rows, function(row) {
+            return row[headers[i]].value;
+          })
         });
       }
 
-      results.forEach(function(row) {
+      results.rows.forEach(function(row) {
         var groups = [];
-        for (var i = 0; i < columnCount; i++) {
-          groups.push(row[i]);
+        for (i = 0; i < columnCount; i++) {
+          groups.push(row[headers[i]].value);
         }
-        categories.push(groups.join(','));
-
-        for (i = columnCount; i < row.length; i++) {
-          series[i-columnCount].data.push(row[i]);
-        }
+        categories.push(groups.join(', '));
       });
 
       $scope.highchartConfig = {
@@ -131,7 +131,8 @@
     };
 
     // Create a pie chart
-    var createPieHighcharts = function(columnCount, headers, results) {
+    var createPieHighcharts = function(columnCount, results) {
+      var headers = _.map(results.columns, 'name');
       var measures = [];
       var series = [];
 
@@ -140,7 +141,9 @@
       for (var i = columnCount; i < headers.length; i++) {
         series.push({
           name: headers[i],
-          data: []
+          data: _.map(results.rows, function(row) {
+            return row[headers[i]].value;
+          })
         });
         measures.push(headers[i]);
       }
@@ -165,17 +168,17 @@
         }
       }
 
-      results.forEach(function(row) {
+      results.rows.forEach(function(row) {
         var groups = [];
         for (var i = 0; i < columnCount; i++) {
-          groups.push(row[i]);
+          groups.push(row[headers[i]].value);
         }
-        var category = groups.join(',');
+        var category = groups.join(', ');
 
         for (i = columnCount; i < row.length; i++) {
           series[i-columnCount].data.push({
             name: category,
-            y: row[i]
+            y: row[headers[i]]
           });
         }
       });
@@ -226,41 +229,41 @@
       };
     };
 
-    var createHighcharts = function(columnCount, headers, results) {
+    var showTableOnly = function() {
+      $scope.shouldShowChart = false;
+      $scope.shouldShowGrid = true;
+      $scope.isGridCollapsed = false;
+      $scope.showGridCollapseButton = false;
+      $scope.shouldShowTitle = true;
+    };
 
-      if (results[0] && results[0].length === columnCount) {
-        $scope.shouldShowChart = false;
-        $scope.isGridCollapsed = false;
+    var createHighcharts = function(columnCount, results) {
+      if (results && results.columns.length === columnCount) {
+        showTableOnly();
       } else {
+        $scope.shouldShowTitle = false;
         $scope.shouldShowChart = true;
         $scope.isGridCollapsed = true;
+        $scope.shouldShowGrid = true;
+        $scope.showGridCollapseButton = true;
       }
-
-      $scope.shouldShowGrid = true;
-      $scope.showGridCollapseButton = true;
 
       switch ($scope.analyticsConfig.chartType) {
         case 'column':
-          $scope.shouldShowTitle = false;
-          createColumnHighcharts(columnCount, headers, results);
+          createColumnHighcharts(columnCount, results);
           break;
         case 'pie':
-          $scope.shouldShowTitle = false;
-          createPieHighcharts(columnCount, headers, results); 
+          createPieHighcharts(columnCount, results); 
           break;
         case 'table':
-          $scope.shouldShowChart = false;
-          $scope.shouldShowGrid = true;
-          $scope.isGridCollapsed = false;
-          $scope.showGridCollapseButton = false;
-          $scope.shouldShowTitle = true;
+          showTableOnly();
           break;
         default:
-          createColumnHighcharts(columnCount, headers, results);
+          createColumnHighcharts(columnCount, results);
       }
     };
 
-    $scope.$watch('analyticsConfig', function(newConfig, oldConfig) {
+    $scope.$watch('analyticsConfig', function(newConfig) {
       if (newConfig) {
         $scope.execute();
       }
