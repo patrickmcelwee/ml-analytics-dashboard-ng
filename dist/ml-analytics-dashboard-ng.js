@@ -895,20 +895,6 @@
 
 (function () {
   'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
-
-  function mlAnalyticsDesign() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
 
   angular.module('ml.analyticsDashboard.embed').
     directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
@@ -967,7 +953,7 @@
           });
         };
 
-        scope.$watch('mlSearch.results', function(newResults, oldResults) {
+        scope.$watch('mlSearch.results', function(newResults) {
           if (newResults && !angular.equals({}, newResults)) {
             if (queryOptionsXML) {
               setSearchContext();
@@ -984,6 +970,20 @@
     };
   }
 
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
+    };
+  }
 }());
 
 (function () {
