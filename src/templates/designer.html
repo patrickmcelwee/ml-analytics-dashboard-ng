@@ -1,6 +1,15 @@
 <div class="row" id="ml-analytics-designer">
   <div class="col-md-12">
     <a ng-click="returnHome()" class="text-muted"><< All Reports</a>
+    <div class="pull-right" uib-dropdown>
+      <a uib-dropdown-toggle>
+        <i class="fa fa-bars"></i>
+      </a>
+      <ul class="dropdown-menu">
+        <li><a ng-click="manager.exportConfig()">Download Report Config</a></li>
+      </ul>
+    </div>
+
     <h2 class="view-title">{{report.name}}</h2>
    	<p>{{report.description}}</p>
 

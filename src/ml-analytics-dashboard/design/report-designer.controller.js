@@ -10,13 +10,32 @@
 
   function ReportDesignerCtrl($scope, $location,
       ReportService, WidgetDefinitions) {
-     
+
     $scope.report = {
       uri: $location.search()['ml-analytics-uri'],
       aliases: {}
     };
 
+    $scope.manager = {
+      exportConfig: function() {
+        ReportService.getReport($scope.report.uri).
+        then(function(resp) {
+          var url = URL.createObjectURL(new Blob([angular.toJson(resp.data)]));
+          var a = document.createElement('a');
+          a.href = url;
+          var uriParts = $scope.report.uri.split('/');
+          a.download = uriParts[uriParts.length - 1];
+          a.target = '_blank';
+          a.click();
+        });
+      }
+    };
+
     $scope.reportModel = {};
+
+    var saveWidgets = function() {
+      ReportService.updateReport($scope.report);
+    };
 
     var defaultWidgets;
     createDefaultWidgets();
@@ -30,7 +49,7 @@
         store[key] = value;
 
         $scope.report.widgets = value.widgets;
-        $scope.saveWidgets();
+        saveWidgets();
       },
       removeItem : function(key) {
         delete store[key];
@@ -54,10 +73,11 @@
     ReportService.getReport($scope.report.uri)
       .then(function(resp) {
         angular.extend($scope.report, resp.data);
-        initWithData(resp.data);
-    });
+        initWithData();
+      }
+    );
 
-    function initWithData(savedReport) {
+    function initWithData() {
       //defaults
       createDefaultWidgets();
       ReportService.loadWidgets(defaultWidgets);
@@ -81,14 +101,6 @@
     $scope.returnHome = function() {
       $location.search('ml-analytics-mode', 'home');
       $location.search('ml-analytics-uri', null);
-    };
-
-    $scope.$on('widgetAdded', function(event, widget) {
-      event.stopPropagation();
-    });
-
-    $scope.saveWidgets = function() {
-      ReportService.updateReport($scope.report);
     };
 
   }
