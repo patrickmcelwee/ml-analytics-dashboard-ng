@@ -1,3 +1,4 @@
+/* global Highcharts */
 (function () {
   'use strict';
 
@@ -260,7 +261,7 @@
       }
     };
 
-    $scope.$watch('analyticsConfig', function(newConfig, oldConfig) {
+    $scope.$watch('analyticsConfig', function(newConfig) {
       if (newConfig) {
         $scope.execute();
       }
