@@ -10,7 +10,7 @@ through the process.
  
 ## <a name="question"></a> Got a Question or Problem?
 
-If you have questions about how to use ml-analytics-dashboard-ng, check our documentation on the [README][README]. Alternatively, check [Stack Overflow][mlstack] to see if it has been answered there, and post your question there if not. Please tag it with MarkLogic, and AngularJS.
+If you have questions about how to use ml-analytics-dashboard-ng, check our documentation on the [README][README].
 
 ## <a name="issue"></a> Found an Issue?
 
@@ -43,6 +43,8 @@ chances of your issue being dealt with quickly:
   causing the problem (line of code or commit)
 
 ### Submitting a Pull Request
+
+If you would like to help write code for this project, I recommend installing my [developing-analytics-dashboard](https://github.com/patrickmcelwee/developing-analytics-dashboard), which has several data sets useful for manual testing. Feel free to reach out to me for help at patrick.mcelwee@marklogic.com.
 
 #### Fork ml-analytics-dashboard-ng
 
