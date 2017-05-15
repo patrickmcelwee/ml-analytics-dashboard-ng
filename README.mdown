@@ -117,6 +117,10 @@ The current major limitations of this library include:
 5. Only supports a limited subset of MarkLogic's rich query API when creating
    document-level filters on analytics reports. 
 
+6. No support for creating range indexes from this tool. You must have already
+   set up range indexes on your data. There are several simple ways to do that,
+   including using the MarkLogic Admin UI.
+
 ## Getting Started
 
     bower install ml-analytics-dashboard-ng --save
