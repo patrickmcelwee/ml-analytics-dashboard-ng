@@ -238,3 +238,22 @@ Otherwise, you will get an error like:
 
 Contributions welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## End-to-end tests
+
+There are some mostly out-of-date tests in the `test/` directory, but the best
+current test suite are the end-to-end Protractor tests in the `e2e_spec/`
+directory. To run these, you need to [install
+Protractor](http://www.protractortest.org/#/) and [run a Selenium Server (see
+full instructions
+here)](https://github.com/angular/protractor/blob/master/docs/server-setup.md).
+Once installed, you can typically start it by running this command:
+
+    webdriver-manager start
+
+You will also have to run a MarkLogic server, with data installed using the [developing-analytics-dashboard project](https://github.com/patrickmcelwee/developing-analytics-dashboard).
+
+Finally, you will need to start a Node server from the developing-analytics-dashboard directory, using a command like `gulp serve-local`.
+
+Once Selenium, MarkLogic, and Node are running, the end-to-end tests will run in a Chrome browser on this command:
+
+    protractor e2e_spec/conf.js

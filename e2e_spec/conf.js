@@ -20,6 +20,7 @@ exports.config = {
     browser.addMockModule('disableNgAnimate', disableNgAnimate);
 
     browser.get(env.baseUrl + '/login');
+    browser.driver.manage().window().maximize();
     element(by.model('ctrl.username')).sendKeys(env.user);
     element(by.model('ctrl.password')).sendKeys(env.password);
     element(by.buttonText('Sign in')).click();
