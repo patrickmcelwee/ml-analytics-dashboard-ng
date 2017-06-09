@@ -53,28 +53,24 @@
       };
 
       return mlRest.search({
-               'pageLength': 20,
-               'format': 'json'
-              }, search);
+        'pageLength': 20,
+        'format': 'json'
+      }, search);
     };
 
     this.getReport = function(uri) {
       return mlRest.getDocument(uri, {format: 'json'});
     };
 
-    this.createReport = function(report) {
+    this.createOrUpdateReport = function(report) {
       return mlRest.updateDocument(report, {
-         collection: ['ml-analytics-dashboard-reports'],
-         uri: report.uri
-       });
+        collection: ['ml-analytics-dashboard-reports'],
+        uri: report.uri
+      });
     };
 
     this.deleteReport = function(uri) {
       return mlRest.deleteDocument(uri);
-    };
-
-    this.updateReport = function(data) {
-      return mlRest.updateDocument(data, {uri: data.uri});
     };
 
     this.get = function(url) {
@@ -96,22 +92,23 @@
 
   angular.module('ml.analyticsDashboard').factory('WidgetDefinitions', ['WidgetDataModel',  
     function(WidgetDataModel) {
-    return [
-      {
-        name: 'Chart Builder',
-        directive: 'ml-smart-grid',
-        icon: 'fa fa-th',
-        dataAttrName: 'grid',
-        dataModelType: WidgetDataModel,
-        dataModelOptions: {
-          data: {
-            title: 'Chart'
+      return [
+        {
+          name: 'Chart Builder',
+          directive: 'ml-smart-grid',
+          icon: 'fa fa-th',
+          dataAttrName: 'grid',
+          dataModelType: WidgetDataModel,
+          dataModelOptions: {
+            data: {
+              title: 'Chart'
+            }
+          },
+          style: {
+            width: '100%'
           }
-        },
-        style: {
-          width: '100%'
         }
-      }
-    ];
-  }]);
+      ];
+    }
+  ]);
 }());

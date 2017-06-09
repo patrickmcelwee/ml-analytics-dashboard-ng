@@ -33,18 +33,6 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.chart', []); 
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.embed', []); 
-}());
-
-(function() {
-  'use strict';
-
   angular.module('ml.analyticsDashboard.report',
     [
       'ml-dimension-builder',
@@ -56,8 +44,20 @@
 (function() {
   'use strict';
 
+  angular.module('ml.analyticsDashboard.embed', []); 
+}());
+
+(function() {
+  'use strict';
+
   angular.module('ml.analyticsDashboard.source', []); 
 })();
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.chart', []); 
+}());
 
 (function() {
   'use strict';
@@ -511,28 +511,24 @@
       };
 
       return mlRest.search({
-               'pageLength': 20,
-               'format': 'json'
-              }, search);
+        'pageLength': 20,
+        'format': 'json'
+      }, search);
     };
 
     this.getReport = function(uri) {
       return mlRest.getDocument(uri, {format: 'json'});
     };
 
-    this.createReport = function(report) {
+    this.createOrUpdateReport = function(report) {
       return mlRest.updateDocument(report, {
-         collection: ['ml-analytics-dashboard-reports'],
-         uri: report.uri
-       });
+        collection: ['ml-analytics-dashboard-reports'],
+        uri: report.uri
+      });
     };
 
     this.deleteReport = function(uri) {
       return mlRest.deleteDocument(uri);
-    };
-
-    this.updateReport = function(data) {
-      return mlRest.updateDocument(data, {uri: data.uri});
     };
 
     this.get = function(url) {
@@ -554,24 +550,25 @@
 
   angular.module('ml.analyticsDashboard').factory('WidgetDefinitions', ['WidgetDataModel',  
     function(WidgetDataModel) {
-    return [
-      {
-        name: 'Chart Builder',
-        directive: 'ml-smart-grid',
-        icon: 'fa fa-th',
-        dataAttrName: 'grid',
-        dataModelType: WidgetDataModel,
-        dataModelOptions: {
-          data: {
-            title: 'Chart'
+      return [
+        {
+          name: 'Chart Builder',
+          directive: 'ml-smart-grid',
+          icon: 'fa fa-th',
+          dataAttrName: 'grid',
+          dataModelType: WidgetDataModel,
+          dataModelOptions: {
+            data: {
+              title: 'Chart'
+            }
+          },
+          style: {
+            width: '100%'
           }
-        },
-        style: {
-          width: '100%'
         }
-      }
-    ];
-  }]);
+      ];
+    }
+  ]);
 }());
 
 (function () {
@@ -876,25 +873,6 @@
 
 (function () {
   'use strict';
-
-  angular.module('ml.analyticsDashboard.chart').
-    directive('mlAnalyticsChart', mlAnalyticsChart);
-
-  function mlAnalyticsChart() {
-    return {
-      restrict: 'E',
-      templateUrl: '/ml-analytics-dashboard/chart/chart.html',
-      scope: {
-        analyticsConfig: '='
-      },
-      controller: 'mlAnalyticsChartCtrl'
-    };
-  }
-  
-}());
-
-(function () {
-  'use strict';
   angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsDesign', mlAnalyticsDesign);
 
@@ -905,85 +883,6 @@
       controller: 'ReportDesignerCtrl'
     };
   }
-}());
-
-(function () {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard.embed').
-    directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
-
-  mlAnalyticsEmbed.$inject = ['ReportService', '$http'];
-
-  function mlAnalyticsEmbed(reportService, $http) {
-    return {
-      restrict: 'E',
-      template: '<ml-analytics-chart analytics-config="config"></ml-analytics-chart>',
-      scope: {
-        reportUri: '=',
-        chartId: '=',
-        mlSearch: '='
-      },
-      link: function(scope) {
-        var widget, originalConfig, queryOptionsXML;
-
-        reportService.getReport(scope.reportUri).then(function(response) {
-          widget = _.find(response.data.widgets, function(widget) {
-            return widget.dataModelOptions.chartMetadata.chartId === 
-              scope.chartId;
-          }) || response.data.widgets[0];
-          originalConfig = widget.dataModelOptions.data;
-
-          // TODO: right now, this could generate too many group-bys because it
-          // runs twice, but this check sets up a race condition where the
-          // chart fails to load if the search results return before all this
-          // widget checking is finished 
-          // if (!scope.mlSearch) {
-          scope.config = originalConfig;
-          // }
-        });
-
-        var setSearchContext = function() {
-          if (originalConfig) {
-            scope.config = angular.copy(originalConfig);
-            scope.config.serializedQuery.queryOptions = queryOptionsXML;
-            scope.config.serializedQuery.query.query.queries =
-              originalConfig.serializedQuery.query.query.queries.concat(
-                scope.mlSearch.getQuery().query.queries
-              );
-            scope.config.serializedQuery.query.query.qtext = 
-              scope.mlSearch.qtext;
-          }
-        };
-
-        var getQueryOptions = function() {
-          var queryOptionsName = scope.mlSearch.getQueryOptions();
-          return $http({
-            method: 'GET',
-            url: '/v1/config/query/' + queryOptionsName,
-            headers: {
-              'Accept': 'application/xml'
-            }
-          });
-        };
-
-        scope.$watch('mlSearch.results', function(newResults) {
-          if (newResults && !angular.equals({}, newResults)) {
-            if (queryOptionsXML) {
-              setSearchContext();
-            } else {
-              getQueryOptions().then(function(response) {
-                queryOptionsXML = response.data;
-                setSearchContext();
-              });
-            }
-          }
-        });
-
-      }
-    };
-  }
-
 }());
 
 (function () {
@@ -1103,6 +1002,85 @@
 
 (function () {
   'use strict';
+
+  angular.module('ml.analyticsDashboard.embed').
+    directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
+
+  mlAnalyticsEmbed.$inject = ['ReportService', '$http'];
+
+  function mlAnalyticsEmbed(reportService, $http) {
+    return {
+      restrict: 'E',
+      template: '<ml-analytics-chart analytics-config="config"></ml-analytics-chart>',
+      scope: {
+        reportUri: '=',
+        chartId: '=',
+        mlSearch: '='
+      },
+      link: function(scope) {
+        var widget, originalConfig, queryOptionsXML;
+
+        reportService.getReport(scope.reportUri).then(function(response) {
+          widget = _.find(response.data.widgets, function(widget) {
+            return widget.dataModelOptions.chartMetadata.chartId === 
+              scope.chartId;
+          }) || response.data.widgets[0];
+          originalConfig = widget.dataModelOptions.data;
+
+          // TODO: right now, this could generate too many group-bys because it
+          // runs twice, but this check sets up a race condition where the
+          // chart fails to load if the search results return before all this
+          // widget checking is finished 
+          // if (!scope.mlSearch) {
+          scope.config = originalConfig;
+          // }
+        });
+
+        var setSearchContext = function() {
+          if (originalConfig) {
+            scope.config = angular.copy(originalConfig);
+            scope.config.serializedQuery.queryOptions = queryOptionsXML;
+            scope.config.serializedQuery.query.query.queries =
+              originalConfig.serializedQuery.query.query.queries.concat(
+                scope.mlSearch.getQuery().query.queries
+              );
+            scope.config.serializedQuery.query.query.qtext = 
+              scope.mlSearch.qtext;
+          }
+        };
+
+        var getQueryOptions = function() {
+          var queryOptionsName = scope.mlSearch.getQueryOptions();
+          return $http({
+            method: 'GET',
+            url: '/v1/config/query/' + queryOptionsName,
+            headers: {
+              'Accept': 'application/xml'
+            }
+          });
+        };
+
+        scope.$watch('mlSearch.results', function(newResults) {
+          if (newResults && !angular.equals({}, newResults)) {
+            if (queryOptionsXML) {
+              setSearchContext();
+            } else {
+              getQueryOptions().then(function(response) {
+                queryOptionsXML = response.data;
+                setSearchContext();
+              });
+            }
+          }
+        });
+
+      }
+    };
+  }
+
+}());
+
+(function () {
+  'use strict';
   angular.module('ml.analyticsDashboard.source')
     .directive('mlAnalyticsDataSource', mlAnalyticsDataSource);
 
@@ -1115,15 +1093,23 @@
   }
 }());
 
-(function() {
+(function () {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('HomeCtrl', HomeCtrl);
+  angular.module('ml.analyticsDashboard.chart').
+    directive('mlAnalyticsChart', mlAnalyticsChart);
 
-  HomeCtrl.$inject = [];
-
-  function HomeCtrl() {
+  function mlAnalyticsChart() {
+    return {
+      restrict: 'E',
+      templateUrl: '/ml-analytics-dashboard/chart/chart.html',
+      scope: {
+        analyticsConfig: '='
+      },
+      controller: 'mlAnalyticsChartCtrl'
+    };
   }
+  
 }());
 
 (function() {
@@ -1148,275 +1134,14 @@
   }
 }());
 
-/* global Highcharts */
-(function () {
+(function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard.chart').
-    controller('mlAnalyticsChartCtrl', mlAnalyticsChartCtrl);
+  angular.module('ml.analyticsDashboard').controller('HomeCtrl', HomeCtrl);
 
-  mlAnalyticsChartCtrl.$inject = ['$scope', 'mlAnalyticsQueryService'];
+  HomeCtrl.$inject = [];
 
-  function mlAnalyticsChartCtrl($scope, queryService) {
-    $scope.isGridCollapsed  = true;
-    $scope.showGridCollapseButton  = true;
-    $scope.shouldShowChart = false;
-    $scope.shouldShowGrid = false;
-
-    $scope.queryState = {
-      queryError: null,
-      configError: null,
-      results: null,
-      loadingResults: false
-    };
-
-    var clearResults = function() {
-      $scope.shouldShowChart = false;
-      $scope.shouldShowGrid = false;
-      $scope.queryState.results = {};
-    };
-
-    var executeComplexQuery = function(columnCount) {
-      $scope.queryState.loadingResults = true;
-      clearResults();
-
-      queryService.execute($scope.analyticsConfig.serializedQuery).
-        then(function(response) {
-          $scope.queryState.results = response.data;
-          $scope.queryState.queryError = null;
-          $scope.queryState.loadingResults = false;
-
-          createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
-
-        }, function(response) {
-          $scope.queryState.loadingResults = false;
-
-          if (response.status !== 0) {
-            $scope.queryState.queryError = {
-              title: response.statusText,
-              description: response.data
-            };
-          }
-        });
-
-    };
-
-    $scope.execute = function() {
-      if ($scope.analyticsConfig && $scope.analyticsConfig.serializedQuery) {
-        var columns  = $scope.analyticsConfig.serializedQuery.columns;
-        var computes = $scope.analyticsConfig.serializedQuery.computes;
-
-        if (columns.length + computes.length > 0) {
-          $scope.queryState.loadingResults = true;
-          executeComplexQuery(columns.length);
-        } else {
-          clearResults();
-        }
-      } else {
-        clearResults();
-      }
-    };
-
-    // Create a column chart
-    var createColumnHighcharts = function(columnCount, headers, results) {
-      var categories = [];
-      var series = [];
-      var i;
-
-      // columnCount is number of groupby fields.
-      // Skip all groupby fields.
-      for (i = columnCount; i < headers.length; i++) {
-        series.push({
-          name: headers[i],
-          data: []
-        });
-      }
-
-      results.forEach(function(row) {
-        var groups = [];
-        for (var i = 0; i < columnCount; i++) {
-          groups.push(row[i]);
-        }
-        categories.push(groups.join(','));
-
-        for (i = columnCount; i < row.length; i++) {
-          series[i-columnCount].data.push(row[i]);
-        }
-      });
-
-      $scope.highchartConfig = {
-        options: {
-          chart: {
-            type: 'column'
-          },
-          tooltip: {
-            shared: true,
-            useHTML: true,
-            borderWidth: 1,
-            borderRadius: 10,
-            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-            footerFormat: '</table>'
-          },
-          plotOptions: {
-            column: {
-              pointPadding: 0.2,
-              borderWidth: 0
-            }
-          }
-        },
-        title: {
-          text: $scope.analyticsConfig.title
-        },
-        xAxis: {
-          categories: categories
-        },
-        yAxis: {
-          title: {
-            text: ''
-          }
-        },
-        series: series
-      };
-    };
-
-    // Create a pie chart
-    var createPieHighcharts = function(columnCount, headers, results) {
-      var measures = [];
-      var series = [];
-
-      // columnCount is number of groupby fields.
-      // Skip all groupby fields.
-      for (var i = columnCount; i < headers.length; i++) {
-        series.push({
-          name: headers[i],
-          data: []
-        });
-        measures.push(headers[i]);
-      }
-
-      var rings = series.length;
-      if (rings > 1) {
-        var percent = Math.floor(100/rings);
-        var ring = 0;
-
-        // The innermost ring
-        series[ring].size = percent + '%';
-        /*series[ring].dataLabels = {
-          distance: -30
-        };*/
-
-        for (ring = 1; ring < rings; ring++) {
-          series[ring].innerSize = percent*ring + '%';
-          series[ring].size = percent*(ring+1) + '%';
-          /*series[ring].dataLabels = {
-            distance: (0-percent*ring)
-          };*/
-        }
-      }
-
-      results.forEach(function(row) {
-        var groups = [];
-        for (var i = 0; i < columnCount; i++) {
-          groups.push(row[i]);
-        }
-        var category = groups.join(',');
-
-        for (i = columnCount; i < row.length; i++) {
-          series[i-columnCount].data.push({
-            name: category,
-            y: row[i]
-          });
-        }
-      });
-
-      $scope.highchartConfig = {
-        options: {
-          chart: {
-            type: 'pie'
-          },
-          tooltip: {
-            shared: true,
-            useHTML: true,
-            borderWidth: 1,
-            borderRadius: 10,
-            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-              '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
-            footerFormat: '</table>'
-          },
-          plotOptions: {
-            pie: {
-              showInLegend: true,
-              shadow: false,
-              center: ['50%', '50%'],
-              dataLabels: {
-                enabled: true,
-                useHTML: false,
-                format: '<b>{point.name} {series.name}</b>: {point.percentage:.1f}%',
-                style: {
-                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                }
-              }
-            }
-          }
-        },
-        credits: {
-          enabled: false
-        },
-        title: {
-          text: $scope.analyticsConfig.title
-        },
-        yAxis: {
-          title: {
-            text: ''
-          }
-        },
-        series: series
-      };
-    };
-
-    var createHighcharts = function(columnCount, headers, results) {
-
-      if (results[0] && results[0].length === columnCount) {
-        $scope.shouldShowChart = false;
-        $scope.isGridCollapsed = false;
-      } else {
-        $scope.shouldShowChart = true;
-        $scope.isGridCollapsed = true;
-      }
-
-      $scope.shouldShowGrid = true;
-      $scope.showGridCollapseButton = true;
-
-      switch ($scope.analyticsConfig.chartType) {
-        case 'column':
-          $scope.shouldShowTitle = false;
-          createColumnHighcharts(columnCount, headers, results);
-          break;
-        case 'pie':
-          $scope.shouldShowTitle = false;
-          createPieHighcharts(columnCount, headers, results); 
-          break;
-        case 'table':
-          $scope.shouldShowChart = false;
-          $scope.shouldShowGrid = true;
-          $scope.isGridCollapsed = false;
-          $scope.showGridCollapseButton = false;
-          $scope.shouldShowTitle = true;
-          break;
-        default:
-          createColumnHighcharts(columnCount, headers, results);
-      }
-    };
-
-    $scope.$watch('analyticsConfig', function(newConfig) {
-      if (newConfig) {
-        $scope.execute();
-      }
-    }, true);
-
+  function HomeCtrl() {
   }
 }());
 
@@ -1456,7 +1181,7 @@
     $scope.reportModel = {};
 
     var saveWidgets = function() {
-      ReportService.updateReport($scope.report);
+      ReportService.createOrUpdateReport($scope.report);
     };
 
     var defaultWidgets;
@@ -1819,48 +1544,54 @@
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard').controller('NewReportCtrl', ['$scope', '$location', '$rootScope', 'ReportService',
-    function($scope, $location, $rootScope, ReportService) {
+  angular.module('ml.analyticsDashboard').controller('NewReportCtrl',
+    [
+      '$scope', '$location', '$rootScope', 'ReportService',
+      function($scope, $location, $rootScope, ReportService) {
 
-    $scope.report = {};
+        $scope.report = {};
 
-    $scope.createReport = function() {
-      $scope.report.uri = '/ml-analytics-dashboard-reports/' +
-        encodeURIComponent($scope.report.name) +
-        '-' +
-        Math.floor((Math.random() * 1000000) + 1) +
-        '.json';
-        
-      ReportService.createReport($scope.report).then(function(response) {
-        $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
-        $location.search('ml-analytics-mode', 'design');
-        $location.search('ml-analytics-uri', $scope.report.uri);
-      });
-    };
+        $scope.createReport = function() {
+          $scope.report.uri = '/ml-analytics-dashboard-reports/' +
+            encodeURIComponent($scope.report.name) +
+            '-' +
+            Math.floor((Math.random() * 1000000) + 1) +
+            '.json';
+            
+          ReportService.createOrUpdateReport($scope.report).then(function() {
+            $rootScope.$broadcast('mlAnalyticsDashboard:ReportCreated', $scope.report);
+            $location.search('ml-analytics-mode', 'design');
+            $location.search('ml-analytics-uri', $scope.report.uri);
+          });
+        };
 
-  }]);
+      }
+    ]
+  );
 }());
 
 (function() {
   'use strict';
 
-  angular.module('ml.analyticsDashboard')
-    .controller('ReportEditorCtrl', ['$scope', '$location', 'ReportService',
-    function($scope, $location, ReportService) {
+  angular.module('ml.analyticsDashboard').controller('ReportEditorCtrl',
+    ['$scope', '$location', 'ReportService',
+      function($scope, $location, ReportService) {
 
-    $scope.report = {};
-    $scope.report.uri = $location.search()['ml-analytics-uri'];
-    ReportService.getReport($scope.report.uri).then(function(response) {
-      angular.extend($scope.report, response.data);
-    });
+        $scope.report = {};
+        $scope.report.uri = $location.search()['ml-analytics-uri'];
+        ReportService.getReport($scope.report.uri).then(function(response) {
+          angular.extend($scope.report, response.data);
+        });
 
-    $scope.updateReport = function() {
-      ReportService.updateReport($scope.report).then(function(response) {
-        $location.search('ml-analytics-mode', 'home');
-      });
-    };
+        $scope.updateReport = function() {
+          ReportService.createOrUpdateReport($scope.report).then(function() {
+            $location.search('ml-analytics-mode', 'home');
+          });
+        };
 
-  }]);
+      }
+    ]
+  );
 }());
 
 (function() {
@@ -1970,6 +1701,278 @@
         $scope.source = $scope.report.dataSource;
       }
     });
+
+  }
+}());
+
+/* global Highcharts */
+(function () {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard.chart').
+    controller('mlAnalyticsChartCtrl', mlAnalyticsChartCtrl);
+
+  mlAnalyticsChartCtrl.$inject = ['$scope', 'mlAnalyticsQueryService'];
+
+  function mlAnalyticsChartCtrl($scope, queryService) {
+    $scope.isGridCollapsed  = true;
+    $scope.showGridCollapseButton  = true;
+    $scope.shouldShowChart = false;
+    $scope.shouldShowGrid = false;
+
+    $scope.queryState = {
+      queryError: null,
+      configError: null,
+      results: null,
+      loadingResults: false
+    };
+
+    var clearResults = function() {
+      $scope.shouldShowChart = false;
+      $scope.shouldShowGrid = false;
+      $scope.queryState.results = {};
+    };
+
+    var executeComplexQuery = function(columnCount) {
+      $scope.queryState.loadingResults = true;
+      clearResults();
+
+      queryService.execute($scope.analyticsConfig.serializedQuery).
+        then(function(response) {
+          $scope.queryState.results = response.data;
+          $scope.queryState.queryError = null;
+          $scope.queryState.loadingResults = false;
+
+          createHighcharts(columnCount, $scope.queryState.results.headers, $scope.queryState.results.results);
+
+        }, function(response) {
+          $scope.queryState.loadingResults = false;
+
+          if (response.status !== 0) {
+            $scope.queryState.queryError = {
+              title: response.statusText,
+              description: response.data
+            };
+          }
+        });
+
+    };
+
+    $scope.execute = function() {
+      if ($scope.analyticsConfig && $scope.analyticsConfig.serializedQuery) {
+        var columns  = $scope.analyticsConfig.serializedQuery.columns;
+        var computes = $scope.analyticsConfig.serializedQuery.computes;
+
+        if (columns.length + computes.length > 0) {
+          $scope.queryState.loadingResults = true;
+          executeComplexQuery(columns.length);
+        } else {
+          clearResults();
+        }
+      } else {
+        clearResults();
+      }
+    };
+
+    // Create a column chart
+    var createColumnHighcharts = function(columnCount, headers, results) {
+      var categories = [];
+      var series = [];
+      var i;
+
+      // columnCount is number of groupby fields.
+      // Skip all groupby fields.
+      for (i = columnCount; i < headers.length; i++) {
+        series.push({
+          name: headers[i],
+          data: []
+        });
+      }
+
+      results.forEach(function(row) {
+        var groups = [];
+        for (var i = 0; i < columnCount; i++) {
+          groups.push(row[i]);
+        }
+        categories.push(groups.join(','));
+
+        for (i = columnCount; i < row.length; i++) {
+          series[i-columnCount].data.push(row[i]);
+        }
+      });
+
+      $scope.highchartConfig = {
+        options: {
+          chart: {
+            type: 'column'
+          },
+          tooltip: {
+            shared: true,
+            useHTML: true,
+            borderWidth: 1,
+            borderRadius: 10,
+            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                         '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>'
+          },
+          plotOptions: {
+            column: {
+              pointPadding: 0.2,
+              borderWidth: 0
+            }
+          }
+        },
+        title: {
+          text: $scope.analyticsConfig.title
+        },
+        xAxis: {
+          categories: categories
+        },
+        yAxis: {
+          title: {
+            text: ''
+          }
+        },
+        series: series
+      };
+    };
+
+    // Create a pie chart
+    var createPieHighcharts = function(columnCount, headers, results) {
+      var measures = [];
+      var series = [];
+
+      // columnCount is number of groupby fields.
+      // Skip all groupby fields.
+      for (var i = columnCount; i < headers.length; i++) {
+        series.push({
+          name: headers[i],
+          data: []
+        });
+        measures.push(headers[i]);
+      }
+
+      var rings = series.length;
+      if (rings > 1) {
+        var percent = Math.floor(100/rings);
+        var ring = 0;
+
+        // The innermost ring
+        series[ring].size = percent + '%';
+        /*series[ring].dataLabels = {
+          distance: -30
+        };*/
+
+        for (ring = 1; ring < rings; ring++) {
+          series[ring].innerSize = percent*ring + '%';
+          series[ring].size = percent*(ring+1) + '%';
+          /*series[ring].dataLabels = {
+            distance: (0-percent*ring)
+          };*/
+        }
+      }
+
+      results.forEach(function(row) {
+        var groups = [];
+        for (var i = 0; i < columnCount; i++) {
+          groups.push(row[i]);
+        }
+        var category = groups.join(',');
+
+        for (i = columnCount; i < row.length; i++) {
+          series[i-columnCount].data.push({
+            name: category,
+            y: row[i]
+          });
+        }
+      });
+
+      $scope.highchartConfig = {
+        options: {
+          chart: {
+            type: 'pie'
+          },
+          tooltip: {
+            shared: true,
+            useHTML: true,
+            borderWidth: 1,
+            borderRadius: 10,
+            headerFormat: '<span style="font-size:16px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+              '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>'
+          },
+          plotOptions: {
+            pie: {
+              showInLegend: true,
+              shadow: false,
+              center: ['50%', '50%'],
+              dataLabels: {
+                enabled: true,
+                useHTML: false,
+                format: '<b>{point.name} {series.name}</b>: {point.percentage:.1f}%',
+                style: {
+                  color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                }
+              }
+            }
+          }
+        },
+        credits: {
+          enabled: false
+        },
+        title: {
+          text: $scope.analyticsConfig.title
+        },
+        yAxis: {
+          title: {
+            text: ''
+          }
+        },
+        series: series
+      };
+    };
+
+    var createHighcharts = function(columnCount, headers, results) {
+
+      if (results[0] && results[0].length === columnCount) {
+        $scope.shouldShowChart = false;
+        $scope.isGridCollapsed = false;
+      } else {
+        $scope.shouldShowChart = true;
+        $scope.isGridCollapsed = true;
+      }
+
+      $scope.shouldShowGrid = true;
+      $scope.showGridCollapseButton = true;
+
+      switch ($scope.analyticsConfig.chartType) {
+        case 'column':
+          $scope.shouldShowTitle = false;
+          createColumnHighcharts(columnCount, headers, results);
+          break;
+        case 'pie':
+          $scope.shouldShowTitle = false;
+          createPieHighcharts(columnCount, headers, results); 
+          break;
+        case 'table':
+          $scope.shouldShowChart = false;
+          $scope.shouldShowGrid = true;
+          $scope.isGridCollapsed = false;
+          $scope.showGridCollapseButton = false;
+          $scope.shouldShowTitle = true;
+          break;
+        default:
+          createColumnHighcharts(columnCount, headers, results);
+      }
+    };
+
+    $scope.$watch('analyticsConfig', function(newConfig) {
+      if (newConfig) {
+        $scope.execute();
+      }
+    }, true);
 
   }
 }());

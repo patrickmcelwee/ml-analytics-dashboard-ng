@@ -34,7 +34,7 @@
     $scope.reportModel = {};
 
     var saveWidgets = function() {
-      ReportService.updateReport($scope.report);
+      ReportService.createOrUpdateReport($scope.report);
     };
 
     var defaultWidgets;
