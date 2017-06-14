@@ -5,11 +5,11 @@
 <div class="row" ng-if="currentUser">
   <div class="col-md-12">
     <span class="view-title">Edit Report</span>
-    <p>The fields marked with asterisk <i class='fa fa-asterisk mandatory-field'></i> are mandatory.</p>
+    <p>The fields marked with asterisk <i class='fa fa-asterisk mlad-mandatory-field'></i> are mandatory.</p>
 
     <form name="editReportForm" ng-submit="updateReport()" novalidate>
       <div class="form-group">
-        <label class="control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label>
+        <label class="control-label">Name <i class="fa fa-asterisk mlad-mandatory-field"></i></label>
         <input type="text" name="name" class="form-control" ng-model="report.name" readonly />
       </div>
 

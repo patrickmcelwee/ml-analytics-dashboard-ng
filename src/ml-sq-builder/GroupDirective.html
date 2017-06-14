@@ -1,4 +1,4 @@
-<div class="sq-builder-group">
+<div class="mlad-sq-builder-group">
   <h5> 
     <select data-ng-model="group.subType" class="input-sm form-control"> 
       <option value="and-query">All</option> 
@@ -7,7 +7,7 @@
     of these conditions are met
   </h5> 
   <div data-ng-repeat="rule in group.rules" data-sq-builder-chooser="rule" data-sq-fields="sqFields" data-depth="{{ +depth + 1 }}" data-on-remove="removeChild($index)"></div> 
-  <div class="actions" data-ng-class="getGroupClassName()"> 
+  <div class="mlad-actions" data-ng-class="getGroupClassName()"> 
     <a class="btn btn-xs btn-primary" title="Add Sub-Rule" data-ng-click="addRule()"> 
       <i class="fa fa-plus"> Add Rule</i> 
     </a> 

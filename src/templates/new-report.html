@@ -10,7 +10,7 @@
       <!-- novalidate prevents HTML5 validation since we will be validating ourselves -->
       <form name="newReportForm" ng-submit="createReport()" novalidate>
         <div class="form-group" ng-class="{ 'has-error' : newReportForm.name.$invalid && !newReportForm.name.$pristine }">
-          <label class="control-label">Name <i class="fa fa-asterisk mandatory-field"></i></label>
+          <label class="control-label">Name <i class="fa fa-asterisk mlad-mandatory-field"></i></label>
           <input type="text" name="name" class="form-control" ng-model="report.name" required />
           <p ng-show="newReportForm.name.$invalid && !newReportForm.name.$pristine" class="help-block">Name is required.</p>
         </div>

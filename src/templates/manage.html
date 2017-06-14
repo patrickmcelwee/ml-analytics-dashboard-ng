@@ -12,15 +12,15 @@
       <h4 class="menu-title">Manage Reports</h4>
       <p ng-if="!currentUser" style="padding-left:8px;">Please log in to view reports.</p>
       <div class="alert alert-warning" ng-show="showLoading">Loading Reports...</div>
-      <form ng-if="currentUser" name="filterForm" class="filter-form" novalidate>
+      <form ng-if="currentUser" name="filterForm" class="mlad-filter-form" novalidate>
         <input type="text" class="form-control" 
                            ng-model="search.name"
                            placeholder="Filter reports" />
       </form>
-      <div class="report-palette">
-        <div class="report-container">
-          <div class="report-container-inner">
-            <div class="report-item"
+      <div class="mlad-report-palette">
+        <div class="mlad-report-container">
+          <div class="mlad-report-container-inner">
+            <div class="mlad-report-item"
                  ng-repeat="report in reports | filter : search | orderBy:'name'"
                  ng-click="gotoDesigner(report.uri)">
               <i class="fa fa-th"></i><span>{{report.name}}</span>
