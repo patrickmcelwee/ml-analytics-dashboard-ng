@@ -73,14 +73,14 @@ describe('Protractor Demo App', function() {
     expect(chartWidgets.count()).toEqual(1);
 
     expect($('.ml-analytics-results').isPresent()).toBe(false);
-    var dimensionBuilder = $('.dimension-builder');
+    var dimensionBuilder = $('.mlad-dimension-builder');
     expect( dimensionBuilder.isPresent() ).toBe(true);
     expectGeneratedQuery().toContain('collection-query');
   });
 
   it('allows selection of compute row and creates chart', function() {
     expect(chartContainer.isPresent()).toBe(false);
-    var firstMeasure = $$('.ml-analytics-measure').first();
+    var firstMeasure = $$('.ml-analytics-measure').get(1); // after frequency
     firstMeasure.$('a').click();
     firstMeasure.element(by.linkText('Add count')).click();
     expect(rows.count()).toBe(1);
@@ -154,7 +154,7 @@ describe('Protractor Demo App', function() {
     element(by.buttonText('Save')).click();
 
     browser.get(env.baseUrl + '/ml-analytics-dashboard');
-    $('.report-item', reportName).click();
+    $('.mlad-report-item', reportName).click();
     expect(columns.count()).toBe(1);
     expect(rows.count()).toBe(1);
   });
@@ -171,7 +171,7 @@ describe('Protractor Demo App', function() {
     expect($('ml-results-grid').isDisplayed()).toBe(true);
 
     // Readd row and ensure that grid collapses down again
-    var firstMeasure = $$('.ml-analytics-measure').first();
+    var firstMeasure = $$('.ml-analytics-measure').get(1); // after Frequency
     firstMeasure.$('a').click();
     firstMeasure.element(by.linkText('Add count')).click();
 
