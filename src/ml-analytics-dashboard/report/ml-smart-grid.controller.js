@@ -8,6 +8,7 @@
 
   function mlSmartGridCtrl($scope) {
     $scope.widget.mode = 'Design';
+    $scope.widget.editingResultsLimit = false;
 
     $scope.model = {
       loadingResults: false
@@ -32,7 +33,7 @@
         'result-type': 'group-by',
         columns: [],
         computes: [],
-        options: ['headers=true'],
+        options: ['headers=true', 'limit=' + $scope.report.defaultResultsLimit],
         query: {
           query: {
             queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
@@ -70,6 +71,24 @@
       removeColumn: function(index) {
         $scope.data.serializedQuery.columns.splice(index, 1);
       }
+    };
+
+    $scope.getResultsLimit = function() {
+      console.log('in getResultsLimit');
+      var limitOption = _.find($scope.data.serializedQuery.options, function(option) {
+        return _.startsWith(option, 'limit=');
+      });
+      if (limitOption) {
+        return parseInt(limitOption.replace('limit=', ''));
+      }
+    };
+
+    $scope.setResultsLimit = function(newLimit) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return !_.startsWith(option, 'limit=');
+      });
+      newOptions.push('limit=' + newLimit);
+      $scope.data.serializedQuery.options = newOptions;
     };
 
     // TODO: move into showQuery directive?
