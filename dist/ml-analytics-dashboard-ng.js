@@ -626,6 +626,9 @@
             var compute = angular.copy(field);
             compute.fn = operation;
             compute.alias = operation + '(' + compute.alias +  ')';
+            if (operation === 'frequency') {
+              compute.alias = scope.report.frequencyAlias;
+            }
             scope.data.serializedQuery.computes.push(compute);
           };
 
@@ -906,6 +909,19 @@
 
 (function () {
   'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
 
   angular.module('ml.analyticsDashboard.embed').
     directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
@@ -993,19 +1009,6 @@
       restrict: 'E',
       templateUrl: '/templates/manage.html',
       controller: 'ManageCtrl'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
     };
   }
 }());
@@ -1432,7 +1435,9 @@
 
     $scope.report = {
       uri: $location.search()['ml-analytics-uri'],
-      aliases: {}
+      aliases: {},
+      frequencyAlias: 'Frequency',
+      defaultResultsLimit: 100
     };
 
     $scope.manager = {
@@ -1677,6 +1682,7 @@
 
   function mlSmartGridCtrl($scope) {
     $scope.widget.mode = 'Design';
+    $scope.widget.editingResultsLimit = false;
 
     $scope.model = {
       loadingResults: false
@@ -1701,7 +1707,7 @@
         'result-type': 'group-by',
         columns: [],
         computes: [],
-        options: ['headers=true'],
+        options: ['headers=true', 'limit=' + $scope.report.defaultResultsLimit, 'item-order', 'ascending'],
         query: {
           query: {
             queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
@@ -1739,6 +1745,54 @@
       removeColumn: function(index) {
         $scope.data.serializedQuery.columns.splice(index, 1);
       }
+    };
+
+    $scope.getResultsLimit = function() {
+      var limitOption = _.find($scope.data.serializedQuery.options, function(option) {
+        return _.startsWith(option, 'limit=');
+      });
+      if (limitOption) {
+        return parseInt(limitOption.replace('limit=', ''));
+      }
+    };
+
+    $scope.getResultsOrderOption = function() {
+      var orderOption = _.find($scope.data.serializedQuery.options, function(option) {
+        return _.endsWith(option, '-order');
+      });
+      if (orderOption) {
+        return orderOption.replace('-order', '');
+      }
+    };
+
+    $scope.getResultsOrderDirectionOption = function() {
+      return _.find($scope.data.serializedQuery.options, function(option) {
+        return option === 'ascending' || option === 'descending';
+      });
+    };
+
+    $scope.setResultsLimit = function(newLimit) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return !_.startsWith(option, 'limit=');
+      });
+      newOptions.push('limit=' + newLimit);
+      $scope.data.serializedQuery.options = newOptions;
+    };
+
+    $scope.setResultsOrderOption = function(newOrderOption) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return !_.endsWith(option, '-order');
+      });
+      newOptions.push(newOrderOption + '-order');
+      $scope.data.serializedQuery.options = newOptions;
+    };
+
+    $scope.setResultsOrderDirectionOption = function(newOrderDirectionOption) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return option !== 'ascending' && option !== 'descending';
+      });
+      newOptions.push(newOrderDirectionOption);
+      $scope.data.serializedQuery.options = newOptions;
     };
 
     // TODO: move into showQuery directive?
@@ -1783,7 +1837,7 @@
       }
     };
 
-    $scope.$watch('report.dataSource.constraint', function(newC, oldC) {
+    $scope.$watch('report.dataSource.constraint', function() {
       $scope.data.serializedQuery.query.query.queries = [
         $scope.report.dataSource.constraint,
         $scope.data.rootQuery
