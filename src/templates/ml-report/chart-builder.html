@@ -21,23 +21,54 @@
         </div>
       </div>
 
-      <div class="col-lg-3 col-md-5">
+      <div class="col-lg-8 col-md-6">
         <div class="panel panel-default mlad-panel-horizontal mlad-panel-sm">
           <div class="panel-body">
-            <!-- <form class="form-inline"> -->
-            <div ng-if="!widget.editingResultsLimit">
-              Limit: {{getResultsLimit()}} 
-              <a ng-click="widget.editingResultsLimit = true">
-                <i class="fa fa-edit"></i>
-              </a>
-            </div>
-            <div ng-init="resultsLimit = getResultsLimit()" ng-if="widget.editingResultsLimit">
-              Limit: <input type="number" ng-model="resultsLimit">
-              <a ng-click="widget.editingResultsLimit = false; setResultsLimit(resultsLimit)">
-                <i class="fa fa-check"></i>
-              </a>
-            </div>
-            <!-- </form> -->
+            <form class="form-inline">
+
+              <div class="form-group" ng-init="resultsLimit = getResultsLimit()">
+                <label for="mlad-results-limit">Results Limit: </label>
+                <input id="mlad-results-limit"
+                       type="number"
+                       ng-model="resultsLimit"
+                       style="width: 50px;"
+                       ng-readonly="!widget.editingResultsLimit">
+                <a ng-click="widget.editingResultsLimit = true" ng-if="!widget.editingResultsLimit">
+                  <i class="fa fa-edit"></i>
+                </a>
+                <a ng-click="widget.editingResultsLimit = false; setResultsLimit(resultsLimit)" ng-if="widget.editingResultsLimit">
+                  <i class="fa fa-check"></i>
+                </a>
+              </div>
+
+              <div class="form-group">
+                <div class="radio-inline" ng-init="orderOption = getResultsOrderOption()">
+                  Order Results by: 
+                  <label>
+                    <input type="radio" value="item" ng-model="orderOption" ng-change="setResultsOrderOption(orderOption)">
+                    Item Value
+                  </label>
+                  <label>
+                    <input type="radio" value="frequency" ng-model="orderOption" ng-change="setResultsOrderOption(orderOption)">
+                    Frequency
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="radio-inline" ng-init="orderDirectionOption = getResultsOrderDirectionOption()">
+                  <label>
+                    <input type="radio" value="ascending" ng-model="orderDirectionOption" ng-change="setResultsOrderDirectionOption(orderDirectionOption)">
+                    Ascending
+                  </label>
+                  <label>
+                    <input type="radio" value="descending" ng-model="orderDirectionOption" ng-change="setResultsOrderDirectionOption(orderDirectionOption)">
+                    Descending
+                  </label>
+                </div>
+              </div>
+
+            </form>
           </div>
         </div>
       </div>

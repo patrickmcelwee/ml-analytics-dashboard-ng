@@ -33,7 +33,7 @@
         'result-type': 'group-by',
         columns: [],
         computes: [],
-        options: ['headers=true', 'limit=' + $scope.report.defaultResultsLimit],
+        options: ['headers=true', 'limit=' + $scope.report.defaultResultsLimit, 'item-order', 'ascending'],
         query: {
           query: {
             queries: [$scope.report.dataSource.constraint, $scope.data.rootQuery]
@@ -74,7 +74,6 @@
     };
 
     $scope.getResultsLimit = function() {
-      console.log('in getResultsLimit');
       var limitOption = _.find($scope.data.serializedQuery.options, function(option) {
         return _.startsWith(option, 'limit=');
       });
@@ -83,11 +82,42 @@
       }
     };
 
+    $scope.getResultsOrderOption = function() {
+      var orderOption = _.find($scope.data.serializedQuery.options, function(option) {
+        return _.endsWith(option, '-order');
+      });
+      if (orderOption) {
+        return orderOption.replace('-order', '');
+      }
+    };
+
+    $scope.getResultsOrderDirectionOption = function() {
+      return _.find($scope.data.serializedQuery.options, function(option) {
+        return option === 'ascending' || option === 'descending';
+      });
+    };
+
     $scope.setResultsLimit = function(newLimit) {
       var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
         return !_.startsWith(option, 'limit=');
       });
       newOptions.push('limit=' + newLimit);
+      $scope.data.serializedQuery.options = newOptions;
+    };
+
+    $scope.setResultsOrderOption = function(newOrderOption) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return !_.endsWith(option, '-order');
+      });
+      newOptions.push(newOrderOption + '-order');
+      $scope.data.serializedQuery.options = newOptions;
+    };
+
+    $scope.setResultsOrderDirectionOption = function(newOrderDirectionOption) {
+      var newOptions = _.filter($scope.data.serializedQuery.options, function(option) {
+        return option !== 'ascending' && option !== 'descending';
+      });
+      newOptions.push(newOrderDirectionOption);
       $scope.data.serializedQuery.options = newOptions;
     };
 
