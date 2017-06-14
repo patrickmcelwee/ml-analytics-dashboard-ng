@@ -13,7 +13,8 @@
 
     $scope.report = {
       uri: $location.search()['ml-analytics-uri'],
-      aliases: {}
+      aliases: {},
+      frequencyAlias: 'Frequency'
     };
 
     $scope.manager = {

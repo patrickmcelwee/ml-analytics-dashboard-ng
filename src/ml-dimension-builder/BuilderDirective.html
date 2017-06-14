@@ -40,6 +40,24 @@
         <span class="panel-title">Measures</span>
       </div>
       <ul class="list-unstyled panel-body ml-analytics-measures">
+        <li uib-dropdown class="ml-analytics-measure">
+          <a uib-dropdown-toggle>
+            <span class="ml-analytics-field-name">
+              <i class="icon ion-pound"></i>
+              {{report.frequencyAlias}}
+            </span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <!-- Random field to make group-by happy -->
+              <a ng-click="addCompute(report.dataSource.fields[0], 'frequency')"> Add {{report.frequencyAlias}}
+              </a>
+            </li>
+          </ul>
+          <a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="'/ml-dimension-builder/frequency-popover.html'">
+            <i class="pull-right fa fa-info-circle"></i>
+          </a>
+        </li>
         <li
           uib-dropdown
           class="ml-analytics-measure"

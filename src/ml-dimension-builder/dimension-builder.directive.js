@@ -39,6 +39,9 @@
             var compute = angular.copy(field);
             compute.fn = operation;
             compute.alias = operation + '(' + compute.alias +  ')';
+            if (operation === 'frequency') {
+              compute.alias = scope.report.frequencyAlias;
+            }
             scope.data.serializedQuery.computes.push(compute);
           };
 

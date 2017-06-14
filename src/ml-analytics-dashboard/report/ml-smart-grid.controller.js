@@ -114,7 +114,7 @@
       }
     };
 
-    $scope.$watch('report.dataSource.constraint', function(newC, oldC) {
+    $scope.$watch('report.dataSource.constraint', function() {
       $scope.data.serializedQuery.query.query.queries = [
         $scope.report.dataSource.constraint,
         $scope.data.rootQuery
