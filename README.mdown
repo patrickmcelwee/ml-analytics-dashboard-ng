@@ -165,7 +165,7 @@ Add the mlAnalyticsDashboard module as a dependency to your app.module. For
 example, in a [slush-marklogic-node-generated
 app](https://github.com/marklogic/slush-marklogic-node), add this to
 `ui/app/app.js` (that will be `src/main/webapp/app/app.js` in
-a [slush-marklogic-spring-boot-generated app](slush-marklogic-spring-boot-generated app)):
+a slush-marklogic-spring-boot-generated app):
 
 ```javascript
 angular.module('app', [
