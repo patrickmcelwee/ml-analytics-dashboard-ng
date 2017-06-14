@@ -50,7 +50,7 @@
           name = index.localname;
         }
       } else {
-        name = index['path-expression'];
+        name = index['path-expression'] || index['field-name'];
       }
 
       if (aliasObject) {
