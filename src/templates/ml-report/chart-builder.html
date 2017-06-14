@@ -2,15 +2,14 @@
   <div ng-if="widget.mode === 'Design'" class="design-mode">
     <div class="row ml-analytics-gutter-10">
 
+      <div class="pull-right">
+        <a ng-click="widget.mode = 'View'">
+          <i class="fa fa-eye" title="View this chart"></i>
+          View
+        </a>
+      </div>
+
       <div class="col-lg-3 col-md-5">
-
-        <div class="pull-right">
-          <a ng-click="widget.mode = 'View'">
-            <i class="fa fa-eye" title="View this chart"></i>
-            View
-          </a>
-        </div>
-
         <div class="ml-analytics-design-form">
             <button class="btn btn-success" ng-click="save()" ng-disabled="designForm.$invalid">
               <span class="fa fa-check"></span> Save
@@ -20,7 +19,6 @@
             </button>
             <span ng-show="model.loadingResults">&nbsp;<i class="fa fa-spinner fa-spin"></i></span>
         </div>
-
       </div>
 
     </div>
