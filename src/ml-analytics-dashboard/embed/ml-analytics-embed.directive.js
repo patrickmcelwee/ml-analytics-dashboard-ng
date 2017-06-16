@@ -13,7 +13,8 @@
       scope: {
         reportUri: '=',
         chartId: '=',
-        mlSearch: '='
+        mlSearch: '=',
+        dynamicConfig: '='
       },
       link: function(scope) {
         var widget, originalConfig, queryOptionsXML;
@@ -36,14 +37,31 @@
 
         var setSearchContext = function() {
           if (originalConfig) {
-            scope.config = angular.copy(originalConfig);
-            scope.config.serializedQuery.queryOptions = queryOptionsXML;
-            scope.config.serializedQuery.query.query.queries =
+            scope.config = _.cloneDeep(originalConfig);
+            var serialized = scope.config.serializedQuery;
+
+            serialized.queryOptions = queryOptionsXML;
+            serialized.query.query.queries =
               originalConfig.serializedQuery.query.query.queries.concat(
                 scope.mlSearch.getQuery().query.queries
               );
-            scope.config.serializedQuery.query.query.qtext = 
+            serialized.query.query.qtext = 
               scope.mlSearch.qtext;
+            if (scope.dynamicConfig) {
+              if (scope.dynamicConfig.chartConfig) {
+                scope.config = _.assign(
+                  scope.config,
+                  scope.dynamicConfig.chartConfig
+                );
+              }
+              if (scope.dynamicConfig.queryConfig &&
+                  scope.dynamicConfig.queryConfig.additionalQueries
+              ) {
+                scope.dynamicConfig.queryConfig.additionalQueries.forEach(function(additional) {
+                  serialized.query.query.queries.push(additional);
+                });
+              }
+            }
           }
         };
 

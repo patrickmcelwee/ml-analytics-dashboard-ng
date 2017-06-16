@@ -215,6 +215,28 @@ Even better, in slush-marklogic-node-generated application, you can embed a char
 <ml-analytics-embed report-uri="'/ml-analytics-dashboard-reports/example-12345.json'" chart-id="1" ml-search="ctrl.mlSearch"></ml-analytics-embed>
 ```
 
+Finally, you can further configure the chart with a dynamic configuration object. This can allow you, for example, to add additional constraining queries on the fly, or to change the title or chartType of the chart. For example, you may want to create charts by year based on the top 5 values of a particular facet.
+
+The currently supported properties of this object are as follows:
+
+```javascript
+scope.dynamicChartConfig = {
+  queryConfig: {
+    additionalQueries: []
+  },
+  chartConfig: {
+    title: 'A New Title, perhaps based on a current scope property.',
+    chartType: 'pie' // 'column' and 'table' also currently supported
+  }
+}
+```
+
+You can you use that `dynamicChartConfig` in the directive (for now, it is only guaranteed to work when you also specify an ml-search context, but if you have a use case for a static chart with dynamicConfig, file a feature request): 
+
+```html
+<ml-analytics-embed dynamic-config="dynamicChartConfig" report-uri="'/ml-analytics-dashboard-reports/example-12345.json'" chart-id="1" ml-search="ctrl.mlSearch"></ml-analytics-embed>
+```
+
 # Troubleshooting
 
 ## Using path range indexes as a filter
