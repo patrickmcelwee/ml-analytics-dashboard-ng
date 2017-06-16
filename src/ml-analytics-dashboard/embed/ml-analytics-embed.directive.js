@@ -26,13 +26,7 @@
           }) || response.data.widgets[0];
           originalConfig = widget.dataModelOptions.data;
 
-          // TODO: right now, this could generate too many group-bys because it
-          // runs twice, but this check sets up a race condition where the
-          // chart fails to load if the search results return before all this
-          // widget checking is finished 
-          // if (!scope.mlSearch) {
-          scope.config = originalConfig;
-          // }
+          setSearchContext();
         });
 
         var setSearchContext = function() {
