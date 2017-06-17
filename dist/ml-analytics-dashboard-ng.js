@@ -909,6 +909,20 @@
 
 (function () {
   'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
+
+  function manageMlAnalyticsDashboard() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/manage.html',
+      controller: 'ManageCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
 
   angular.module('ml.analyticsDashboard.embed').
     directive('mlAnalyticsEmbed', mlAnalyticsEmbed);
@@ -935,13 +949,7 @@
           }) || response.data.widgets[0];
           originalConfig = widget.dataModelOptions.data;
 
-          // TODO: right now, this could generate too many group-bys because it
-          // runs twice, but this check sets up a race condition where the
-          // chart fails to load if the search results return before all this
-          // widget checking is finished 
-          // if (!scope.mlSearch) {
-          scope.config = originalConfig;
-          // }
+          setSearchContext();
         });
 
         var setSearchContext = function() {
@@ -1002,33 +1010,6 @@
     };
   }
 
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('manageMlAnalyticsDashboard', manageMlAnalyticsDashboard);
-
-  function manageMlAnalyticsDashboard() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/manage.html',
-      controller: 'ManageCtrl'
-    };
-  }
 }());
 
 (function () {
@@ -1115,6 +1096,19 @@
       restrict: 'E',
       templateUrl: '/templates/new-report.html',
       controller: 'NewReportCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
     };
   }
 }());
