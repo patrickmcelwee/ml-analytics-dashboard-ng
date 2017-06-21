@@ -197,6 +197,10 @@
         case 'int':
         case 'long':
         case 'decimal':
+        case 'gYear':
+        case 'gMonth':
+        case 'gMonthYear':
+        case 'gDay':
           // A query for a numeric field is translated 
           // to range-query.
           // The type is the type of the range index.

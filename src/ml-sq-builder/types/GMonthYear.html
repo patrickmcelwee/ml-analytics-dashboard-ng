@@ -1,0 +1,13 @@
+<span class="integer-rule"> 
+  <select data-ng-model="rule.subType" class="input-sm form-control">
+    <optgroup label="Gregorian Month Year"> 
+      <option value="EQ">=</option> 
+      <option value="NE">!=</option> 
+      <option value="GT">&gt;</option> 
+      <option value="GE">&ge;</option> 
+      <option value="LT">&lt;</option> 
+      <option value="LE">&le;</option> 
+    </optgroup> 
+  </select> 
+  <input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text" /> 
+</span>
