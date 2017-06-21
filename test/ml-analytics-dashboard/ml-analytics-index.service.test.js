@@ -16,9 +16,11 @@ describe('mlAnalyticsIndexService', function() {
         'int', 'unsignedInt', 'long', 'unsignedLong', 'float',
         'double', 'decimal'
       ],
+      discreteDate: [
+        'gMonthYear', 'gYear', 'gMonth', 'gDay'
+      ],
       date: [
-        'dateTime', 'time', 'date', 'gMonthYear', 'gYear', 'gMonth',
-        'gDay', 'yearMonthDuration', 'dayTimeDuration'
+        'dateTime', 'time', 'date', 'yearMonthDuration', 'dayTimeDuration'
       ],
       geo: ['point', 'long-lat-point'],
       unknown: ['unknown']

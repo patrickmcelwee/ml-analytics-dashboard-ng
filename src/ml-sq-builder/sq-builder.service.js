@@ -126,10 +126,10 @@
             ns: field['parent-namespace-uri']
           };
         }
-      } else if (claz === 'field') {
-        value[claz] = {
-          name: field.localname,
-          collation: fieldData.collation
+      } else if (claz === 'field-reference') {
+        value.field = {
+          name: field['field-name'],
+          collation: field.collation
         };
       }
     }
@@ -163,10 +163,15 @@
           // A query for a string field is translated 
           // to value-query or word-query or range-query.
 
+          // Set the default subType for newly created query
+          if (!group.subType) {
+            group.subType = 'range-query';
+          }
+
           if (group.field.ref['ref-type'] === 'path-reference') {
             // Convert path rule to range-query
             dataType = 'xs:' + group.field.ref['scalar-type'];
-            obj['range-query'] = {
+            obj[group.subType] = {
               'path-index': {
                 'text': group.field.ref['path-expression'],
                 'namespaces': {}
@@ -177,11 +182,7 @@
               'value': group.value
             };
           } else {
-            // Convert element or attribute rule to value-query/word-query
-            // Set the default subType for newly created query
-            if (!group.subType) {
-              group.subType = 'value-query';
-            }
+            // Convert element, field or attribute rule to value-query/word-query
 
             value = {
               'text': group.value
@@ -252,7 +253,7 @@
           break;
 
         default:
-          throw new Error('unexpected field type');
+          throw new Error('unexpected field type: ' + group.field.ref['scalar-type']); 
       }
 
       return obj;
