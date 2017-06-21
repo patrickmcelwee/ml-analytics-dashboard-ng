@@ -274,7 +274,7 @@ Once installed, you can typically start it by running this command:
 
 You will also have to run a MarkLogic server, with data installed using the [developing-analytics-dashboard project](https://github.com/patrickmcelwee/developing-analytics-dashboard).
 
-Finally, you will need to start a Node server from the developing-analytics-dashboard directory, using a command like `gulp serve-local`.
+Finally, you will need to start a Node server from the developing-analytics-dashboard directory on port 3000, using the command `gulp serve-local`.
 
 Once Selenium, MarkLogic, and Node are running, the end-to-end tests will run in a Chrome browser on this command:
 
