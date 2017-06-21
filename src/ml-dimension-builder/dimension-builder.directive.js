@@ -15,7 +15,7 @@
 
           scope.isColumnField = function(field) {
             return _.includes(
-              ['string'], // no dates or geo yet
+              ['string', 'discreteDate'], // no continuous dates or geo yet
               indexService.highLevelType(field)
             );
           };

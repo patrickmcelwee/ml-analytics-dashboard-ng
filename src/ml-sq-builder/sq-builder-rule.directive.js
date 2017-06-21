@@ -17,7 +17,7 @@
         link: function(scope) {
           scope.isQueryableIndex = function(field) {
             return _.includes(
-              ['string', 'numeric'],
+              ['string', 'numeric', 'discreteDate'],
               indexService.highLevelType(field)
             );
           };

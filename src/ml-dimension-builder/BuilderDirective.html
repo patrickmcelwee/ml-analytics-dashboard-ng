@@ -13,6 +13,7 @@
             <span class="ml-analytics-field-name">
               <span ng-switch="indexService.highLevelType(field)">
                 <i class="fa fa-font" ng-switch-when="string"></i>
+                <i class="fa fa-calendar" ng-switch-when="discreteDate"></i>
               </span>
               {{field.alias}}
             </span>

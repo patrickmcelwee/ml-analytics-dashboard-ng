@@ -21,13 +21,14 @@
         case 'double':
         case 'decimal':
           return 'numeric';
-        case 'dateTime':
-        case 'time':
-        case 'date':
         case 'gMonthYear':
         case 'gYear':
         case 'gMonth':
         case 'gDay':
+          return 'discreteDate';
+        case 'dateTime':
+        case 'time':
+        case 'date':
         case 'yearMonthDuration':
         case 'dayTimeDuration':
           return 'date';
