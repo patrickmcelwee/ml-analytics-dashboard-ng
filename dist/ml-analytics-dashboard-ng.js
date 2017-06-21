@@ -82,13 +82,14 @@
         case 'double':
         case 'decimal':
           return 'numeric';
-        case 'dateTime':
-        case 'time':
-        case 'date':
         case 'gMonthYear':
         case 'gYear':
         case 'gMonth':
         case 'gDay':
+          return 'discreteDate';
+        case 'dateTime':
+        case 'time':
+        case 'date':
         case 'yearMonthDuration':
         case 'dayTimeDuration':
           return 'date';
@@ -304,10 +305,10 @@
             ns: field['parent-namespace-uri']
           };
         }
-      } else if (claz === 'field') {
-        value[claz] = {
-          name: field.localname,
-          collation: fieldData.collation
+      } else if (claz === 'field-reference') {
+        value.field = {
+          name: field['field-name'],
+          collation: field.collation
         };
       }
     }
@@ -341,10 +342,15 @@
           // A query for a string field is translated 
           // to value-query or word-query or range-query.
 
+          // Set the default subType for newly created query
+          if (!group.subType) {
+            group.subType = 'range-query';
+          }
+
           if (group.field.ref['ref-type'] === 'path-reference') {
             // Convert path rule to range-query
             dataType = 'xs:' + group.field.ref['scalar-type'];
-            obj['range-query'] = {
+            obj[group.subType] = {
               'path-index': {
                 'text': group.field.ref['path-expression'],
                 'namespaces': {}
@@ -355,11 +361,7 @@
               'value': group.value
             };
           } else {
-            // Convert element or attribute rule to value-query/word-query
-            // Set the default subType for newly created query
-            if (!group.subType) {
-              group.subType = 'value-query';
-            }
+            // Convert element, field or attribute rule to value-query/word-query
 
             value = {
               'text': group.value
@@ -374,6 +376,10 @@
         case 'int':
         case 'long':
         case 'decimal':
+        case 'gYear':
+        case 'gMonth':
+        case 'gMonthYear':
+        case 'gDay':
           // A query for a numeric field is translated 
           // to range-query.
           // The type is the type of the range index.
@@ -430,7 +436,7 @@
           break;
 
         default:
-          throw new Error('unexpected field type');
+          throw new Error('unexpected field type: ' + group.field.ref['scalar-type']); 
       }
 
       return obj;
@@ -602,7 +608,7 @@
 
           scope.isColumnField = function(field) {
             return _.includes(
-              ['string'], // no dates or geo yet
+              ['string', 'discreteDate'], // no continuous dates or geo yet
               indexService.highLevelType(field)
             );
           };
@@ -750,7 +756,7 @@
         link: function(scope) {
           scope.isQueryableIndex = function(field) {
             return _.includes(
-              ['string', 'numeric'],
+              ['string', 'numeric', 'discreteDate'],
               indexService.highLevelType(field)
             );
           };
@@ -876,6 +882,20 @@
 
 (function () {
   'use strict';
+  angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
+
+  function mlAnalyticsDesign() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/designer.html',
+      controller: 'ReportDesignerCtrl'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
 
   angular.module('ml.analyticsDashboard.chart').
     directive('mlAnalyticsChart', mlAnalyticsChart);
@@ -891,20 +911,6 @@
     };
   }
   
-}());
-
-(function () {
-  'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDesign', mlAnalyticsDesign);
-
-  function mlAnalyticsDesign() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/designer.html',
-      controller: 'ReportDesignerCtrl'
-    };
-  }
 }());
 
 (function () {
@@ -1015,6 +1021,19 @@
 (function () {
   'use strict';
   angular.module('ml.analyticsDashboard')
+    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
+
+  function mlAnalyticsDashboardHome() {
+    return {
+      restrict: 'E',
+      templateUrl: '/templates/home.html'
+    };
+  }
+}());
+
+(function () {
+  'use strict';
+  angular.module('ml.analyticsDashboard')
     .directive('mlAnalyticsReportEditor', mlAnalyticsReportEditor);
 
   function mlAnalyticsReportEditor() {
@@ -1102,19 +1121,6 @@
 
 (function () {
   'use strict';
-  angular.module('ml.analyticsDashboard')
-    .directive('mlAnalyticsDashboardHome', mlAnalyticsDashboardHome);
-
-  function mlAnalyticsDashboardHome() {
-    return {
-      restrict: 'E',
-      templateUrl: '/templates/home.html'
-    };
-  }
-}());
-
-(function () {
-  'use strict';
   angular.module('ml.analyticsDashboard.source')
     .directive('mlAnalyticsDataSource', mlAnalyticsDataSource);
 
@@ -1157,6 +1163,116 @@
     }
 
     establishMode();
+  }
+}());
+
+(function() {
+  'use strict';
+
+  angular.module('ml.analyticsDashboard').
+    controller('ReportDesignerCtrl', ReportDesignerCtrl);
+
+  ReportDesignerCtrl.$inject = [
+    '$scope', '$location', 'ReportService', 'WidgetDefinitions'
+  ];
+
+  function ReportDesignerCtrl($scope, $location,
+      ReportService, WidgetDefinitions) {
+
+    $scope.report = {
+      uri: $location.search()['ml-analytics-uri'],
+      aliases: {},
+      frequencyAlias: 'Frequency',
+      defaultResultsLimit: 100
+    };
+
+    $scope.manager = {
+      exportConfig: function() {
+        ReportService.getReport($scope.report.uri).
+        then(function(resp) {
+          var url = URL.createObjectURL(new Blob([angular.toJson(resp.data)]));
+          var a = document.createElement('a');
+          a.href = url;
+          var uriParts = $scope.report.uri.split('/');
+          a.download = uriParts[uriParts.length - 1];
+          a.target = '_blank';
+          a.click();
+        });
+      }
+    };
+
+    $scope.reportModel = {};
+
+    var saveWidgets = function() {
+      ReportService.createOrUpdateReport($scope.report);
+    };
+
+    var defaultWidgets;
+    createDefaultWidgets();
+
+    var store = {};
+    var storage = {
+      getItem : function(key) {
+        return store[key];
+      },
+      setItem : function(key, value) {
+        store[key] = value;
+
+        $scope.report.widgets = value.widgets;
+        saveWidgets();
+      },
+      removeItem : function(key) {
+        delete store[key];
+      }
+    };
+
+    $scope.reportDashboardOptions = {
+      widgetButtons: true,
+      widgetDefinitions: WidgetDefinitions,
+      defaultWidgets: defaultWidgets,
+      hideToolbar: false,
+      hideWidgetName: true,
+      explicitSave: false,
+      stringifyStorage: false,
+      storage: storage,
+      storageId: $scope.report.uri
+    };
+
+    ReportService.setDashboardOptions($scope.reportDashboardOptions);
+
+    ReportService.getReport($scope.report.uri)
+      .then(function(resp) {
+        angular.extend($scope.report, resp.data);
+        initWithData();
+      }
+    );
+
+    function initWithData() {
+      //defaults
+      createDefaultWidgets();
+      ReportService.loadWidgets(defaultWidgets);
+    }
+
+    function createDefaultWidgets() {
+      if ($scope.report.widgets) {
+        defaultWidgets = _.map($scope.report.widgets, function(widget) {
+          return {
+            name: widget.name,
+            attrs: widget.attrs,
+            style: widget.size,
+            dataModelOptions: widget.dataModelOptions
+          };
+        });
+      } else {
+        defaultWidgets = [];
+      }
+    }
+
+    $scope.returnHome = function() {
+      $location.search('ml-analytics-mode', 'home');
+      $location.search('ml-analytics-uri', null);
+    };
+
   }
 }());
 
@@ -1428,116 +1544,6 @@
         $scope.execute();
       }
     }, true);
-
-  }
-}());
-
-(function() {
-  'use strict';
-
-  angular.module('ml.analyticsDashboard').
-    controller('ReportDesignerCtrl', ReportDesignerCtrl);
-
-  ReportDesignerCtrl.$inject = [
-    '$scope', '$location', 'ReportService', 'WidgetDefinitions'
-  ];
-
-  function ReportDesignerCtrl($scope, $location,
-      ReportService, WidgetDefinitions) {
-
-    $scope.report = {
-      uri: $location.search()['ml-analytics-uri'],
-      aliases: {},
-      frequencyAlias: 'Frequency',
-      defaultResultsLimit: 100
-    };
-
-    $scope.manager = {
-      exportConfig: function() {
-        ReportService.getReport($scope.report.uri).
-        then(function(resp) {
-          var url = URL.createObjectURL(new Blob([angular.toJson(resp.data)]));
-          var a = document.createElement('a');
-          a.href = url;
-          var uriParts = $scope.report.uri.split('/');
-          a.download = uriParts[uriParts.length - 1];
-          a.target = '_blank';
-          a.click();
-        });
-      }
-    };
-
-    $scope.reportModel = {};
-
-    var saveWidgets = function() {
-      ReportService.createOrUpdateReport($scope.report);
-    };
-
-    var defaultWidgets;
-    createDefaultWidgets();
-
-    var store = {};
-    var storage = {
-      getItem : function(key) {
-        return store[key];
-      },
-      setItem : function(key, value) {
-        store[key] = value;
-
-        $scope.report.widgets = value.widgets;
-        saveWidgets();
-      },
-      removeItem : function(key) {
-        delete store[key];
-      }
-    };
-
-    $scope.reportDashboardOptions = {
-      widgetButtons: true,
-      widgetDefinitions: WidgetDefinitions,
-      defaultWidgets: defaultWidgets,
-      hideToolbar: false,
-      hideWidgetName: true,
-      explicitSave: false,
-      stringifyStorage: false,
-      storage: storage,
-      storageId: $scope.report.uri
-    };
-
-    ReportService.setDashboardOptions($scope.reportDashboardOptions);
-
-    ReportService.getReport($scope.report.uri)
-      .then(function(resp) {
-        angular.extend($scope.report, resp.data);
-        initWithData();
-      }
-    );
-
-    function initWithData() {
-      //defaults
-      createDefaultWidgets();
-      ReportService.loadWidgets(defaultWidgets);
-    }
-
-    function createDefaultWidgets() {
-      if ($scope.report.widgets) {
-        defaultWidgets = _.map($scope.report.widgets, function(widget) {
-          return {
-            name: widget.name,
-            attrs: widget.attrs,
-            style: widget.size,
-            dataModelOptions: widget.dataModelOptions
-          };
-        });
-      } else {
-        defaultWidgets = [];
-      }
-    }
-
-    $scope.returnHome = function() {
-      $location.search('ml-analytics-mode', 'home');
-      $location.search('ml-analytics-uri', null);
-    };
 
   }
 }());

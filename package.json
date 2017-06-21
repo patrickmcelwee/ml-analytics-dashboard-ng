@@ -1,6 +1,6 @@
 {
   "name": "ml-analytics-dashboard-ng",
-  "version": "3.4.1",
+  "version": "3.5.0",
   "description": "AngularJS analytics dashboard for use with MarkLogic database",
   "devDependencies": {
     "del": "^2.2.1",

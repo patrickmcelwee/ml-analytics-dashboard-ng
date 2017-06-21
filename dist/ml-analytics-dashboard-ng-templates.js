@@ -6,7 +6,7 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-dimension-builder/BuilderDirective.html',
-    '<div class="mlad-dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default mlad-panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.dataSource.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="mlad-dimension-info pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default mlad-panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><i class="icon ion-pound"></i> {{report.frequencyAlias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addCompute(report.dataSource.fields[0], \'frequency\')">Add {{report.frequencyAlias}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/frequency-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.dataSource.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
+    '<div class="mlad-dimension-builder row ml-analytics-gutter-10"><div class="col-md-6"><div class="panel panel-default mlad-panel-sm"><div class="panel-heading"><span class="panel-title">Dimensions</span></div><ul class="list-unstyled panel-body ml-analytics-dimensions"><li uib-dropdown="" class="ml-analytics-dimension" ng-repeat="field in report.dataSource.fields | filter:isColumnField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="fa fa-font" ng-switch-when="string"></i> <i class="fa fa-calendar" ng-switch-when="discreteDate"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addColumn(field)">Add Group By Column</a></li><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="mlad-dimension-info pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div><div class="col-md-6"><div class="panel panel-default mlad-panel-sm"><div class="panel-heading"><span class="panel-title">Measures</span></div><ul class="list-unstyled panel-body ml-analytics-measures"><li uib-dropdown="" class="ml-analytics-measure"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><i class="icon ion-pound"></i> {{report.frequencyAlias}}</span></a><ul class="dropdown-menu"><li><a ng-click="addCompute(report.dataSource.fields[0], \'frequency\')">Add {{report.frequencyAlias}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/frequency-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li><li uib-dropdown="" class="ml-analytics-measure" ng-repeat="field in report.dataSource.fields | filter:isComputeField"><a uib-dropdown-toggle=""><span class="ml-analytics-field-name"><span ng-switch="indexService.highLevelType(field)"><i class="icon ion-pound" ng-switch-when="numeric"></i></span> {{field.alias}}</span></a><ul class="dropdown-menu"><li ng-repeat="fn in availableFns(field) | orderBy:\'toString()\'"><a ng-click="addCompute(field, fn)">Add {{fn}}</a></li></ul><a class="pull-right" popover-placement="right-top" popover-trigger="outsideClick" uib-popover-template="\'/ml-dimension-builder/dimension-popover.html\'"><i class="pull-right fa fa-info-circle"></i></a></li></ul></div></div></div>');
 }]);
 })();
 
@@ -247,6 +247,54 @@ try {
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('/ml-sq-builder/types/Decimal.html',
     '<span class="decimal-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Decimal"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/GDay.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Gregorian Day"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/GMonth.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Gregorian Month"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/GMonthYear.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Gregorian Month Year"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
+}]);
+})();
+
+(function(module) {
+try {
+  module = angular.module('ml.analyticsDashboard');
+} catch (e) {
+  module = angular.module('ml.analyticsDashboard', []);
+}
+module.run(['$templateCache', function($templateCache) {
+  $templateCache.put('/ml-sq-builder/types/GYear.html',
+    '<span class="integer-rule"><select data-ng-model="rule.subType" class="input-sm form-control"><optgroup label="Gregorian Year"><option value="EQ">=</option><option value="NE">!=</option><option value="GT">&gt;</option><option value="GE">&ge;</option><option value="LT">&lt;</option><option value="LE">&le;</option></optgroup></select><input data-ng-if="inputNeeded()" class="input-sm form-control" data-ng-model="rule.value" type="text"></span>');
 }]);
 })();
 
